@@ -8,9 +8,31 @@
 import SwiftUI
 
 struct ExploreView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
+    @EnvironmentObject var firebaseHelper: FirebaseHelper
+        @State private var searchText: String = ""
+            var body: some View {
+                VStack(spacing: 14) {
+                    HStack {
+                                    Image(systemName: "magnifyingglass")
+                            .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
+                                        .padding(.leading, 16)
+                        
+                                    
+                                    TextField("Search", text: $searchText)
+                                        .padding(14)
+                                }
+                                .background(Color(.white))
+                                .cornerRadius(40)
+                                .padding(.horizontal)
+                                .padding(.top)
+                                .shadow(radius: 5)
+                    
+                    ScrollView {
+                                }
+                            }
+                .onAppear {
+                }
+            }
 }
 
 struct HouseCardView: View {
@@ -74,5 +96,5 @@ struct HouseCardView: View {
 }
 
 #Preview {
-    ExploreView()
+    ExploreView().environmentObject(FirebaseHelper())
 }
