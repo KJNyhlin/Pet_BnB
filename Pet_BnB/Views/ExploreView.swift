@@ -9,31 +9,48 @@ import SwiftUI
 
 struct ExploreView: View {
     @EnvironmentObject var firebaseHelper: FirebaseHelper
-        @State private var searchText: String = ""
-            var body: some View {
-                VStack(spacing: 14) {
-                    HStack {
-                                    Image(systemName: "magnifyingglass")
-                            .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
-                                        .padding(.leading, 16)
-                        
-                                    
-                                    TextField("Search", text: $searchText)
-                                        .padding(14)
-                                }
-                                .background(Color(.white))
-                                .cornerRadius(40)
-                                .padding(.horizontal)
-                                .padding(.top)
-                                .shadow(radius: 5)
-                    
-                    ScrollView {
-                                }
-                            }
-                .onAppear {
-                }
+    @State private var searchText: String = ""
+    
+    var filteredHouses: [House] {
+            if searchText.isEmpty {
+                return firebaseHelper.houses
+            } else {
+                return firebaseHelper.houses.filter { $0.title.lowercased().contains(searchText.lowercased()) }
             }
-}
+        }
+        
+        var body: some View {
+            VStack(spacing: 14) {
+                HStack {
+                                Image(systemName: "magnifyingglass")
+                        .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
+                                    .padding(.leading, 16)
+                    
+                                
+                                TextField("Search", text: $searchText)
+                                    .padding(14)
+                            }
+                            .background(Color(.white))
+                            .cornerRadius(40)
+                            .padding(.horizontal)
+                            .padding(.top)
+                            .shadow(radius: 5)
+                
+                ScrollView {
+                                VStack(spacing: 10) {
+                                    ForEach(filteredHouses) { house in
+                                        HouseCardView(house: house)
+                                    }
+                                }
+                                .padding(.horizontal)
+                            }
+                        }
+            .onAppear {
+                firebaseHelper.fetchHouses()
+            }
+        }
+    }
+
 
 struct HouseCardView: View {
     var house: House
