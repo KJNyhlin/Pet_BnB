@@ -60,27 +60,27 @@ struct HouseCardView: View {
                     case .empty:
                         ProgressView()
                             .frame(height: 200)
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: 335)
                     case .success(let image):
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(height: 200)
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: 335)
                             .clipped()
                     case .failure:
                         Image(systemName: "photo")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(height: 200)
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: 335)
                             .background(Color.gray)
                     @unknown default:
                         Image(systemName: "photo")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(height: 200)
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: 335)
                             .background(Color.gray)
                     }
                 }
@@ -89,7 +89,7 @@ struct HouseCardView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(height: 200)
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: 335)
                     .background(Color.gray)
             }
             VStack(alignment: .leading, spacing: 8) {
