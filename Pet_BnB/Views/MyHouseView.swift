@@ -8,8 +8,23 @@
 import SwiftUI
 
 struct MyHouseView: View {
+    var myHouse: House?
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack{
+            if myHouse == nil {
+                Text("No house created")
+                Button(action: {
+                    
+                }, label: {
+                    FilledButtonLabel(text:"Create House")
+                        
+                })
+                
+            }else{
+                Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+            }
+            
+        }
     }
 }
 

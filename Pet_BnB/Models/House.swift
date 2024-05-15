@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-struct House {
+struct House: Codable {
     @DocumentID var docID: String?
     var title: String
     var description: String
