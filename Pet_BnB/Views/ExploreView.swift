@@ -56,6 +56,15 @@ struct HouseCardView: View {
                     .frame(maxWidth: .infinity)
                     .background(Color.gray)
             }
+            VStack(alignment: .leading, spacing: 8) {
+                Text(house.title)
+                    .font(.headline)
+                
+                Text(house.description)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            .padding()
         }
         .background(Color.white)
         .cornerRadius(20)
