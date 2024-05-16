@@ -82,7 +82,7 @@ class FirebaseHelper: ObservableObject {
                     let ownerID = self.auth.currentUser?.uid
                     //Create house
                     let house = House(title: title, description: description, imageURL: url?.absoluteString,
-                                    beds: beds, streetName: StreetName, streetNR: streetNr, city: city, ownerID: ownerID)
+                                      beds: beds, size: size, streetName: StreetName, streetNR: streetNr, city: city, ownerID: ownerID)
                     
                     do{
                         let houseData = try Firestore.Encoder().encode(house)
@@ -105,18 +105,69 @@ class FirebaseHelper: ObservableObject {
             
     }
         
-        func fetchHouses() {
-            db.collection("houses").addSnapshotListener { (querySnapshot, error) in
-                guard let documents = querySnapshot?.documents else {
-                    print("No documents")
-                    return
-                }
-                
-                self.houses = documents.compactMap { queryDocumentSnapshot -> House? in
-                    return try? queryDocumentSnapshot.data(as: House.self)
-                }
+    func fetchHouses() {
+        db.collection("houses").addSnapshotListener { (querySnapshot, error) in
+            guard let documents = querySnapshot?.documents else {
+                print("No documents")
+                return
+            }
+            
+            self.houses = documents.compactMap { queryDocumentSnapshot -> House? in
+                return try? queryDocumentSnapshot.data(as: House.self)
             }
         }
+    }
+    
+    func fetchHouse(withOwner ownerID: String, completion: @escaping (House?) -> Void) {
+        db.collection("houses").whereField("ownerID", isEqualTo: ownerID).getDocuments { snapshot, error in
+            if let error = error {
+                print("Error getting documents: \(error)")
+                completion(nil)
+                return
+            }
+            
+            guard let documents = snapshot?.documents, !documents.isEmpty else {
+                // Inga hus hittades med det angivna ägare-ID:et
+                completion(nil)
+                return
+            }
+            
+            // Om vi når hit betyder det att det finns minst ett hus med rätt ägare-ID
+            // Vi tar bara det första huset som matchar kriterierna
+            do {
+                let document = documents[0]
+                let house = try document.data(as: House.self)
+                completion(house)
+            } catch {
+                print("Error decoding house data: \(error)")
+                completion(nil)
+            }
+        }
+    }
+    
+    func getLoggedInUserID() -> String?{
+        return auth.currentUser?.uid
+    }
+    
+    func downloadImage(from path: String, completion: @escaping (UIImage?) -> Void) {
+        let storageRef = Storage.storage().reference(withPath: path)
+        
+        storageRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
+            if let error = error {
+                print("Error downloading image: \(error)")
+                completion(nil)
+                return
+            }
+            
+            guard let imageData = data, let image = UIImage(data: imageData) else {
+                print("Error converting data to UIImage")
+                completion(nil)
+                return
+            }
+            print("Image is fine returned from DownloadImage")
+            completion(image)
+        }
+    }
 
 }
 

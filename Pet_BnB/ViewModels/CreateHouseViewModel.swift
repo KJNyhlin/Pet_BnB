@@ -63,6 +63,7 @@ class CreateHouseViewModel: ObservableObject{
                   //  self.selectedPhotoData = imageData
                     if let imageData = imageData{
                         self.image = UIImage(data: imageData)
+                   
                     }
                     
                 }
