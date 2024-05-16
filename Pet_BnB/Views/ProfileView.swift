@@ -9,11 +9,12 @@ import SwiftUI
 
 struct ProfileView: View {
     @State var showSheet = false
+    @EnvironmentObject var signUpViewModel : SignUpViewModel
     var body: some View {
         Button("Create account") {
             showSheet = true
         }
-        .sheet(isPresented: $showSheet, content: {
+        .sheet(isPresented: $showSheet, onDismiss: signUpViewModel.savePersonalInfoToDB, content: {
             SignUpView()
         })
     }
@@ -22,4 +23,5 @@ struct ProfileView: View {
 
 #Preview {
     ProfileView()
+        .environmentObject(SignUpViewModel())
 }

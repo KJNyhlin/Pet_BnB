@@ -59,8 +59,11 @@ struct SignUpView: View {
 //                            TextFields()
                             if signUpViewModel.accountCreated {
                                 EnterPersonalInfo()
+                            } else if signUpViewModel.showSpinner {
+                                ShowSpinner()
                             } else {
                                 SignUp()
+//                                EnterPersonalInfo()
                             }
                             
                         }
@@ -77,6 +80,19 @@ struct SignUpView: View {
             }
             
         }
+    }
+}
+
+struct ShowSpinner: View {
+    var body: some View {
+        ProgressView()
+            .progressViewStyle(.circular)
+            .scaleEffect(2.0, anchor: .center)
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                          
+                        }
+            }
     }
 }
 
@@ -103,11 +119,6 @@ struct SignUpButtons: View {
         }) {
                 Text("Sign up")
             
-//                                .overlay(
-//                                    RoundedRectangle(cornerRadius: 25.0)
-//
-////                                        .foregroundColor(AppColors.mainAccent)
-//                                )
         }
         .padding(.top, 30)
         .disabled(!userViewModel.signUpAllFieldsComplete())
@@ -159,12 +170,25 @@ struct EntryFields : View {
 
 struct EnterPersonalInfo : View {
     @EnvironmentObject var signUpViewModel : SignUpViewModel
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        EntryFields(placeHolder: "Firstname", promt: "", field: $signUpViewModel.firstName)
-        EntryFields(placeHolder: "Surname", promt: "", field: $signUpViewModel.surName)
-        Button("Save") {
-            signUpViewModel.savePersonalInfoToDB()
+        VStack {
+            Text("Please enter your personal information")
+                .font(.system(size: 24))
+            EntryFields(placeHolder: "Firstname", promt: "", field: $signUpViewModel.firstName)
+            EntryFields(placeHolder: "Surname", promt: "", field: $signUpViewModel.surName)
+            Button("Save") {
+                signUpViewModel.savePersonalInfoToDB()
+                dismiss()
+            }
+            Button("Skip") {
+                signUpViewModel.firstName = ""
+                signUpViewModel.surName = ""
+                signUpViewModel.savePersonalInfoToDB()
+                dismiss()
+                    
+            }
         }
     }
 }
