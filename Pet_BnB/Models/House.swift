@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseFirestoreSwift
 
+
 struct House: Identifiable, Codable {
     @DocumentID var id: String?
     var title: String
