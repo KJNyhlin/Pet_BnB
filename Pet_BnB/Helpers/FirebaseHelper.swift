@@ -16,6 +16,7 @@ class FirebaseHelper: ObservableObject {
 
     let db = Firestore.firestore()
     let storage = Storage.storage()
+    let auth = Auth.auth()
     @Published var houses = [House]()
     
 
@@ -60,9 +61,16 @@ class FirebaseHelper: ObservableObject {
             print("Failed convert image")
             return
         }
+        
+        guard let ownerID = auth.currentUser?.uid else {
+            print("Not logged in!")
+            return
+        }
+        
         let uuid = UUID()
         let storageRef = storage.reference()
         let imageRef = storageRef.child("houses/\(uuid.uuidString).jpg")
+        //let ownerID = self.auth.currentUser?.uid
         
         imageRef.putData(imageData, metadata: nil){ metadata, error in
             if let error = error{
@@ -71,10 +79,10 @@ class FirebaseHelper: ObservableObject {
             } else {
                 print("Image uploaded successfully.")
                 imageRef.downloadURL { url, error in
-                    
+                    let ownerID = self.auth.currentUser?.uid
                     //Create house
                     let house = House(title: title, description: description, imageURL: url?.absoluteString,
-                                    beds: beds, streetName: StreetName, streetNR: streetNr, city: city)
+                                    beds: beds, streetName: StreetName, streetNR: streetNr, city: city, ownerID: ownerID)
                     
                     do{
                         let houseData = try Firestore.Encoder().encode(house)

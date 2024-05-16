@@ -19,6 +19,7 @@ struct House: Identifiable, Codable {
     var streetName: String?
     var streetNR: Int?
     var city: String?
+    var ownerID: String?
     
     
     mutating func addImageURL(url: String?){
