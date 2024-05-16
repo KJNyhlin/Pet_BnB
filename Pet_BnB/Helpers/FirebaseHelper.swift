@@ -18,8 +18,7 @@ class FirebaseHelper: ObservableObject {
     let storage = Storage.storage()
     @Published var houses = [House]()
     
-    
-    func saveHouse(uiImage: UIImage, house: House){
+    func saveHouse(uiImage: UIImage, title: String, description: String, beds: Int, size: Int, StreetName: String, streetNr: Int, city: String){
         guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else {
             print("Failed convert image")
             return
@@ -27,6 +26,7 @@ class FirebaseHelper: ObservableObject {
         let uuid = UUID()
         let storageRef = storage.reference()
         let imageRef = storageRef.child("houses/\(uuid.uuidString).jpg")
+        
         imageRef.putData(imageData, metadata: nil){ metadata, error in
             if let error = error{
                 print("Error uploading image: \(error)")
@@ -34,9 +34,13 @@ class FirebaseHelper: ObservableObject {
             } else {
                 print("Image uploaded successfully.")
                 imageRef.downloadURL { url, error in
-                    let houseWithImage = House(title: house.title, description: house.description, imageURL: url?.absoluteString)
+                    
+                    //Create house
+                    let house = House(title: title, description: description, imageURL: url?.absoluteString,
+                                    beds: beds, streetName: StreetName, streetNR: streetNr, city: city)
+                    
                     do{
-                        let houseData = try Firestore.Encoder().encode(houseWithImage)
+                        let houseData = try Firestore.Encoder().encode(house)
                         self.db.collection("houses").addDocument(data: houseData){ error in
                             if let error = error{
                                 print("Error saving to firestore")
@@ -68,6 +72,5 @@ class FirebaseHelper: ObservableObject {
                 }
             }
         }
-
 }
 

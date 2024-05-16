@@ -12,6 +12,12 @@ import PhotosUI
 class CreateHouseViewModel: ObservableObject{
     @Published var title = ""
     @Published var description = ""
+    @Published var imageURL: String?
+    @Published var beds = ""
+    @Published var size = ""
+    @Published var streetName = ""
+    @Published var streetNR = ""
+    @Published var city = ""
     let firebaseHelper = FirebaseHelper()
 
     @Published var image: UIImage?
@@ -23,15 +29,26 @@ class CreateHouseViewModel: ObservableObject{
       }
     
     func saveHouse() -> Bool{
-        if !title.isEmpty && !description.isEmpty && image != nil{
-            let house = House(title: title, description: description)
-            if let image = image{
-                firebaseHelper.saveHouse(uiImage: image, house: house)
+        if checkAllInfoSet(){
+
+            if let image = image,
+               let bedsInt = Int(beds),
+               let sizeInt = Int(size),
+               let streetNRInt = Int(streetNR)
+            {
+                firebaseHelper.saveHouse(uiImage: image, title: title, description: description, beds: bedsInt, size: sizeInt, StreetName: streetName, streetNr: streetNRInt, city: city)
                 // Only returns true if the house is created for now not if is saved properly
                 return true
             }
         }
         return false
+    }
+    
+    func checkAllInfoSet() -> Bool{
+        if !title.isEmpty && !description.isEmpty && image != nil && !beds.isEmpty && !size.isEmpty && !streetName.isEmpty && !streetNR.isEmpty && !city.isEmpty {
+            return true
+        }
+        return  false
     }
     
     func loadImageData() {
@@ -49,12 +66,9 @@ class CreateHouseViewModel: ObservableObject{
                     }
                     
                 }
-                
             } catch {
                 print("Error loading image data: \(error)")
             }
         }
     }
-    
-    
 }

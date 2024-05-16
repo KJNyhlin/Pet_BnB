@@ -21,6 +21,8 @@ struct CreateHouseView: View {
                 Form{
                     Section(header: Text("Information")){
                         TextField("Title", text: $vm.title)
+                        TextField("Beds", text: $vm.beds)
+                        TextField("m2", text: $vm.size)
                         HStack{
                             PhotosPicker(selection: $vm.imageSelection, matching: .images){
                                 Label(title: {
@@ -42,6 +44,13 @@ struct CreateHouseView: View {
                             
                         }
                     }
+                    Section(header: Text("Adress")) {
+                        TextField("Street", text: $vm.streetName)
+                        TextField("Number", text: $vm.streetNR)
+                        TextField("City", text: $vm.city)
+                    }
+                    
+                    
                     Section(header: Text("Description")){
                         TextEditor(text: $vm.description)
                             .frame(minHeight: 100)
@@ -51,7 +60,8 @@ struct CreateHouseView: View {
                     if vm.saveHouse(){
                         presentationMode.wrappedValue.dismiss()
                     }
-                 
+//                    let fb = FirebaseHelper()
+//                    print(fb.getStringForImageStorage())
                    
                 }, label: {
                     FilledButtonLabel(text: "Save")
