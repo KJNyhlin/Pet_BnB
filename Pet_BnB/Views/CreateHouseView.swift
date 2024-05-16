@@ -13,7 +13,6 @@ struct CreateHouseView: View {
     @EnvironmentObject var firebaseHelper: FirebaseHelper
     @Environment(\.presentationMode) var presentationMode
     
-    
     var body: some View {
         NavigationStack{
             VStack{
@@ -22,7 +21,9 @@ struct CreateHouseView: View {
                     Section(header: Text("Information")){
                         TextField("Title", text: $vm.title)
                         TextField("Beds", text: $vm.beds)
+                            .keyboardType(.numberPad)
                         TextField("m2", text: $vm.size)
+                            .keyboardType(.numberPad)
                         HStack{
                             PhotosPicker(selection: $vm.imageSelection, matching: .images){
                                 Label(title: {
@@ -47,28 +48,31 @@ struct CreateHouseView: View {
                     Section(header: Text("Adress")) {
                         TextField("Street", text: $vm.streetName)
                         TextField("Number", text: $vm.streetNR)
+                            .keyboardType(.numberPad)
                         TextField("City", text: $vm.city)
                     }
-                    
                     
                     Section(header: Text("Description")){
                         TextEditor(text: $vm.description)
                             .frame(minHeight: 100)
+                        Button(action: {
+                            if vm.saveHouse(){
+                                presentationMode.wrappedValue.dismiss()
+                            }
+        //                    let fb = FirebaseHelper()
+        //                    print(fb.getStringForImageStorage())
+                           
+                        }, label: {
+                            FilledButtonLabel(text: "Save")
+                                .padding(.vertical, 10)
+                                .padding(.horizontal, 30)
+                            
+                               
+                        })
                     }
+
                 }
-                Button(action: {
-                    if vm.saveHouse(){
-                        presentationMode.wrappedValue.dismiss()
-                    }
-//                    let fb = FirebaseHelper()
-//                    print(fb.getStringForImageStorage())
-                   
-                }, label: {
-                    FilledButtonLabel(text: "Save")
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 30)
-                       
-                })
+
             }
             .navigationTitle("Create House")
         }
