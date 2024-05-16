@@ -6,3 +6,23 @@
 //
 
 import Foundation
+
+class UserViewModel: ObservableObject {
+    @Published var user: User = User()
+    var firebaseHelper = FirebaseHelper()
+    
+    
+    func signUp(name: String, password: String) {
+        firebaseHelper.createAccount(name: name, password: password) {userID in
+            if let userID = userID {
+                print("User created")
+            } else {
+                print("error creating user")
+            }
+            
+        }
+    }
+    
+    
+    
+}
