@@ -6,12 +6,12 @@
 //
 
 import Foundation
-import FirebaseFirestore
+import FirebaseFirestoreSwift
 
-struct House: Codable {
-    @DocumentID var docID: String?
+
+struct House: Identifiable, Codable {
+    @DocumentID var id: String?
     var title: String
     var description: String
-    var imageURL : String?
-    
+    var imageURL: String?
 }

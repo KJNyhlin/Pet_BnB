@@ -10,10 +10,13 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
+import FirebaseFirestoreSwift
 
 class FirebaseHelper: ObservableObject {
+
     let db = Firestore.firestore()
     let storage = Storage.storage()
+    @Published var houses = [House]()
     
     
     func saveHouse(uiImage: UIImage, house: House){
@@ -52,5 +55,19 @@ class FirebaseHelper: ObservableObject {
         }
             
     }
+        
+        func fetchHouses() {
+            db.collection("houses").addSnapshotListener { (querySnapshot, error) in
+                guard let documents = querySnapshot?.documents else {
+                    print("No documents")
+                    return
+                }
+                
+                self.houses = documents.compactMap { queryDocumentSnapshot -> House? in
+                    return try? queryDocumentSnapshot.data(as: House.self)
+                }
+            }
+        }
 
 }
+
