@@ -6,37 +6,52 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct CreateHouseView: View {
-    @State private var title = ""
-    @State private var description = ""
+    @StateObject var vm = CreateHouseViewModel()
     @EnvironmentObject var firebaseHelper: FirebaseHelper
+    @Environment(\.presentationMode) var presentationMode
     
     
     var body: some View {
         NavigationStack{
             VStack{
                 
-                
                 Form{
                     Section(header: Text("Information")){
-                        TextField("Title", text: $title)
+                        TextField("Title", text: $vm.title)
                         HStack{
-                            Text("Images")
+                            PhotosPicker(selection: $vm.imageSelection, matching: .images){
+                                Label(title: {
+                                    Text("Image")
+                                }, icon:{
+                                    Image(systemName: "photo")
+                                })
+                                
+                            }
+                            Spacer()
+                            if let image = vm.image{
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 40, height: 40)
+                            }else {
+                                Text("No image")
+                            }
+                            
                         }
-                        
                     }
                     Section(header: Text("Description")){
-                        TextEditor(text: $description)
+                        TextEditor(text: $vm.description)
                             .frame(minHeight: 100)
                     }
-                    
                 }
                 Button(action: {
-                    if !title.isEmpty && !description.isEmpty{
-                        let house = House(title: title, description: description)
-                        firebaseHelper.save(house: house)
+                    if vm.saveHouse(){
+                        presentationMode.wrappedValue.dismiss()
                     }
+                 
                    
                 }, label: {
                     FilledButtonLabel(text: "Save")

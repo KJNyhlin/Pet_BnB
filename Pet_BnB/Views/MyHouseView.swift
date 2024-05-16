@@ -10,20 +10,19 @@ import SwiftUI
 struct MyHouseView: View {
     var myHouse: House?
     var body: some View {
-        VStack{
-            if myHouse == nil {
-                Text("No house created")
-                Button(action: {
-                    
-                }, label: {
-                    FilledButtonLabel(text:"Create House")
-                        
-                })
+        NavigationStack{
+            VStack{
+                if myHouse == nil {
+                    Text("No house created")
+                    NavigationLink(destination: CreateHouseView()) {
+                        FilledButtonLabel(text:"Create House")
+                            .frame(maxWidth: 200)
+                    }
+                }else{
+                    Text("Well, Show the house!")
+                }
                 
-            }else{
-                Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
             }
-            
         }
     }
 }
