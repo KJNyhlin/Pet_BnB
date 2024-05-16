@@ -19,6 +19,40 @@ class FirebaseHelper: ObservableObject {
     @Published var houses = [House]()
     
     
+
+    func createAccount(name: String, password: String, completion: @escaping (String?)-> Void) {
+        let auth = Auth.auth()
+        
+        auth.createUser(withEmail: name, password: password) {result, error in
+            if let error = error {
+                print("Error sign up: \(error)")
+                completion(nil)
+            } else {
+                guard let userID = result?.user.uid else {
+                    completion(nil)
+                    return
+                }
+                completion(userID)
+            }
+            
+        }
+        
+    }
+    
+    func savePersonalInfoToDB( firstName: String, surName: String) {
+        let db = Firestore.firestore()
+        let auth = Auth.auth()
+        guard let userID = auth.currentUser?.uid else {return}
+        
+        db.collection("users").document(userID).setData(
+            ["firstName:": firstName,
+             "surName:": surName
+            ]
+        )
+        
+    }
+    
+
     func saveHouse(uiImage: UIImage, house: House){
         guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else {
             print("Failed convert image")
@@ -68,6 +102,7 @@ class FirebaseHelper: ObservableObject {
                 }
             }
         }
+
 
 }
 
