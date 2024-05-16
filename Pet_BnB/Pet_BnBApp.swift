@@ -22,11 +22,13 @@ struct Pet_BnBApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject var firebaseHelper = FirebaseHelper()
+    @StateObject var userViewModel = SignUpViewModel()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(firebaseHelper)
+                .environmentObject(userViewModel)
         }
     }
 }
