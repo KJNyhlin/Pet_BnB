@@ -18,6 +18,7 @@ class CreateHouseViewModel: ObservableObject{
     @Published var streetName = ""
     @Published var streetNR = ""
     @Published var city = ""
+    var house: House? = nil
     let firebaseHelper = FirebaseHelper()
 
     @Published var image: UIImage?
@@ -27,6 +28,33 @@ class CreateHouseViewModel: ObservableObject{
               loadImageData()
           }
       }
+    
+    init(house: House?){
+        if let house = house{
+            
+            self.title = house.title
+            description = house.description
+            imageURL = house.imageURL
+            if let city = house.city,
+               let beds = house.beds,
+               let size = house.size,
+               let streetNR = house.streetNR,
+               let streetName = house.streetName,
+               let imageURL = house.imageURL
+            {
+                self.city = city
+                self.beds = "\(beds)"
+                self.size = "\(size)"
+                self.streetNR = "\(streetNR)"
+                self.streetName = streetName
+                firebaseHelper.downloadImage(from: imageURL){ image in
+                    self.image = image
+                }
+                
+            }
+        }
+      
+    }
     
     func saveHouse() -> Bool{
         if checkAllInfoSet(){

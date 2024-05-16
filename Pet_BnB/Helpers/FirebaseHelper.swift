@@ -97,12 +97,9 @@ class FirebaseHelper: ObservableObject {
                     } catch {
                         print("error encoding house object")
                     }
-                    
-                    
                 }
             }
         }
-            
     }
         
     func fetchHouses() {
@@ -149,8 +146,13 @@ class FirebaseHelper: ObservableObject {
         return auth.currentUser?.uid
     }
     
-    func downloadImage(from path: String, completion: @escaping (UIImage?) -> Void) {
-        let storageRef = Storage.storage().reference(withPath: path)
+    func downloadImage(from url: String, completion: @escaping (UIImage?) -> Void) {
+        guard let storageUrl = URL(string: url) else {
+            print("Error creating URL from string")
+            completion(nil)
+            return
+        }
+        let storageRef = Storage.storage().reference(forURL: url)
         
         storageRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
             if let error = error {

@@ -16,7 +16,7 @@ struct MyHouseView: View {
                 if vm.house == nil {
                     Text("No house created")
                     
-                    NavigationLink(destination: CreateHouseView()) {
+                    NavigationLink(destination: CreateHouseView(vm: CreateHouseViewModel(house: nil))) {
                         FilledButtonLabel(text:"Create House")
                             .frame(maxWidth: 200)
                     }
@@ -24,8 +24,12 @@ struct MyHouseView: View {
                     if let house = vm.house,
                        let imageUrl = vm.house?.imageURL
                     {
+                        
                         AsyncImage(url: URL(string: imageUrl))
                             .frame(maxWidth: .infinity)
+                        
+                        
+                        
                         VStack(alignment: .leading){
                             Text(house.title)
                                 .font(.title)
@@ -42,6 +46,23 @@ struct MyHouseView: View {
                                 AdressView(street: streetName, streetNR: streetNR, city: city)
                             }
                             Text(house.description)
+                            Spacer()
+                            
+                            Menu {
+                                Button(role: .destructive, action: {
+                                    // Handling för när "Delete" väljs
+                                }) {
+                                    Label("Delete", systemImage: "trash")
+                                        
+                                }
+                                NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
+                                    Label("Edit", systemImage: "pencil")
+                                }
+
+                            } label: {
+                                FilledButtonLabel(text: "Manage")
+                            }
+                                
                         }
                         
                         .padding()

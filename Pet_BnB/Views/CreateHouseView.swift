@@ -9,7 +9,7 @@ import SwiftUI
 import PhotosUI
 
 struct CreateHouseView: View {
-    @StateObject var vm = CreateHouseViewModel()
+    @StateObject var vm: CreateHouseViewModel
     @EnvironmentObject var firebaseHelper: FirebaseHelper
     @Environment(\.presentationMode) var presentationMode
     
@@ -80,6 +80,6 @@ struct CreateHouseView: View {
     }
 }
 
-#Preview {
-    CreateHouseView()
-}
+//#Preview {
+//    CreateHouseView()
+//}
