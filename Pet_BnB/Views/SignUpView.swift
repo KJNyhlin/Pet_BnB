@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct SignUpView: View {
-    
-    @State var email : String = ""
-    @State var password : String = ""
+    @EnvironmentObject var userViewModel :SignUpViewModel
     
     var body: some View {
         ZStack {
@@ -43,9 +41,9 @@ struct SignUpView: View {
                             
                     }
                     .padding(.bottom, 20)
-                    .border(Color.black)
+//                    .border(Color.black)
                 }
-                .border(Color.black)
+//                .border(Color.black)
                 VStack() {
                     ZStack {
                         Rectangle()
@@ -58,13 +56,8 @@ struct SignUpView: View {
                                 ))
                         
                         VStack(spacing: 0) {
-                            TextFields(email: $email, password: $password)
-                                
-                                
-                            SignUpButtons(email: $email, password: $password)
-                            Spacer()
-                            Text("Terms & Conditions Apply*")
-                                .font(.system(size: 12))
+//                            TextFields()
+                            SignUp()
                             
                             
                         }
@@ -72,7 +65,7 @@ struct SignUpView: View {
                         
                     }
                 }
-                .border(Color.black)
+//                .border(Color.black)
                 
                 
                 
@@ -83,17 +76,27 @@ struct SignUpView: View {
         }
     }
 }
+
+struct SignUp: View {
+    @EnvironmentObject var userViewModel : SignUpViewModel
+    
+    var body: some View {
+        EntryFields(placeHolder: "Enter email", promt: "", field: $userViewModel.email)
+        EntryFields(placeHolder: "Enter password", promt: "", field: $userViewModel.password, isSecure: true)
+        EntryFields(placeHolder: "Confirm password", promt: "", field: $userViewModel.confirmPassword, isSecure: true)
+        SignUpButtons()
+        Spacer()
+        Text("Terms & Conditions Apply*")
+            .font(.system(size: 12))
+    }
+}
+
 struct SignUpButtons: View {
-    @EnvironmentObject var userViewModel : UserViewModel
-    @Binding var email: String
-    @Binding var password: String
+    @EnvironmentObject var userViewModel : SignUpViewModel
+
     var body: some View {
         Button(action: {
-            if email.isEmpty && password.isEmpty {
-                return
-            } else {
-                userViewModel.signUp(name: email, password: password)
-            }
+            userViewModel.signUp(name: userViewModel.email, password: userViewModel.password)
         }) {
                 Text("Sign up")
             
@@ -104,6 +107,7 @@ struct SignUpButtons: View {
 //                                )
         }
         .padding(.top, 30)
+        .disabled(!userViewModel.signUpAllFieldsComplete())
         Button(action: {
             
         }) {
@@ -115,40 +119,99 @@ struct SignUpButtons: View {
     }
 }
 
-struct TextFields : View {
-    @Binding var email: String
-    @Binding var password: String
-    
+struct EntryFields : View {
+    var placeHolder : String
+    var promt: String
+    @Binding var field: String
+    var isSecure: Bool = false
     var body: some View {
-        Text("Enter email:")
-            .font(.system(size: 16))
-            .frame(width: 300, alignment: .leading)
-            .padding(.leading, 30)
-            
-        TextField(text: $email) {
-            
+        VStack {
+            if isSecure {
+                SecureField(placeHolder, text: $field)
+                    .textInputAutocapitalization(.never)
+                    .frame(width: 250, height: 40)
+                    .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 25.0)
+                            .stroke(AppColors.mainAccent, lineWidth: 3)
+                    )
+            } else {
+                TextField(placeHolder, text: $field)
+                    .textInputAutocapitalization(.never)
+                    .frame(width: 250, height: 40)
+                    .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 25.0)
+                            .stroke(AppColors.mainAccent, lineWidth: 3)
+                    )
+            }
+            Text(promt)
+                .fixedSize(horizontal: false, vertical: true)
+                .font(.caption)
+                .frame(width: 250, alignment: .leading)
+                .foregroundColor(.gray)
         }
-        .frame(width: 300, height: 40)
-        .overlay(
-            RoundedRectangle(cornerRadius: 25.0)
-                .stroke(AppColors.mainAccent, lineWidth: 3)
-        )
-        Text("Create password")
-            .font(.system(size: 16))
-            .padding(.top, 10)
-            .frame(width: 300, alignment: .leading)
-            .padding(.leading, 30)
-        TextField(text: $password) {
-            
-        }
-        .frame(width: 300, height: 40)
-        .overlay(
-            RoundedRectangle(cornerRadius: 25.0)
-                .stroke(AppColors.mainAccent, lineWidth: 3)
-        )
     }
 }
 
+//struct TextFields : View {
+//    @EnvironmentObject var userViewModel : UserViewModel
+//
+//    
+//    var body: some View {
+////        Text("Enter email:")
+////            .font(.system(size: 16))
+////            .frame(width: 300, alignment: .leading)
+////            .padding(.leading, 30)
+////            
+//            
+//        TextField("Enter email", text: $userViewModel.email) {
+//            
+//        }
+//        .frame(width: 250, height: 40)
+//        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+//        .overlay(
+//            RoundedRectangle(cornerRadius: 25.0)
+//                .stroke(AppColors.mainAccent, lineWidth: 3)
+//        )
+//        .padding()
+//        
+////        Text("Create password")
+////            .font(.system(size: 16))
+////            .padding(.top, 10)
+////            .frame(width: 300, alignment: .leading)
+////            .padding(.leading, 30)
+//        SecureField("Create password", text: $userViewModel.password) {
+//            
+//        }
+//        
+//        .frame(width: 250, height: 40)
+//        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+//        .overlay(
+//            RoundedRectangle(cornerRadius: 25.0)
+//                .stroke(AppColors.mainAccent, lineWidth: 3)
+//        )
+//        .padding(.bottom)
+////        Text("Confim password")
+////            .font(.system(size: 16))
+////            .padding(.top, 10)
+////            .frame(width: 300, alignment: .leading)
+////            .padding(.leading, 30)
+//        SecureField("Confirm password", text: $userViewModel.confirmPassword) {
+//            
+//        }
+//        
+//        .frame(width: 250, height: 40)
+//        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+//        .overlay(
+//            RoundedRectangle(cornerRadius: 25.0)
+//                .stroke(AppColors.mainAccent, lineWidth: 3)
+//        )
+//        
+//    }
+//}
+
 #Preview {
     SignUpView()
+        .environmentObject(SignUpViewModel())
 }
