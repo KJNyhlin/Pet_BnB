@@ -13,9 +13,11 @@ class SignUpViewModel: ObservableObject {
     
     @Published var email: String = ""
     @Published var password: String = ""
-    @Published var confirmPassword = ""
+    @Published var confirmPassword: String = ""
     
-    
+    @Published var firstName: String = ""
+    @Published var surName: String = ""
+    @Published var accountCreated: Bool = false
     
     
     func signUp(name: String, password: String) {
@@ -23,12 +25,18 @@ class SignUpViewModel: ObservableObject {
             firebaseHelper.createAccount(name: name, password: password) {userID in
                 if let userID = userID {
                     print("User created")
+                    self.accountCreated = true
                 } else {
                     print("error creating user")
+                    self.accountCreated = false
                 }
                 
             }
         }
+    }
+    
+    func savePersonalInfoToDB() {
+        firebaseHelper.savePersonalInfoToDB(firstName: firstName, surName: surName)
     }
     
     func passwordMatch() -> Bool {
@@ -49,5 +57,8 @@ class SignUpViewModel: ObservableObject {
         }
     }
     
+//    func enterPersonalInfoComplete() -> Bool {
+//        return firstName.isEmpty || surName.isEmpty
+//    }
     
 }

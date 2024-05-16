@@ -31,7 +31,7 @@ struct ContentView: View {
                     title: { Text("Messages") },
                     icon: { Image(systemName: "bubble") }
                 ) }
-                SignUpView().tabItem { Label(
+                ProfileView().tabItem { Label(
                     title: { Text("Profile") },
                     icon: { Image(systemName: "person.crop.circle") }
                 ) }

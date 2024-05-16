@@ -32,4 +32,17 @@ class FirebaseHelper: ObservableObject {
         
     }
     
+    func savePersonalInfoToDB( firstName: String, surName: String) {
+        let db = Firestore.firestore()
+        let auth = Auth.auth()
+        guard let userID = auth.currentUser?.uid else {return}
+        
+        db.collection("users").document(userID).setData(
+            ["firstName:": firstName,
+             "surName:": surName
+            ]
+        )
+        
+    }
+    
 }

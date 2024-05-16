@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SignUpView: View {
-    @EnvironmentObject var userViewModel :SignUpViewModel
+    @EnvironmentObject var signUpViewModel :SignUpViewModel
     
     var body: some View {
         ZStack {
@@ -57,8 +57,11 @@ struct SignUpView: View {
                         
                         VStack(spacing: 0) {
 //                            TextFields()
-                            SignUp()
-                            
+                            if signUpViewModel.accountCreated {
+                                EnterPersonalInfo()
+                            } else {
+                                SignUp()
+                            }
                             
                         }
                         .padding(.top, 20)
@@ -78,12 +81,12 @@ struct SignUpView: View {
 }
 
 struct SignUp: View {
-    @EnvironmentObject var userViewModel : SignUpViewModel
+    @EnvironmentObject var signUpViewModel : SignUpViewModel
     
     var body: some View {
-        EntryFields(placeHolder: "Enter email", promt: "", field: $userViewModel.email)
-        EntryFields(placeHolder: "Enter password", promt: "", field: $userViewModel.password, isSecure: true)
-        EntryFields(placeHolder: "Confirm password", promt: "", field: $userViewModel.confirmPassword, isSecure: true)
+        EntryFields(placeHolder: "Enter email", promt: "", field: $signUpViewModel.email)
+        EntryFields(placeHolder: "Enter password", promt: "", field: $signUpViewModel.password, isSecure: true)
+        EntryFields(placeHolder: "Confirm password", promt: "", field: $signUpViewModel.confirmPassword, isSecure: true)
         SignUpButtons()
         Spacer()
         Text("Terms & Conditions Apply*")
@@ -154,6 +157,18 @@ struct EntryFields : View {
     }
 }
 
+struct EnterPersonalInfo : View {
+    @EnvironmentObject var signUpViewModel : SignUpViewModel
+    
+    var body: some View {
+        EntryFields(placeHolder: "Firstname", promt: "", field: $signUpViewModel.firstName)
+        EntryFields(placeHolder: "Surname", promt: "", field: $signUpViewModel.surName)
+        Button("Save") {
+            signUpViewModel.savePersonalInfoToDB()
+        }
+    }
+}
+
 //struct TextFields : View {
 //    @EnvironmentObject var userViewModel : UserViewModel
 //
@@ -210,6 +225,8 @@ struct EntryFields : View {
 //        
 //    }
 //}
+
+
 
 #Preview {
     SignUpView()
