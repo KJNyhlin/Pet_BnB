@@ -14,6 +14,8 @@ class ProfileViewModel : ObservableObject{
     @Published var firstName: String = ""
     @Published var surName: String = ""
     @Published var editMode: Bool = false
+    @Published var editFirstName: String = ""
+    @Published var editSurName: String = ""
     
     func getUserDetails() {
         guard let userID = firebaseHelper.getUserID() else {return}
@@ -42,7 +44,15 @@ class ProfileViewModel : ObservableObject{
     
     func saveUserInfoToDB() {
         guard let userID = firebaseHelper.getUserID() else {return}
-        
-        firebaseHelper.savePersonalInfoToDB(firstName: self.firstName, surName: self.surName)
+        if checkForChanges() {
+            firebaseHelper.savePersonalInfoToDB(firstName: self.editFirstName, surName: self.editSurName)
+            self.firstName = self.editFirstName
+            self.surName = self.editSurName
+        }
+    }
+    
+    func checkForChanges()-> Bool {
+        print("check: \(self.firstName != self.editFirstName || self.surName != self.editSurName) ")
+        return self.firstName != self.editFirstName || self.surName != self.editSurName
     }
 }

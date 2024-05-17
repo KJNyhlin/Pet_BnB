@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SignUpView: View {
     @EnvironmentObject var signUpViewModel :SignUpViewModel
+   
     
     var body: some View {
         ZStack {
@@ -239,64 +240,6 @@ struct SignIn : View {
         
     
 }
-
-//struct TextFields : View {
-//    @EnvironmentObject var userViewModel : UserViewModel
-//
-//    
-//    var body: some View {
-////        Text("Enter email:")
-////            .font(.system(size: 16))
-////            .frame(width: 300, alignment: .leading)
-////            .padding(.leading, 30)
-////            
-//            
-//        TextField("Enter email", text: $userViewModel.email) {
-//            
-//        }
-//        .frame(width: 250, height: 40)
-//        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
-//        .overlay(
-//            RoundedRectangle(cornerRadius: 25.0)
-//                .stroke(AppColors.mainAccent, lineWidth: 3)
-//        )
-//        .padding()
-//        
-////        Text("Create password")
-////            .font(.system(size: 16))
-////            .padding(.top, 10)
-////            .frame(width: 300, alignment: .leading)
-////            .padding(.leading, 30)
-//        SecureField("Create password", text: $userViewModel.password) {
-//            
-//        }
-//        
-//        .frame(width: 250, height: 40)
-//        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
-//        .overlay(
-//            RoundedRectangle(cornerRadius: 25.0)
-//                .stroke(AppColors.mainAccent, lineWidth: 3)
-//        )
-//        .padding(.bottom)
-////        Text("Confim password")
-////            .font(.system(size: 16))
-////            .padding(.top, 10)
-////            .frame(width: 300, alignment: .leading)
-////            .padding(.leading, 30)
-//        SecureField("Confirm password", text: $userViewModel.confirmPassword) {
-//            
-//        }
-//        
-//        .frame(width: 250, height: 40)
-//        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
-//        .overlay(
-//            RoundedRectangle(cornerRadius: 25.0)
-//                .stroke(AppColors.mainAccent, lineWidth: 3)
-//        )
-//        
-//    }
-//}
-
 
 
 #Preview {
