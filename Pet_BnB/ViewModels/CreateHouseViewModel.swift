@@ -31,7 +31,7 @@ class CreateHouseViewModel: ObservableObject{
     
     init(house: House?){
         if let house = house{
-            
+            self.house = house
             self.title = house.title
             description = house.description
             imageURL = house.imageURL
@@ -58,18 +58,46 @@ class CreateHouseViewModel: ObservableObject{
     
     func saveHouse() -> Bool{
         if checkAllInfoSet(){
-
+            print("House is \(house)")
             if let image = image,
                let bedsInt = Int(beds),
                let sizeInt = Int(size),
                let streetNRInt = Int(streetNR)
             {
-                firebaseHelper.saveHouse(uiImage: image, title: title, description: description, beds: bedsInt, size: sizeInt, StreetName: streetName, streetNr: streetNRInt, city: city)
-                // Only returns true if the house is created for now not if is saved properly
-                return true
+                if house == nil{
+                    firebaseHelper.saveHouse(uiImage: image, title: title, description: description, beds: bedsInt, size: sizeInt, StreetName: streetName, streetNr: streetNRInt, city: city)
+                    // Only returns true if the house is created for now not if is saved properly
+                    return true
+                } else {
+                    let valuesChanged = checkIfValuesChanged()
+                    
+                    if let house = house {
+                        if let id = house.id{
+                            firebaseHelper.updateHouse(houseID: id, with: valuesChanged)
+                        }
+                        
+                    }
+                    
+                    
+                    
+                }
             }
         }
         return false
+    }
+    
+    func checkIfValuesChanged() -> [String: Any] {
+        var valuesChanged: [String: Any] = [:]
+        if title != house?.title {
+            valuesChanged["title"] = title
+        }
+        if description != house?.description{
+            valuesChanged["description"] = description
+        }
+        
+        
+        
+        return valuesChanged
     }
     
     func checkAllInfoSet() -> Bool{

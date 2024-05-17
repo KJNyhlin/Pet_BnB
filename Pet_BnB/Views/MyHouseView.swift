@@ -73,6 +73,9 @@ struct MyHouseView: View {
                 }
                     
             }
+            .onAppear{
+                vm.downloadHouse()
+            }
         }
     }
 }

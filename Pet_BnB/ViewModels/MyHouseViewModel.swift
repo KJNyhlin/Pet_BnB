@@ -15,16 +15,26 @@ class MyHouseViewModel: ObservableObject{
     
     
     init(house: House? = nil) {
+        //downloadHouse()
+//        let loggedInUserID = firebaseHelper.getLoggedInUserID()
+//        if let loggedInUserID = loggedInUserID {
+//            firebaseHelper.fetchHouse(withOwner: loggedInUserID){ myHouse in
+//                self.house = myHouse
+////                if let imageString = house?.imageURL {
+////                    self.firebaseHelper.downloadImage(from: imageString){ image in
+////                        self.houseImage = image
+////
+////                    }
+////                }
+//            }
+//        }
+    }
+    
+    func downloadHouse(){
         let loggedInUserID = firebaseHelper.getLoggedInUserID()
         if let loggedInUserID = loggedInUserID {
             firebaseHelper.fetchHouse(withOwner: loggedInUserID){ myHouse in
                 self.house = myHouse
-//                if let imageString = house?.imageURL {
-//                    self.firebaseHelper.downloadImage(from: imageString){ image in
-//                        self.houseImage = image
-//
-//                    }
-//                }
             }
         }
     }

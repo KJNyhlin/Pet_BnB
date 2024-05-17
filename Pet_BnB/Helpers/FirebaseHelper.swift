@@ -170,6 +170,20 @@ class FirebaseHelper: ObservableObject {
             completion(image)
         }
     }
+    
+    func updateHouse(houseID: String, with values: [String: Any]){
+        db.collection("houses").document(houseID).updateData(values){ error in
+            if let error = error {
+                print("Error updating document \(error)")
+            } else {
+                print("Document updated!")
+            }
+        }
+    }
+    
+    func deleteImage(atUrl url: String){
+        
+    }
 
 }
 
