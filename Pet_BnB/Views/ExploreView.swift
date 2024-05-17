@@ -54,9 +54,10 @@ struct ExploreView: View {
 
 struct HouseCardView: View {
     var house: House
+    @EnvironmentObject var firebaseHelper: FirebaseHelper
     
     var body: some View {
-        NavigationLink(destination: HouseDetailView(house: house)) {
+        NavigationLink(destination: HouseDetailView(houseId: house.id ?? "", firebaseHelper: firebaseHelper)) {
         VStack(alignment: .leading, spacing: 0) {
             if let imageURL = house.imageURL, let url = URL(string: imageURL) {
                 AsyncImage(url: url) { phase in
