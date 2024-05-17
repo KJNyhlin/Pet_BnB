@@ -20,6 +20,7 @@ struct ExploreView: View {
     }
         
     var body: some View {
+        NavigationView {
         VStack(spacing: 14) {
             HStack {
                     Image(systemName: "magnifyingglass")
@@ -46,6 +47,8 @@ struct ExploreView: View {
         .onAppear {
                 firebaseHelper.fetchHouses()
         }
+        .navigationBarHidden(true)
+        }
     }
 }
 
@@ -53,6 +56,7 @@ struct HouseCardView: View {
     var house: House
     
     var body: some View {
+        NavigationLink(destination: HouseDetailView(house: house)) {
         VStack(alignment: .leading, spacing: 0) {
             if let imageURL = house.imageURL, let url = URL(string: imageURL) {
                 AsyncImage(url: url) { phase in
@@ -105,6 +109,8 @@ struct HouseCardView: View {
         .cornerRadius(20)
         .shadow(radius: 5)
         .padding(.vertical, 8)
+    }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
