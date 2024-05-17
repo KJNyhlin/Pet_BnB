@@ -90,19 +90,37 @@ class FirebaseHelper: ObservableObject {
             
     }
         
-        func fetchHouses() {
+    func fetchHouses() {
             db.collection("houses").addSnapshotListener { (querySnapshot, error) in
+                if let error = error {
+                    print("Error getting documents: \(error)")
+                    return
+                }
+                
                 guard let documents = querySnapshot?.documents else {
                     print("No documents")
                     return
                 }
                 
                 self.houses = documents.compactMap { queryDocumentSnapshot -> House? in
-                    return try? queryDocumentSnapshot.data(as: House.self)
+                    let result = try? queryDocumentSnapshot.data(as: House.self)
+                    print("House: \(String(describing: result))")
+                    return result
                 }
             }
         }
-
+        
+        func fetchHouse(byId id: String, completion: @escaping (House?) -> Void) {
+            db.collection("houses").document(id).getDocument { document, error in
+                if let document = document, document.exists {
+                    let house = try? document.data(as: House.self)
+                    completion(house)
+                } else {
+                    print("House doesn't exist")
+                    completion(nil)
+                }
+            }
+        }
 
 }
 
