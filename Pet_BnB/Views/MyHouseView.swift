@@ -10,6 +10,7 @@ import SwiftUI
 struct MyHouseView: View {
     //var myHouse: House?
     @StateObject var vm = MyHouseViewModel()
+    @State private var showingDeleteAlert = false
     var body: some View {
         NavigationStack{
             VStack{
@@ -78,8 +79,10 @@ struct MyHouseView: View {
                             
                             Menu {
                                 Button(role: .destructive, action: {
-                                    vm.deleteHouse()
-                                }) {
+                                    //vm.deleteHouse()
+                                    showingDeleteAlert = true
+                                }
+) {
                                     Label("Delete", systemImage: "trash")
                                         
                                 }
@@ -90,9 +93,13 @@ struct MyHouseView: View {
                             } label: {
                                 FilledButtonLabel(text: "Manage")
                             }
+                            .alert(isPresented: $showingDeleteAlert) {
+                                Alert(title: Text("Delete House"), message: Text("Are you sure you want to delete this house?"), primaryButton: .destructive(Text("Delete")) {
+                                    vm.deleteHouse()
+                                }, secondaryButton: .cancel())
+                            }
                                 
                         }
-                        
                         .padding()
                         
                         
