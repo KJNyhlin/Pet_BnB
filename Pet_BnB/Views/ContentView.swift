@@ -44,5 +44,7 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView().environmentObject(FirebaseHelper())
+    ContentView()
+        .environmentObject(FirebaseHelper()
+            )
 }
