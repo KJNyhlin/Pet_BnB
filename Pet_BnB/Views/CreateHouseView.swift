@@ -49,6 +49,8 @@ struct CreateHouseView: View {
                         TextField("Street", text: $vm.streetName)
                         TextField("Number", text: $vm.streetNR)
                             .keyboardType(.numberPad)
+                        TextField("Zip Code", text: $vm.zipCode)
+                            .keyboardType(.numberPad)
                         TextField("City", text: $vm.city)
                     }
                     
@@ -56,10 +58,19 @@ struct CreateHouseView: View {
                         TextEditor(text: $vm.description)
                             .frame(minHeight: 100)
                         Button(action: {
-                            
-                            if vm.saveHouse(){
-                                presentationMode.wrappedValue.dismiss()
+                            vm.saveHouse(){ success in
+                                if success{
+                                    DispatchQueue.main.async {
+                                        self.presentationMode.wrappedValue.dismiss()
+                                    }
+                                }
                             }
+                        
+                            
+                            
+//                            if vm.saveHouse(){
+//                                presentationMode.wrappedValue.dismiss()
+//                            }
         //                    let fb = FirebaseHelper()
         //                    print(fb.getStringForImageStorage())
                            

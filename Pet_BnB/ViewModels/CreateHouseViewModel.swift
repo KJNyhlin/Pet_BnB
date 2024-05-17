@@ -18,6 +18,7 @@ class CreateHouseViewModel: ObservableObject{
     @Published var streetName = ""
     @Published var streetNR = ""
     @Published var city = ""
+    @Published var zipCode = ""
     var house: House? = nil
     let firebaseHelper = FirebaseHelper()
 
@@ -31,6 +32,7 @@ class CreateHouseViewModel: ObservableObject{
     
     init(house: House?){
         if let house = house{
+            print(house)
             self.house = house
             self.title = house.title
             description = house.description
@@ -40,12 +42,14 @@ class CreateHouseViewModel: ObservableObject{
                let size = house.size,
                let streetNR = house.streetNR,
                let streetName = house.streetName,
-               let imageURL = house.imageURL
+               let imageURL = house.imageURL,
+               let zipCode = house.zipCode
             {
                 self.city = city
                 self.beds = "\(beds)"
                 self.size = "\(size)"
                 self.streetNR = "\(streetNR)"
+                self.zipCode = "\(zipCode)"
                 self.streetName = streetName
                 firebaseHelper.downloadImage(from: imageURL){ image in
                     self.image = image
@@ -56,47 +60,102 @@ class CreateHouseViewModel: ObservableObject{
       
     }
     
-    func saveHouse() -> Bool{
-        if checkAllInfoSet(){
+//    func saveHouse() -> Bool{
+//        if checkAllInfoSet(){
+//            
+//            if let image = image,
+//               let bedsInt = Int(beds),
+//               let sizeInt = Int(size),
+//               let streetNRInt = Int(streetNR),
+//               let zipCodeInt = Int(zipCode)
+//            {
+//                if house == nil{
+//                    // Create a new House
+//                    firebaseHelper.saveHouse(uiImage: image, title: title, description: description, beds: bedsInt, size: sizeInt, StreetName: streetName, streetNr: streetNRInt, city: city, zipCode: zipCodeInt)
+//                    // Only returns true if the house is created for now not if is saved properly
+//                    
+//                } else {
+//                    // We update a house
+//                    let valuesChanged = checkIfValuesChanged()
+//                    
+//                    if let house = house {
+//                        if imageSelection != nil{
+//                            print("Image changed upload new Image!!!!!!")
+//                            firebaseHelper.uploadImage(uiImage: image){ urlString in
+//                                if let id = house.id{
+//                                    let changedHouse = House(title: self.title, description: self.description, imageURL: urlString, beds: bedsInt, size: sizeInt, streetName: self.streetName, streetNR: streetNRInt, city: self.city, zipCode: zipCodeInt)
+//                                    self.firebaseHelper.updateHouse(houseID: id, house: changedHouse, with: valuesChanged)
+//                                }
+//                            }
+//                            
+//                        } else{
+//                            if let id = house.id{
+//                            let changedHouse = House(title: title, description: description, beds: bedsInt, size: sizeInt, streetName: streetName, streetNR: streetNRInt, city: city, zipCode: zipCodeInt)
+//                                firebaseHelper.updateHouse(houseID: id, house: changedHouse, with: valuesChanged)
+//                                
+//                            }
+//                        }
+//                    }
+//                }
+//                
+//            }
+//        }
+//        return false
+//    }
+    
+    
+    func saveHouse(completion: @escaping(Bool) -> Void) {
+        guard checkAllInfoSet(),
+              let image = image,
+              let bedsInt = Int(beds),
+              let sizeInt = Int(size),
+              let streetNRInt = Int(streetNR),
+              let zipCodeInt = Int(zipCode) else {
+            completion(false)
+            return
+        }
+        if house == nil{
+            // Create a new House
+            firebaseHelper.saveHouse(uiImage: image, title: title, description: description, beds: bedsInt, size: sizeInt, StreetName: streetName, streetNr: streetNRInt, city: city, zipCode: zipCodeInt){ success in
+                completion(success)
+            }
+            // Only returns true if the house is created for now not if is saved properly
             
-            if let image = image,
-               let bedsInt = Int(beds),
-               let sizeInt = Int(size),
-               let streetNRInt = Int(streetNR)
-            {
-                if house == nil{
-                    // Create a new House
-                    firebaseHelper.saveHouse(uiImage: image, title: title, description: description, beds: bedsInt, size: sizeInt, StreetName: streetName, streetNr: streetNRInt, city: city)
-                    // Only returns true if the house is created for now not if is saved properly
-                    
-                } else {
-                    // We update a house
-                    let valuesChanged = checkIfValuesChanged()
-                    
-                    if let house = house {
-                        if imageSelection != nil{
-                            print("Image changed upload new Image!!!!!!")
-                            firebaseHelper.uploadImage(uiImage: image){ urlString in
-                                if let id = house.id{
-                                    let changedHouse = House(title: self.title, description: self.description, imageURL: urlString, beds: bedsInt, size: sizeInt, streetName: self.streetName, streetNR: streetNRInt, city: self.city)
-                                    self.firebaseHelper.updateHouse(houseID: id, house: changedHouse, with: valuesChanged)
-                                }
-                            }
-                            
-                        } else{
-                            if let id = house.id{
-                            let changedHouse = House(title: title, description: description, beds: bedsInt, size: sizeInt, streetName: streetName, streetNR: streetNRInt, city: city)
-                                firebaseHelper.updateHouse(houseID: id, house: changedHouse, with: valuesChanged)
-                                
-                            }
+        } else {
+            // We update a house
+            let valuesChanged = checkIfValuesChanged()
+            
+            guard let house = house else {
+                completion(false)
+                return
+            }
+            if imageSelection != nil {
+                print("Image changed upload new Image!!!!!!")
+                firebaseHelper.uploadImage(uiImage: image) { urlString in
+                    if let urlString = urlString, let id = house.id {
+                        let changedHouse = House(title: self.title, description: self.description, imageURL: urlString, beds: bedsInt, size: sizeInt, streetName: self.streetName, streetNR: streetNRInt, city: self.city, zipCode: zipCodeInt)
+                        self.firebaseHelper.updateHouse(houseID: id, house: changedHouse, with: valuesChanged) { success in
+                            completion(success)
                         }
+                    } else {
+                        completion(false)
                     }
                 }
-                
+            } else {
+                if let id = house.id {
+                    let changedHouse = House(title: title, description: description, beds: bedsInt, size: sizeInt, streetName: streetName, streetNR: streetNRInt, city: city, zipCode: zipCodeInt)
+                    firebaseHelper.updateHouse(houseID: id, house: changedHouse, with: valuesChanged) { success in
+                        completion(success)
+                    }
+                } else {
+                    completion(false)
+                }
             }
         }
-        return false
     }
+
+
+
 
     
     func checkIfValuesChanged() -> [String: Any] {

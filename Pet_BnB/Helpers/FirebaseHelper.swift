@@ -55,51 +55,142 @@ class FirebaseHelper: ObservableObject {
     }
     
 
-    func saveHouse(uiImage: UIImage, title: String, description: String, beds: Int, size: Int, StreetName: String, streetNr: Int, city: String){
-
+//    func saveHouse(uiImage: UIImage, title: String, description: String, beds: Int, size: Int, StreetName: String, streetNr: Int, city: String, zipCode: Int){
+//
+//        guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else {
+//            print("Failed convert image")
+//            return
+//        }
+//        
+//        guard let ownerID = auth.currentUser?.uid else {
+//            print("Not logged in!")
+//            return
+//        }
+//        
+//        let uuid = UUID()
+//        let storageRef = storage.reference()
+//        let imageRef = storageRef.child("houses/\(uuid.uuidString).jpg")
+//        //let ownerID = self.auth.currentUser?.uid
+//        
+//        imageRef.putData(imageData, metadata: nil){ metadata, error in
+//            if let error = error{
+//                print("Error uploading image: \(error)")
+//                return
+//            } else {
+//                print("Image uploaded successfully.")
+//                imageRef.downloadURL { url, error in
+//                    let ownerID = self.auth.currentUser?.uid
+//                    //Create house
+//                    let house = House(title: title, description: description, imageURL: url?.absoluteString,
+//                                      beds: beds, size: size, streetName: StreetName, streetNR: streetNr, city: city, zipCode: zipCode, ownerID: ownerID)
+//                    
+//                    do{
+//                        let houseData = try Firestore.Encoder().encode(house)
+//                        self.db.collection("houses").addDocument(data: houseData){ error in
+//                            if let error = error{
+//                                print("Error saving to firestore")
+//                            } else{
+//                                print("saving succesfully")
+//                            }
+//                        }
+//                        
+//                    } catch {
+//                        print("error encoding house object")
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
+    func saveHouse(uiImage: UIImage, title: String, description: String, beds: Int, size: Int, StreetName: String, streetNr: Int, city: String, zipCode: Int,  completion: @escaping (Bool) -> Void){
+        
         guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else {
             print("Failed convert image")
+            completion(false)
             return
         }
         
         guard let ownerID = auth.currentUser?.uid else {
             print("Not logged in!")
+            completion(false)
             return
         }
         
-        let uuid = UUID()
-        let storageRef = storage.reference()
-        let imageRef = storageRef.child("houses/\(uuid.uuidString).jpg")
-        //let ownerID = self.auth.currentUser?.uid
-        
-        imageRef.putData(imageData, metadata: nil){ metadata, error in
-            if let error = error{
-                print("Error uploading image: \(error)")
-                return
-            } else {
+        //        let uuid = UUID()
+        //        let storageRef = storage.reference()
+        //        let imageRef = storageRef.child("houses/\(uuid.uuidString).jpg")
+        //        //let ownerID = self.auth.currentUser?.uid
+        //
+        //        imageRef.putData(imageData, metadata: nil){ metadata, error in
+        //            if let error = error{
+        //                print("Error uploading image: \(error)")
+        //                return
+        //            } else {
+        uploadImage(uiImage: uiImage){ urlString in
+            if let urlString = urlString{
                 print("Image uploaded successfully.")
-                imageRef.downloadURL { url, error in
-                    let ownerID = self.auth.currentUser?.uid
-                    //Create house
-                    let house = House(title: title, description: description, imageURL: url?.absoluteString,
-                                      beds: beds, size: size, streetName: StreetName, streetNR: streetNr, city: city, ownerID: ownerID)
-                    
-                    do{
-                        let houseData = try Firestore.Encoder().encode(house)
-                        self.db.collection("houses").addDocument(data: houseData){ error in
-                            if let error = error{
-                                print("Error saving to firestore")
-                            } else{
-                                print("saving succesfully")
-                            }
+                let ownerID = self.auth.currentUser?.uid
+                let house = House(title: title, description: description, imageURL: urlString,
+                                  beds: beds, size: size, streetName: StreetName, streetNR: streetNr, city: city, zipCode: zipCode, ownerID: ownerID)
+                do{
+                    let houseData = try Firestore.Encoder().encode(house)
+                    self.db.collection("houses").addDocument(data: houseData){ error in
+                        if let error = error{
+                            print("Error saving to firestore")
+                            completion(false)
+                        } else{
+                            print("saving succesfully")
+                            completion(true)
                         }
-                        
-                    } catch {
-                        print("error encoding house object")
                     }
+                    
+                } catch {
+                    completion(false)
+                    print("error encoding house object")
                 }
+            } else{
+                completion(false)
             }
         }
+    }
+                
+//                imageRef.downloadURL { url, error in
+//                    let ownerID = self.auth.currentUser?.uid
+//                    //Create house
+//                    let house = House(title: title, description: description, imageURL: url?.absoluteString,
+//                                      beds: beds, size: size, streetName: StreetName, streetNR: streetNr, city: city, zipCode: zipCode, ownerID: ownerID)
+//                    
+//                    do{
+//                        let houseData = try Firestore.Encoder().encode(house)
+//                        self.db.collection("houses").addDocument(data: houseData){ error in
+//                            if let error = error{
+//                                print("Error saving to firestore")
+//                            } else{
+//                                print("saving succesfully")
+//                            }
+//                        }
+//                        
+//                    } catch {
+//                        print("error encoding house object")
+//                    }
+//                }
+//            }
+            //       }
+    //}
+    
+//    func saveHouse(uiImage: UIImage, title: String, description: String, beds: Int, size: Int, StreetName: String, streetNr: Int, city: String, zipCode: Int, completion: @escaping (Bool) -> Void) {
+//        // Implementera din kod för att spara ett hus asynkront
+//        // Anropa completion(true) om lyckad, annars completion(false)
+//    }
+
+//    func uploadImage(uiImage: UIImage, completion: @escaping (String?) -> Void) {
+//        // Implementera din kod för att ladda upp en bild och returnera URL-strängen
+//        // Anropa completion(urlString) om lyckad, annars completion(nil)
+//    }
+
+    func updateHouse(houseID: String, house: House, with valuesChanged: [String], completion: @escaping (Bool) -> Void) {
+        // Implementera din kod för att uppdatera ett hus asynkront
+        // Anropa completion(true) om lyckad, annars completion(false)
     }
         
     func fetchHouses() {
@@ -154,7 +245,7 @@ class FirebaseHelper: ObservableObject {
         }
         let storageRef = Storage.storage().reference(forURL: url)
         
-        storageRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
+        storageRef.getData(maxSize: 1 * 2024 * 2024) { data, error in
             if let error = error {
                 print("Error downloading image: \(error)")
                 completion(nil)
@@ -171,20 +262,23 @@ class FirebaseHelper: ObservableObject {
         }
     }
     
-    func updateHouse(houseID: String, house: House, with values: [String: Any]){
+    func updateHouse(houseID: String, house: House, with values: [String: Any], completion: @escaping (Bool) -> Void){
         do{
             let houseData = try Firestore.Encoder().encode(house)
             print(houseData)
             db.collection("houses").document(houseID).updateData(houseData){ error in
                 if let error = error{
                     print("Error updating document \(error)")
+                    completion(false)
                 } else{
                     print("Document updated!")
+                    completion(true)
                 }
             }
             
         } catch {
             print("error encoding house object")
+            completion(false)
         }
 //        
 //        

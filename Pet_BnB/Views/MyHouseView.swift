@@ -69,8 +69,9 @@ struct MyHouseView: View {
            
                             if let streetNR = house.streetNR,
                                let streetName = house.streetName,
-                               let city = house.city {
-                                AdressView(street: streetName, streetNR: streetNR, city: city)
+                               let city = house.city,
+                               let zipCode = house.zipCode{
+                                AdressView(street: streetName, streetNR: streetNR, city: city, zipCode: zipCode)
                             }
                             Text(house.description)
                             Spacer()
@@ -111,11 +112,12 @@ struct AdressView:View {
     var street: String
     var streetNR: Int
     var city: String
+    var zipCode: Int
     
     var body: some View{
         
         HStack{
-            Text("\(street.capitalized) \(streetNR), \(city)")
+            Text("\(street.capitalized) \(streetNR), \(zipCode) \(city)")
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .font(.caption)
@@ -154,6 +156,6 @@ struct InformationRow: View{
     
 
 
-#Preview {
-    AdressView(street: "Gatan", streetNR: 3, city: "Uppsala")
-}
+//#Preview {
+//    AdressView(street: "Gatan", streetNR: 3, city: "Uppsala")
+//}
