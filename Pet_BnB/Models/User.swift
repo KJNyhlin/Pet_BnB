@@ -8,9 +8,11 @@
 import Foundation
 import FirebaseFirestore
 
-struct User {
+struct User : Decodable, Encodable {
     @DocumentID var docID : String?
     var firstName: String?
     var surName: String?
     var pet: Pet?
+    
+   
 }

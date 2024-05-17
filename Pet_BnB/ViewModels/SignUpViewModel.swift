@@ -19,6 +19,7 @@ class SignUpViewModel: ObservableObject {
     @Published var surName: String = ""
     @Published var accountCreated: Bool = false
     @Published var showSpinner: Bool = false
+    @Published var signIn: Bool = false
     
     
     func signUp(name: String, password: String) {
@@ -37,6 +38,14 @@ class SignUpViewModel: ObservableObject {
                 
             }
         }
+    }
+    
+    func signIn(email: String, password: String) {
+        firebaseHelper.signIn(email: email, password: password)
+    }
+    
+    func getUserDetails(userID: String) {
+        
     }
     
     func savePersonalInfoToDB() {
