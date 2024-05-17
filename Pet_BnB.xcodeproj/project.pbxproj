@@ -35,6 +35,7 @@
 		6D523BFE2BF4D4260007CCE5 /* CreateHouseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D523BFD2BF4D4260007CCE5 /* CreateHouseView.swift */; };
 		6D523C012BF4DFB30007CCE5 /* FilledButtonLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D523C002BF4DFB30007CCE5 /* FilledButtonLabel.swift */; };
 		6D523C032BF4EB200007CCE5 /* CreateHouseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D523C022BF4EB200007CCE5 /* CreateHouseViewModel.swift */; };
+		FB5E03E32BF74B6000CB4085 /* HouseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5E03E22BF74B6000CB4085 /* HouseDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +64,7 @@
 		6D523BFD2BF4D4260007CCE5 /* CreateHouseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateHouseView.swift; sourceTree = "<group>"; };
 		6D523C002BF4DFB30007CCE5 /* FilledButtonLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilledButtonLabel.swift; sourceTree = "<group>"; };
 		6D523C022BF4EB200007CCE5 /* CreateHouseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateHouseViewModel.swift; sourceTree = "<group>"; };
+		FB5E03E22BF74B6000CB4085 /* HouseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,11 +102,9 @@
 				0C38DDA72BF4BBE500B92497 /* ProfileView.swift */,
 				0C38DDA12BF4BBB900B92497 /* ExploreView.swift */,
 				0C38DDA32BF4BBD400B92497 /* MyBookingsView.swift */,
-
 				0C38DDAD2BF4D3CB00B92497 /* SignUpView.swift */,
-
 				6D523BFD2BF4D4260007CCE5 /* CreateHouseView.swift */,
-
+				FB5E03E22BF74B6000CB4085 /* HouseDetailView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -260,6 +260,7 @@
 			files = (
 				0C38DD9C2BF4BB1D00B92497 /* HouseViewModel.swift in Sources */,
 				0C38DDAA2BF4BD0D00B92497 /* MyHouseView.swift in Sources */,
+				FB5E03E32BF74B6000CB4085 /* HouseDetailView.swift in Sources */,
 				0C38DD982BF4B8C200B92497 /* FirebaseHelper.swift in Sources */,
 				0C38DD9A2BF4BB0C00B92497 /* SignUpViewModel.swift in Sources */,
 				0C38DD932BF4B6C300B92497 /* Pet.swift in Sources */,
