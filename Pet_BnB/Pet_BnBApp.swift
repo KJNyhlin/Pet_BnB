@@ -23,6 +23,7 @@ struct Pet_BnBApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject var firebaseHelper = FirebaseHelper()
     @StateObject var signUpViewModel = SignUpViewModel()
+    @StateObject var profileViewModel = ProfileViewModel()
     
     
     var body: some Scene {
@@ -30,6 +31,7 @@ struct Pet_BnBApp: App {
             ContentView()
                 .environmentObject(firebaseHelper)
                 .environmentObject(signUpViewModel)
+                .environmentObject(profileViewModel)
                 
         }
     }

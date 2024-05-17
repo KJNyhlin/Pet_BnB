@@ -18,7 +18,7 @@ class ProfileViewModel : ObservableObject{
         guard let userID = firebaseHelper.getUserID() else {return}
         firebaseHelper.loadUserInfo(userID: userID) {user in
             if let user = user {
-                print("hello")
+                print("\(user.firstName)")
                 self.firstName = user.firstName ?? ""
                 self.surName = user.surName ?? ""
             }

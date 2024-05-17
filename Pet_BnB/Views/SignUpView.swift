@@ -203,6 +203,8 @@ struct EnterPersonalInfo : View {
 
 struct SignIn : View {
     @EnvironmentObject var signInViewModel : SignUpViewModel
+    @Environment(\.dismiss) var dismiss
+    
     var body: some View {
         
             VStack {
@@ -222,6 +224,7 @@ struct SignIn : View {
                 EntryFields(placeHolder: "Password", promt: "", field: $signInViewModel.password, isSecure: true)
                 Button(action: {
                     signInViewModel.signIn(email: signInViewModel.email, password: signInViewModel.password)
+                    dismiss()
                 }, label: {
                     FilledButtonLabel(text: "Sign In")
                         .frame(width: 100)
