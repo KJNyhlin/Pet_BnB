@@ -17,12 +17,14 @@ class FirebaseHelper: ObservableObject {
     let db = Firestore.firestore()
     let storage = Storage.storage()
     @Published var houses = [House]()
+    let auth = Auth.auth()
     
     
+    func getUserID()-> String? {
+        return auth.currentUser?.uid
+    }
 
     func createAccount(name: String, password: String, completion: @escaping (String?)-> Void) {
-        let auth = Auth.auth()
-        
         auth.createUser(withEmail: name, password: password) {result, error in
             if let error = error {
                 print("Error sign up: \(error)")
@@ -34,21 +36,62 @@ class FirebaseHelper: ObservableObject {
                 }
                 completion(userID)
             }
-            
+        }
+    }
+    
+    func signIn(email: String, password: String) {
+        auth.signIn(withEmail: email, password: password) {result, error in
+            if let error = error {
+                print("Error signing in: \(error)")
+            } else {
+                guard let userID = result?.user.uid else {return}
+                self.loadUserInfo(userID: userID) {user in
+                    print("\(user)")
+                
+                }
+            }
+        }
+    }
+    
+    func signOut() {
+        do {
+            try auth.signOut()
+        } catch {
+            print("error signing out")
+        }
+    }
+    
+    func loadUserInfo(userID: String, completion: @escaping (User?)-> Void) {
+        
+        db.collection("users").document(userID).getDocument {document, error in
+            if let error = error {
+                print("Error loading userinfo: \(error)")
+                completion(nil)
+            } else if let document = document {
+                do {
+                    let user = try document.data(as: User.self)
+                    
+                    completion(user)
+                } catch {
+                    print("Error loading user")
+                    completion(nil)
+                }
+            }
         }
         
     }
     
     func savePersonalInfoToDB( firstName: String, surName: String) {
-        let db = Firestore.firestore()
-        let auth = Auth.auth()
-        guard let userID = auth.currentUser?.uid else {return}
         
-        db.collection("users").document(userID).setData(
-            ["firstName:": firstName,
-             "surName:": surName
-            ]
-        )
+        guard let userID = auth.currentUser?.uid else {return}
+        let userInfo = User(firstName: firstName, surName: surName)
+        
+        do {
+            try db.collection("users").document(userID).setData(from: userInfo) {error in
+            }
+            } catch {
+                print("Error")
+        }
         
     }
     

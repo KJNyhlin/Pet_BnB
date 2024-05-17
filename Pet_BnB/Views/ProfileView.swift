@@ -10,13 +10,35 @@ import SwiftUI
 struct ProfileView: View {
     @State var showSheet = false
     @EnvironmentObject var signUpViewModel : SignUpViewModel
+    @StateObject var profileViewModel = ProfileViewModel()
+    
     var body: some View {
-        Button("Create account") {
-            showSheet = true
+        NavigationStack {
+            VStack {
+                Text("\(profileViewModel.firstName)")
+                Text("\(profileViewModel.surName)")
+                Button("Create account") {
+                    showSheet = true
+                }
+            }
+            
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        profileViewModel.signOut()
+                    }, label: {
+                        Image(systemName: "rectangle.portrait.and.arrow.right")
+                    })
+                }
+            }
         }
+        
         .sheet(isPresented: $showSheet, onDismiss: signUpViewModel.savePersonalInfoToDB, content: {
             SignUpView()
         })
+        .onAppear {
+            profileViewModel.getUserDetails()
+        }
     }
         
 }

@@ -54,15 +54,19 @@ struct SignUpView: View {
                                     topLeadingRadius: 50,
                                     topTrailingRadius: 50
                                 ))
-                        
                         VStack(spacing: 0) {
-//                            TextFields()
                             if signUpViewModel.accountCreated {
                                 EnterPersonalInfo()
+                                    .transition(.slide)
                             } else if signUpViewModel.showSpinner {
                                 ShowSpinner()
+                                    .transition(.slide)
+                            } else if signUpViewModel.signIn  {
+                                SignIn()
+                                    .transition(.scale)
                             } else {
                                 SignUp()
+                                    .transition(.scale)
 //                                EnterPersonalInfo()
                             }
                             
@@ -71,14 +75,10 @@ struct SignUpView: View {
                         
                     }
                 }
-//                .border(Color.black)
-                
-                
-                
-                
-                
             }
-            
+            .onAppear {
+                signUpViewModel.signIn = false
+            }
         }
     }
 }
@@ -111,19 +111,21 @@ struct SignUp: View {
 }
 
 struct SignUpButtons: View {
-    @EnvironmentObject var userViewModel : SignUpViewModel
+    @EnvironmentObject var signUpViewModel : SignUpViewModel
 
     var body: some View {
-        Button(action: {
-            userViewModel.signUp(name: userViewModel.email, password: userViewModel.password)
-        }) {
-                Text("Sign up")
-            
+        Button(action: { withAnimation() {
+            signUpViewModel.signUp(name: signUpViewModel.email, password: signUpViewModel.password)
         }
+        }, label: {
+          FilledButtonLabel(text: "Sign up")
+                .frame(width: 100)
+        })
         .padding(.top, 30)
-        .disabled(!userViewModel.signUpAllFieldsComplete())
-        Button(action: {
-            
+        .disabled(!signUpViewModel.signUpAllFieldsComplete())
+        Button(action: { withAnimation() {
+            signUpViewModel.signIn = true
+        }
         }) {
             Text("or sign in here")
                 .foregroundColor(.black)
@@ -178,19 +180,61 @@ struct EnterPersonalInfo : View {
                 .font(.system(size: 24))
             EntryFields(placeHolder: "Firstname", promt: "", field: $signUpViewModel.firstName)
             EntryFields(placeHolder: "Surname", promt: "", field: $signUpViewModel.surName)
-            Button("Save") {
+            Button(action: {
                 signUpViewModel.savePersonalInfoToDB()
                 dismiss()
-            }
-            Button("Skip") {
+            }, label: {
+                FilledButtonLabel(text: "Save")
+                    .frame(width: 100)
+            })
+            Button(action: {
                 signUpViewModel.firstName = ""
                 signUpViewModel.surName = ""
                 signUpViewModel.savePersonalInfoToDB()
                 dismiss()
                     
-            }
+            }, label: {
+              FilledButtonLabel(text: "Skip")
+                    .frame(width: 100)
+            })
         }
     }
+}
+
+struct SignIn : View {
+    @EnvironmentObject var signInViewModel : SignUpViewModel
+    var body: some View {
+        
+            VStack {
+                Button(action: { withAnimation() {
+                    signInViewModel.signIn = false
+                }}, label: {
+                    Image(systemName: "chevron.backward")
+                })
+                .fontWeight(.bold)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, 40)
+                .padding(.top, 10)
+                Text("Sign In")
+                    .font(.title)
+                
+                EntryFields(placeHolder: "Email", promt: "", field: $signInViewModel.email)
+                EntryFields(placeHolder: "Password", promt: "", field: $signInViewModel.password, isSecure: true)
+                Button(action: {
+                    signInViewModel.signIn(email: signInViewModel.email, password: signInViewModel.password)
+                }, label: {
+                    FilledButtonLabel(text: "Sign In")
+                        .frame(width: 100)
+                })
+                Spacer()
+            }
+            .onAppear {
+                signInViewModel.email = ""
+                signInViewModel.password = ""
+            }
+        }
+        
+    
 }
 
 //struct TextFields : View {
