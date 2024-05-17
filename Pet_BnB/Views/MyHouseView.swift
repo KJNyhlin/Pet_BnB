@@ -35,8 +35,8 @@ struct MyHouseView: View {
                                 image
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
-                                    .frame(height: 200)
-                                    .frame(maxWidth: 335)
+                                    .frame(height: 300)
+                                    .frame(maxWidth: .infinity)
                                     .clipped()
                             case .failure:
                                 Image(systemName: "photo")
@@ -78,7 +78,7 @@ struct MyHouseView: View {
                             
                             Menu {
                                 Button(role: .destructive, action: {
-                                    // Handling för när "Delete" väljs
+                                    vm.deleteHouse()
                                 }) {
                                     Label("Delete", systemImage: "trash")
                                         

@@ -232,6 +232,22 @@ class FirebaseHelper: ObservableObject {
         }
     }
     
+    func delete(house: House){
+        if let url = house.imageURL{
+            deleteImage(atUrl: url)
+        }
+        if let id = house.id{
+            db.collection("houses").document(id).delete { error in
+                if let error = error {
+                    print("Error deleting document: \(error.localizedDescription)")
+                } else {
+                    print("Document successfully deleted")
+                }
+            }
+        }
+    }
+    
+    
     func uploadImage(uiImage: UIImage, completion: @escaping (String?) -> Void) {
         guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else {
             print("Failed to convert image")

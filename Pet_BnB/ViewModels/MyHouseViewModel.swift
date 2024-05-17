@@ -25,4 +25,13 @@ class MyHouseViewModel: ObservableObject{
         }
     }
     
+    func deleteHouse(){
+        if let houseToDelete = house{
+            firebaseHelper.delete(house: houseToDelete)
+            house = nil
+        }
+        
+    }
+    
+    
 }
