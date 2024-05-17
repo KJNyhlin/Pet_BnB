@@ -60,50 +60,6 @@ class CreateHouseViewModel: ObservableObject{
       
     }
     
-//    func saveHouse() -> Bool{
-//        if checkAllInfoSet(){
-//            
-//            if let image = image,
-//               let bedsInt = Int(beds),
-//               let sizeInt = Int(size),
-//               let streetNRInt = Int(streetNR),
-//               let zipCodeInt = Int(zipCode)
-//            {
-//                if house == nil{
-//                    // Create a new House
-//                    firebaseHelper.saveHouse(uiImage: image, title: title, description: description, beds: bedsInt, size: sizeInt, StreetName: streetName, streetNr: streetNRInt, city: city, zipCode: zipCodeInt)
-//                    // Only returns true if the house is created for now not if is saved properly
-//                    
-//                } else {
-//                    // We update a house
-//                    let valuesChanged = checkIfValuesChanged()
-//                    
-//                    if let house = house {
-//                        if imageSelection != nil{
-//                            print("Image changed upload new Image!!!!!!")
-//                            firebaseHelper.uploadImage(uiImage: image){ urlString in
-//                                if let id = house.id{
-//                                    let changedHouse = House(title: self.title, description: self.description, imageURL: urlString, beds: bedsInt, size: sizeInt, streetName: self.streetName, streetNR: streetNRInt, city: self.city, zipCode: zipCodeInt)
-//                                    self.firebaseHelper.updateHouse(houseID: id, house: changedHouse, with: valuesChanged)
-//                                }
-//                            }
-//                            
-//                        } else{
-//                            if let id = house.id{
-//                            let changedHouse = House(title: title, description: description, beds: bedsInt, size: sizeInt, streetName: streetName, streetNR: streetNRInt, city: city, zipCode: zipCodeInt)
-//                                firebaseHelper.updateHouse(houseID: id, house: changedHouse, with: valuesChanged)
-//                                
-//                            }
-//                        }
-//                    }
-//                }
-//                
-//            }
-//        }
-//        return false
-//    }
-    
-    
     func saveHouse(completion: @escaping(Bool) -> Void) {
         guard checkAllInfoSet(),
               let image = image,
@@ -130,9 +86,14 @@ class CreateHouseViewModel: ObservableObject{
                 return
             }
             if imageSelection != nil {
+                
                 print("Image changed upload new Image!!!!!!")
                 firebaseHelper.uploadImage(uiImage: image) { urlString in
                     if let urlString = urlString, let id = house.id {
+                        if let oldURL = house.imageURL{
+                            self.firebaseHelper.deleteImage(atUrl: oldURL)
+                        }
+ 
                         let changedHouse = House(title: self.title, description: self.description, imageURL: urlString, beds: bedsInt, size: sizeInt, streetName: self.streetName, streetNR: streetNRInt, city: self.city, zipCode: zipCodeInt)
                         self.firebaseHelper.updateHouse(houseID: id, house: changedHouse, with: valuesChanged) { success in
                             completion(success)
@@ -153,10 +114,6 @@ class CreateHouseViewModel: ObservableObject{
             }
         }
     }
-
-
-
-
     
     func checkIfValuesChanged() -> [String: Any] {
         var valuesChanged: [String: Any] = [:]
@@ -167,10 +124,6 @@ class CreateHouseViewModel: ObservableObject{
             if description != house.description{
                 valuesChanged["description"] = description
             }
-//            if beds != house.beds{
-//                valuesChanged["beds"] = beds
-         //   }
-            
         }
         return valuesChanged
     }

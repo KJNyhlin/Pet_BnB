@@ -65,15 +65,6 @@ struct CreateHouseView: View {
                                     }
                                 }
                             }
-                        
-                            
-                            
-//                            if vm.saveHouse(){
-//                                presentationMode.wrappedValue.dismiss()
-//                            }
-        //                    let fb = FirebaseHelper()
-        //                    print(fb.getStringForImageStorage())
-                           
                         }, label: {
                             FilledButtonLabel(text: "Save")
                                 .padding(.vertical, 10)
