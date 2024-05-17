@@ -9,10 +9,9 @@ import SwiftUI
 import PhotosUI
 
 struct CreateHouseView: View {
-    @StateObject var vm = CreateHouseViewModel()
+    @StateObject var vm: CreateHouseViewModel
     @EnvironmentObject var firebaseHelper: FirebaseHelper
     @Environment(\.presentationMode) var presentationMode
-    
     
     var body: some View {
         NavigationStack{
@@ -21,6 +20,10 @@ struct CreateHouseView: View {
                 Form{
                     Section(header: Text("Information")){
                         TextField("Title", text: $vm.title)
+                        TextField("Beds", text: $vm.beds)
+                            .keyboardType(.numberPad)
+                        TextField("m2", text: $vm.size)
+                            .keyboardType(.numberPad)
                         HStack{
                             PhotosPicker(selection: $vm.imageSelection, matching: .images){
                                 Label(title: {
@@ -42,23 +45,37 @@ struct CreateHouseView: View {
                             
                         }
                     }
+                    Section(header: Text("Adress")) {
+                        TextField("Street", text: $vm.streetName)
+                        TextField("Number", text: $vm.streetNR)
+                            .keyboardType(.numberPad)
+                        TextField("Zip Code", text: $vm.zipCode)
+                            .keyboardType(.numberPad)
+                        TextField("City", text: $vm.city)
+                    }
+                    
                     Section(header: Text("Description")){
                         TextEditor(text: $vm.description)
                             .frame(minHeight: 100)
+                        Button(action: {
+                            vm.saveHouse(){ success in
+                                if success{
+                                    DispatchQueue.main.async {
+                                        self.presentationMode.wrappedValue.dismiss()
+                                    }
+                                }
+                            }
+                        }, label: {
+                            FilledButtonLabel(text: "Save")
+                                .padding(.vertical, 10)
+                                .padding(.horizontal, 30)
+                            
+                               
+                        })
                     }
+
                 }
-                Button(action: {
-                    if vm.saveHouse(){
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                 
-                   
-                }, label: {
-                    FilledButtonLabel(text: "Save")
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 30)
-                       
-                })
+
             }
             .navigationTitle("Create House")
         }
@@ -66,6 +83,6 @@ struct CreateHouseView: View {
     }
 }
 
-#Preview {
-    CreateHouseView()
-}
+//#Preview {
+//    CreateHouseView()
+//}
