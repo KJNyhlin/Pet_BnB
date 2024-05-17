@@ -25,8 +25,35 @@ struct MyHouseView: View {
                        let imageUrl = vm.house?.imageURL
                     {
                         
-                        AsyncImage(url: URL(string: imageUrl))
-                            .frame(maxWidth: .infinity)
+                        AsyncImage(url: URL(string: imageUrl)){ phase in
+                            switch phase {
+                            case .empty:
+                                ProgressView()
+                                    .frame(height: 200)
+                                    .frame(maxWidth: 335)
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(height: 200)
+                                    .frame(maxWidth: 335)
+                                    .clipped()
+                            case .failure:
+                                Image(systemName: "photo")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(height: 200)
+                                    .frame(maxWidth: 335)
+                                    .background(Color.gray)
+                            @unknown default:
+                                Image(systemName: "photo")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(height: 200)
+                                    .frame(maxWidth: 335)
+                                    .background(Color.gray)
+                            }
+                        }
                         
                         
                         

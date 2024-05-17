@@ -11,7 +11,7 @@ import SwiftUI
 class MyHouseViewModel: ObservableObject{
     @Published var house: House? = nil
     let firebaseHelper = FirebaseHelper()
-    @Published var houseImage: UIImage? = nil
+  //  @Published var houseImage: UIImage? = nil
     
     
     init(house: House? = nil) {
@@ -35,6 +35,7 @@ class MyHouseViewModel: ObservableObject{
         if let loggedInUserID = loggedInUserID {
             firebaseHelper.fetchHouse(withOwner: loggedInUserID){ myHouse in
                 self.house = myHouse
+                print("This is the image URL \(self.house?.imageURL)")
             }
         }
     }

@@ -171,18 +171,64 @@ class FirebaseHelper: ObservableObject {
         }
     }
     
-    func updateHouse(houseID: String, with values: [String: Any]){
-        db.collection("houses").document(houseID).updateData(values){ error in
-            if let error = error {
-                print("Error updating document \(error)")
-            } else {
-                print("Document updated!")
+    func updateHouse(houseID: String, house: House, with values: [String: Any]){
+        do{
+            let houseData = try Firestore.Encoder().encode(house)
+            print(houseData)
+            db.collection("houses").document(houseID).updateData(houseData){ error in
+                if let error = error{
+                    print("Error updating document \(error)")
+                } else{
+                    print("Document updated!")
+                }
             }
+            
+        } catch {
+            print("error encoding house object")
         }
+//        
+//        
+//        db.collection("houses").document(houseID).updateData(values){ error in
+//            if let error = error {
+//                print("Error updating document \(error)")
+//            } else {
+//                print("Document updated!")
+//            }
+//        }
     }
     
     func deleteImage(atUrl url: String){
         
+    }
+    
+    func uploadImage(uiImage: UIImage, completion: @escaping (String?) -> Void) {
+        guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else {
+            print("Failed to convert image")
+            completion(nil)
+            return
+        }
+        
+        let uuid = UUID()
+        let storageRef = storage.reference()
+        let imageRef = storageRef.child("houses/\(uuid.uuidString).jpg")
+        
+        imageRef.putData(imageData, metadata: nil) { metadata, error in
+            if let error = error {
+                print("Error uploading image: \(error)")
+                completion(nil)
+                return
+            } else {
+                print("Image uploaded successfully.")
+                imageRef.downloadURL { url, error in
+                    if let error = error {
+                        print("Error getting image download URL: \(error)")
+                        completion(nil)
+                    } else {
+                        completion(url?.absoluteString)
+                    }
+                }
+            }
+        }
     }
 
 }

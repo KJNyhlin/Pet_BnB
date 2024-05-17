@@ -58,45 +58,61 @@ class CreateHouseViewModel: ObservableObject{
     
     func saveHouse() -> Bool{
         if checkAllInfoSet(){
-            print("House is \(house)")
+            
             if let image = image,
                let bedsInt = Int(beds),
                let sizeInt = Int(size),
                let streetNRInt = Int(streetNR)
             {
                 if house == nil{
+                    // Create a new House
                     firebaseHelper.saveHouse(uiImage: image, title: title, description: description, beds: bedsInt, size: sizeInt, StreetName: streetName, streetNr: streetNRInt, city: city)
                     // Only returns true if the house is created for now not if is saved properly
-                    return true
+                    
                 } else {
+                    // We update a house
                     let valuesChanged = checkIfValuesChanged()
                     
                     if let house = house {
-                        if let id = house.id{
-                            firebaseHelper.updateHouse(houseID: id, with: valuesChanged)
+                        if imageSelection != nil{
+                            print("Image changed upload new Image!!!!!!")
+                            firebaseHelper.uploadImage(uiImage: image){ urlString in
+                                if let id = house.id{
+                                    let changedHouse = House(title: self.title, description: self.description, imageURL: urlString, beds: bedsInt, size: sizeInt, streetName: self.streetName, streetNR: streetNRInt, city: self.city)
+                                    self.firebaseHelper.updateHouse(houseID: id, house: changedHouse, with: valuesChanged)
+                                }
+                            }
+                            
+                        } else{
+                            if let id = house.id{
+                            let changedHouse = House(title: title, description: description, beds: bedsInt, size: sizeInt, streetName: streetName, streetNR: streetNRInt, city: city)
+                                firebaseHelper.updateHouse(houseID: id, house: changedHouse, with: valuesChanged)
+                                
+                            }
                         }
-                        
                     }
-                    
-                    
-                    
                 }
+                
             }
         }
         return false
     }
+
     
     func checkIfValuesChanged() -> [String: Any] {
         var valuesChanged: [String: Any] = [:]
-        if title != house?.title {
-            valuesChanged["title"] = title
+        if let house = house{
+            if title != house.title {
+                valuesChanged["title"] = title
+            }
+            if description != house.description{
+                valuesChanged["description"] = description
+            }
+//            if beds != house.beds{
+//                valuesChanged["beds"] = beds
+         //   }
+            
         }
-        if description != house?.description{
-            valuesChanged["description"] = description
-        }
-        
-        
-        
         return valuesChanged
     }
     

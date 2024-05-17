@@ -56,6 +56,7 @@ struct CreateHouseView: View {
                         TextEditor(text: $vm.description)
                             .frame(minHeight: 100)
                         Button(action: {
+                            
                             if vm.saveHouse(){
                                 presentationMode.wrappedValue.dismiss()
                             }
