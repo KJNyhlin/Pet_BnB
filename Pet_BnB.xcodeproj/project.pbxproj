@@ -35,6 +35,7 @@
 		6D523BFE2BF4D4260007CCE5 /* CreateHouseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D523BFD2BF4D4260007CCE5 /* CreateHouseView.swift */; };
 		6D523C012BF4DFB30007CCE5 /* FilledButtonLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D523C002BF4DFB30007CCE5 /* FilledButtonLabel.swift */; };
 		6D523C032BF4EB200007CCE5 /* CreateHouseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D523C022BF4EB200007CCE5 /* CreateHouseViewModel.swift */; };
+		FB00D0E52BF7512800C9DB59 /* HouseDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB00D0E42BF7512800C9DB59 /* HouseDetailViewModel.swift */; };
 		FB5E03E32BF74B6000CB4085 /* HouseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5E03E22BF74B6000CB4085 /* HouseDetailView.swift */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +65,7 @@
 		6D523BFD2BF4D4260007CCE5 /* CreateHouseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateHouseView.swift; sourceTree = "<group>"; };
 		6D523C002BF4DFB30007CCE5 /* FilledButtonLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilledButtonLabel.swift; sourceTree = "<group>"; };
 		6D523C022BF4EB200007CCE5 /* CreateHouseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateHouseViewModel.swift; sourceTree = "<group>"; };
+		FB00D0E42BF7512800C9DB59 /* HouseDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseDetailViewModel.swift; sourceTree = "<group>"; };
 		FB5E03E22BF74B6000CB4085 /* HouseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -117,6 +119,7 @@
 				0C38DD9D2BF4BB3000B92497 /* PetViewModel.swift */,
 				0C38DD9F2BF4BB4300B92497 /* BookingViewModel.swift */,
 				6D523C022BF4EB200007CCE5 /* CreateHouseViewModel.swift */,
+				FB00D0E42BF7512800C9DB59 /* HouseDetailViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -261,6 +264,7 @@
 				0C38DD9C2BF4BB1D00B92497 /* HouseViewModel.swift in Sources */,
 				0C38DDAA2BF4BD0D00B92497 /* MyHouseView.swift in Sources */,
 				FB5E03E32BF74B6000CB4085 /* HouseDetailView.swift in Sources */,
+				FB00D0E52BF7512800C9DB59 /* HouseDetailViewModel.swift in Sources */,
 				0C38DD982BF4B8C200B92497 /* FirebaseHelper.swift in Sources */,
 				0C38DD9A2BF4BB0C00B92497 /* SignUpViewModel.swift in Sources */,
 				0C38DD932BF4B6C300B92497 /* Pet.swift in Sources */,
