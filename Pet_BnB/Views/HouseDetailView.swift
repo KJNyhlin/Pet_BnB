@@ -19,8 +19,8 @@ struct HouseDetailView: View {
     
     var body: some View {
         ScrollView {
+            VStack(alignment: .leading) {
             if let house = viewModel.house {
-                VStack(alignment: .leading) {
                     if let imageUrl = house.imageURL, let url = URL(string: imageUrl) {
                         AsyncImage(url: url) { phase in
                             switch phase {
@@ -60,22 +60,28 @@ struct HouseDetailView: View {
                             .background(Color.gray)
                     }
                     
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text(house.title)
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                        
-                        Text(house.description)
-                            .font(.body)
-                    }
-                    .padding()
+                VStack(alignment: .leading, spacing: 16) {
+                    Text(house.title)
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .padding([.leading, .trailing], 10)
+                    
+                    Text(house.description)
+                        .font(.body)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding([.leading, .trailing, .bottom], 10)
                 }
+                    .padding([.leading, .trailing], 20)
+                    .padding(.top, -2)
             } else {
                 ProgressView()
                     .onAppear {
                         viewModel.fetchHouse(byId: houseId)
                     }
+                    .padding(.top, 100)
+                    }
             }
+            .padding(.horizontal, 10)
         }
         //.navigationTitle(viewModel.house?.title ?? "Loading...")
         .navigationBarTitleDisplayMode(.inline)
