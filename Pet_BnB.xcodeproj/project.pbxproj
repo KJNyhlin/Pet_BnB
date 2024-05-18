@@ -36,6 +36,9 @@
 		6D523BFE2BF4D4260007CCE5 /* CreateHouseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D523BFD2BF4D4260007CCE5 /* CreateHouseView.swift */; };
 		6D523C012BF4DFB30007CCE5 /* FilledButtonLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D523C002BF4DFB30007CCE5 /* FilledButtonLabel.swift */; };
 		6D523C032BF4EB200007CCE5 /* CreateHouseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D523C022BF4EB200007CCE5 /* CreateHouseViewModel.swift */; };
+		FB00D0E52BF7512800C9DB59 /* HouseDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB00D0E42BF7512800C9DB59 /* HouseDetailViewModel.swift */; };
+		FB00D0E72BF7545100C9DB59 /* HouseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB00D0E62BF7545100C9DB59 /* HouseCardView.swift */; };
+		FB5E03E32BF74B6000CB4085 /* HouseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5E03E22BF74B6000CB4085 /* HouseDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,6 +68,9 @@
 		6D523BFD2BF4D4260007CCE5 /* CreateHouseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateHouseView.swift; sourceTree = "<group>"; };
 		6D523C002BF4DFB30007CCE5 /* FilledButtonLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilledButtonLabel.swift; sourceTree = "<group>"; };
 		6D523C022BF4EB200007CCE5 /* CreateHouseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateHouseViewModel.swift; sourceTree = "<group>"; };
+		FB00D0E42BF7512800C9DB59 /* HouseDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseDetailViewModel.swift; sourceTree = "<group>"; };
+		FB00D0E62BF7545100C9DB59 /* HouseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseCardView.swift; sourceTree = "<group>"; };
+		FB5E03E22BF74B6000CB4085 /* HouseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +110,8 @@
 				0C38DDA32BF4BBD400B92497 /* MyBookingsView.swift */,
 				0C38DDAD2BF4D3CB00B92497 /* SignUpView.swift */,
 				6D523BFD2BF4D4260007CCE5 /* CreateHouseView.swift */,
+				FB5E03E22BF74B6000CB4085 /* HouseDetailView.swift */,
+				FB00D0E62BF7545100C9DB59 /* HouseCardView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -117,6 +125,7 @@
 				0C38DD9D2BF4BB3000B92497 /* PetViewModel.swift */,
 				0C38DD9F2BF4BB4300B92497 /* BookingViewModel.swift */,
 				6D523C022BF4EB200007CCE5 /* CreateHouseViewModel.swift */,
+				FB00D0E42BF7512800C9DB59 /* HouseDetailViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -260,6 +269,8 @@
 			files = (
 				0C38DD9C2BF4BB1D00B92497 /* MyHouseViewModel.swift in Sources */,
 				0C38DDAA2BF4BD0D00B92497 /* MyHouseView.swift in Sources */,
+				FB5E03E32BF74B6000CB4085 /* HouseDetailView.swift in Sources */,
+				FB00D0E52BF7512800C9DB59 /* HouseDetailViewModel.swift in Sources */,
 				0C38DD982BF4B8C200B92497 /* FirebaseHelper.swift in Sources */,
 				0C38DD9A2BF4BB0C00B92497 /* SignUpViewModel.swift in Sources */,
 				0C38DD932BF4B6C300B92497 /* Pet.swift in Sources */,
@@ -271,6 +282,7 @@
 				6D523C012BF4DFB30007CCE5 /* FilledButtonLabel.swift in Sources */,
 				0C38DDA82BF4BBE500B92497 /* ProfileView.swift in Sources */,
 				0C38DDA42BF4BBD400B92497 /* MyBookingsView.swift in Sources */,
+				FB00D0E72BF7545100C9DB59 /* HouseCardView.swift in Sources */,
 				0C38DD9E2BF4BB3000B92497 /* PetViewModel.swift in Sources */,
 				6D523BF02BF380E60007CCE5 /* Pet_BnBApp.swift in Sources */,
 				0C38DD912BF4B5BF00B92497 /* House.swift in Sources */,
