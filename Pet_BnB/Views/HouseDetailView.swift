@@ -60,9 +60,9 @@ struct HouseDetailView: View {
                                 .frame(maxWidth: .infinity)
                                 .background(Color.gray)
                         }
-                        VStack(alignment: .leading, spacing: 5) {
+                        VStack(alignment: .leading, spacing: 8) {
                             Text(house.title)
-                                .font(.largeTitle)
+                                .font(.system(size: 26, weight: .bold))
                                 .fontWeight(.bold)
                                 .padding([.leading, .trailing], 10)
                             
@@ -76,20 +76,12 @@ struct HouseDetailView: View {
                                 .padding([.leading, .trailing], 10)
                             
                             Text(house.description)
-                                .font(.body)
+                                .font(.system(size: 16, weight: .regular))
                                 .fixedSize(horizontal: false, vertical: true)
                                 .padding([.leading, .trailing, .bottom], 10)
                             
-                            Text("City: ")
-                                .font(.subheadline)
-                                .padding([.leading, .trailing], 10)
-                            
-                            Text("Beds: ")
-                                .font(.subheadline)
-                                .padding([.leading, .trailing], 10)
-                            
-                            Text("Size: sqm")
-                                .font(.subheadline)
+                            Text("City • beds • sqm ")
+                                .font(.footnote)
                                 .padding([.leading, .trailing], 10)
                             
                         }
@@ -115,12 +107,9 @@ struct HouseDetailView: View {
                     // Lägg till funktion för bokning
                 })
                 {
-                    Text("Book")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(10)
+                    FilledButtonLabel(text: "Book")
+                        .frame(maxWidth: 80)
+                        //.fontWeight(.bold)
                 }
                 .padding([.bottom, .trailing], 30)
             }
