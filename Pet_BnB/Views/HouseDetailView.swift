@@ -70,7 +70,7 @@ struct HouseDetailView: View {
                                 .font(.subheadline)
                                 .padding([.leading, .trailing], 10)
                             
-                            Text("Address: ")
+                            Text("Address ")
                                 .font(.footnote)
                                 .fontWeight(.bold)
                                 .padding([.leading, .trailing], 10)
