@@ -26,37 +26,6 @@ struct MyHouseView: View {
                        let imageUrl = vm.house?.imageURL
                     {
                         AsyncImageView(imageUrl: imageUrl)
-//                        AsyncImage(url: URL(string: imageUrl)){ phase in
-//                            switch phase {
-//                            case .empty:
-//                                ProgressView()
-//                                    .frame(height: 200)
-//                                    .frame(maxWidth: 335)
-//                            case .success(let image):
-//                                image
-//                                    .resizable()
-//                                    .aspectRatio(contentMode: .fill)
-//                                    .frame(height: 300)
-//                                    .frame(maxWidth: .infinity)
-//                                    .clipped()
-//                            case .failure:
-//                                Image(systemName: "photo")
-//                                    .resizable()
-//                                    .aspectRatio(contentMode: .fill)
-//                                    .frame(height: 200)
-//                                    .frame(maxWidth: 335)
-//                                    .background(Color.gray)
-//                            @unknown default:
-//                                Image(systemName: "photo")
-//                                    .resizable()
-//                                    .aspectRatio(contentMode: .fill)
-//                                    .frame(height: 200)
-//                                    .frame(maxWidth: 335)
-//                                    .background(Color.gray)
-//                            }
-//                        }
-                        
-                        
                         
                         VStack(alignment: .leading){
                             Text(house.title)
@@ -64,10 +33,8 @@ struct MyHouseView: View {
                             if let beds = house.beds,
                                let size = house.size{
                                 InformationRow(beds: beds, size: size)
-                                    
+                                
                             }
-                           
-           
                             if let streetNR = house.streetNR,
                                let streetName = house.streetName,
                                let city = house.city,
@@ -82,14 +49,14 @@ struct MyHouseView: View {
                                     //vm.deleteHouse()
                                     showingDeleteAlert = true
                                 }
-) {
+                                ) {
                                     Label("Delete", systemImage: "trash")
-                                        
+                                    
                                 }
                                 NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
                                     Label("Edit", systemImage: "pencil")
                                 }
-
+                                
                             } label: {
                                 FilledButtonLabel(text: "Manage")
                             }
@@ -98,7 +65,7 @@ struct MyHouseView: View {
                                     vm.deleteHouse()
                                 }, secondaryButton: .cancel())
                             }
-                                
+                            
                         }
                         .padding()
                         
@@ -106,7 +73,7 @@ struct MyHouseView: View {
                     }
                     Spacer()
                 }
-                    
+                
             }
             .onAppear{
                 vm.downloadHouse()
@@ -114,7 +81,7 @@ struct MyHouseView: View {
         }
     }
 }
-    
+
 struct AdressView:View {
     var street: String
     var streetNR: Int
@@ -157,54 +124,6 @@ struct InformationRow: View{
         .padding(.vertical, 5)
     }
 }
-
-struct AsyncImageView: View {
-    let imageUrl: String
-    let maxWidth: CGFloat
-    
-    init(imageUrl: String, maxWidth: CGFloat = .infinity){
-        self.imageUrl = imageUrl
-        self.maxWidth = maxWidth
-    }
-    
-    var body: some View {
-       
-        AsyncImage(url: URL(string: imageUrl)) { phase in
-            switch phase {
-            case .empty:
-                ProgressView()
-                    .frame(height: 200)
-                    .frame(maxWidth: maxWidth)
-            case .success(let image):
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 300)
-                    .frame(maxWidth: maxWidth)
-                    .clipped()
-            case .failure:
-                Image(systemName: "photo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 200)
-                    .frame(maxWidth: maxWidth)
-                    .background(Color.gray)
-            @unknown default:
-                Image(systemName: "photo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 200)
-                    .frame(maxWidth: maxWidth)
-                    .background(Color.gray)
-            }
-        }
-    }
-    
-}
-    
-    
-    
-
 
 //#Preview {
 //    AdressView(street: "Gatan", streetNR: 3, city: "Uppsala")

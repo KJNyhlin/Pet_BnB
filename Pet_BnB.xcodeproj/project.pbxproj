@@ -36,6 +36,7 @@
 		6D523BFE2BF4D4260007CCE5 /* CreateHouseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D523BFD2BF4D4260007CCE5 /* CreateHouseView.swift */; };
 		6D523C012BF4DFB30007CCE5 /* FilledButtonLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D523C002BF4DFB30007CCE5 /* FilledButtonLabel.swift */; };
 		6D523C032BF4EB200007CCE5 /* CreateHouseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D523C022BF4EB200007CCE5 /* CreateHouseViewModel.swift */; };
+		6DAE37592BF91459007E9092 /* AsyncImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DAE37582BF91459007E9092 /* AsyncImageView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,6 +66,7 @@
 		6D523BFD2BF4D4260007CCE5 /* CreateHouseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateHouseView.swift; sourceTree = "<group>"; };
 		6D523C002BF4DFB30007CCE5 /* FilledButtonLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilledButtonLabel.swift; sourceTree = "<group>"; };
 		6D523C022BF4EB200007CCE5 /* CreateHouseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateHouseViewModel.swift; sourceTree = "<group>"; };
+		6DAE37582BF91459007E9092 /* AsyncImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +176,7 @@
 			isa = PBXGroup;
 			children = (
 				6D523C002BF4DFB30007CCE5 /* FilledButtonLabel.swift */,
+				6DAE37582BF91459007E9092 /* AsyncImageView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -258,6 +261,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DAE37592BF91459007E9092 /* AsyncImageView.swift in Sources */,
 				0C38DD9C2BF4BB1D00B92497 /* MyHouseViewModel.swift in Sources */,
 				0C38DDAA2BF4BD0D00B92497 /* MyHouseView.swift in Sources */,
 				0C38DD982BF4B8C200B92497 /* FirebaseHelper.swift in Sources */,
