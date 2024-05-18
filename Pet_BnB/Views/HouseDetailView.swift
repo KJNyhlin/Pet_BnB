@@ -96,25 +96,23 @@ struct HouseDetailView: View {
                     }
                 }
             }
-        //.navigationTitle(viewModel.house?.title ?? "Loading...")
-        .navigationBarTitleDisplayMode(.inline)
-        
-        VStack {
-            Spacer()
-            HStack {
+            
+            VStack {
                 Spacer()
-                Button(action: {
-                    // Lägg till funktion för bokning
-                })
-                {
-                    FilledButtonLabel(text: "Book")
-                        .frame(maxWidth: 80)
-                        //.fontWeight(.bold)
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        // Lägg till funktion för bokning
+                    })
+                    {
+                        FilledButtonLabel(text: "Book")
+                            .frame(maxWidth: 80)
+                            //.fontWeight(.bold)
+                    }
+                    .padding([.bottom, .trailing], 30)
                 }
-                .padding([.bottom, .trailing], 30)
             }
         }
-    }
     }
 }
 
