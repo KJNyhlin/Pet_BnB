@@ -75,14 +75,14 @@ struct HouseDetailView: View {
                                 .fontWeight(.bold)
                                 .padding([.leading, .trailing], 10)
                             
+                            Text("City • beds • sqm ")
+                                .font(.footnote)
+                                .padding([.leading, .trailing], 10)
+                            
                             Text(house.description)
                                 .font(.system(size: 16, weight: .regular))
                                 .fixedSize(horizontal: false, vertical: true)
                                 .padding([.leading, .trailing, .bottom], 10)
-                            
-                            Text("City • beds • sqm ")
-                                .font(.footnote)
-                                .padding([.leading, .trailing], 10)
                             
                         }
                         .padding([.leading, .trailing], 20)
