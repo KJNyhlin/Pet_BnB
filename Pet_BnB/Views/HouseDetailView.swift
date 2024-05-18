@@ -59,20 +59,43 @@ struct HouseDetailView: View {
                             .frame(maxWidth: .infinity)
                             .background(Color.gray)
                     }
-                    
-                VStack(alignment: .leading, spacing: 5) {
-                    Text(house.title)
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .padding([.leading, .trailing], 10)
-                    
-                    Text(house.description)
-                        .font(.body)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding([.leading, .trailing, .bottom], 10)
-                }
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text(house.title)
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .padding([.leading, .trailing], 10)
+                        
+                        Text("★ 4.91")
+                            .font(.subheadline)
+                            .padding([.leading, .trailing], 10)
+                        
+                        Text("Address: ")
+                            .font(.footnote)
+                            .fontWeight(.bold)
+                            .padding([.leading, .trailing], 10)
+                        
+                        Text(house.description)
+                            .font(.body)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding([.leading, .trailing, .bottom], 10)
+                        
+                        Text("City: ")
+                            .font(.subheadline)
+                            .padding([.leading, .trailing], 10)
+                        
+                        Text("Beds: ")
+                            .font(.subheadline)
+                            .padding([.leading, .trailing], 10)
+                        
+                        Text("Size: sqm")
+                            .font(.subheadline)
+                            .padding([.leading, .trailing], 10)
+                        
+                    }
                     .padding([.leading, .trailing], 20)
                     .padding(.top, -2)
+                }
             } else {
                 ProgressView()
                     .onAppear {
