@@ -78,9 +78,7 @@ class CreateHouseViewModel: ObservableObject{
             // Only returns true if the house is created for now not if is saved properly
             
         } else {
-            // We update a house
-            let valuesChanged = checkIfValuesChanged()
-            
+            //  Update a house
             guard let house = house else {
                 completion(false)
                 return
@@ -95,7 +93,7 @@ class CreateHouseViewModel: ObservableObject{
                         }
  
                         let changedHouse = House(title: self.title, description: self.description, imageURL: urlString, beds: bedsInt, size: sizeInt, streetName: self.streetName, streetNR: streetNRInt, city: self.city, zipCode: zipCodeInt)
-                        self.firebaseHelper.updateHouse(houseID: id, house: changedHouse, with: valuesChanged) { success in
+                        self.firebaseHelper.updateHouse(houseID: id, house: changedHouse) { success in
                             completion(success)
                         }
                     } else {
@@ -105,7 +103,7 @@ class CreateHouseViewModel: ObservableObject{
             } else {
                 if let id = house.id {
                     let changedHouse = House(title: title, description: description, beds: bedsInt, size: sizeInt, streetName: streetName, streetNR: streetNRInt, city: city, zipCode: zipCodeInt)
-                    firebaseHelper.updateHouse(houseID: id, house: changedHouse, with: valuesChanged) { success in
+                    firebaseHelper.updateHouse(houseID: id, house: changedHouse) { success in
                         completion(success)
                     }
                 } else {
@@ -113,19 +111,6 @@ class CreateHouseViewModel: ObservableObject{
                 }
             }
         }
-    }
-    
-    func checkIfValuesChanged() -> [String: Any] {
-        var valuesChanged: [String: Any] = [:]
-        if let house = house{
-            if title != house.title {
-                valuesChanged["title"] = title
-            }
-            if description != house.description{
-                valuesChanged["description"] = description
-            }
-        }
-        return valuesChanged
     }
     
     func checkAllInfoSet() -> Bool{
@@ -147,9 +132,7 @@ class CreateHouseViewModel: ObservableObject{
                   //  self.selectedPhotoData = imageData
                     if let imageData = imageData{
                         self.image = UIImage(data: imageData)
-                   
                     }
-                    
                 }
             } catch {
                 print("Error loading image data: \(error)")

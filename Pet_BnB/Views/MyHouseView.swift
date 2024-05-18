@@ -25,36 +25,36 @@ struct MyHouseView: View {
                     if let house = vm.house,
                        let imageUrl = vm.house?.imageURL
                     {
-                        
-                        AsyncImage(url: URL(string: imageUrl)){ phase in
-                            switch phase {
-                            case .empty:
-                                ProgressView()
-                                    .frame(height: 200)
-                                    .frame(maxWidth: 335)
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(height: 300)
-                                    .frame(maxWidth: .infinity)
-                                    .clipped()
-                            case .failure:
-                                Image(systemName: "photo")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(height: 200)
-                                    .frame(maxWidth: 335)
-                                    .background(Color.gray)
-                            @unknown default:
-                                Image(systemName: "photo")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(height: 200)
-                                    .frame(maxWidth: 335)
-                                    .background(Color.gray)
-                            }
-                        }
+                        AsyncImageView(imageUrl: imageUrl)
+//                        AsyncImage(url: URL(string: imageUrl)){ phase in
+//                            switch phase {
+//                            case .empty:
+//                                ProgressView()
+//                                    .frame(height: 200)
+//                                    .frame(maxWidth: 335)
+//                            case .success(let image):
+//                                image
+//                                    .resizable()
+//                                    .aspectRatio(contentMode: .fill)
+//                                    .frame(height: 300)
+//                                    .frame(maxWidth: .infinity)
+//                                    .clipped()
+//                            case .failure:
+//                                Image(systemName: "photo")
+//                                    .resizable()
+//                                    .aspectRatio(contentMode: .fill)
+//                                    .frame(height: 200)
+//                                    .frame(maxWidth: 335)
+//                                    .background(Color.gray)
+//                            @unknown default:
+//                                Image(systemName: "photo")
+//                                    .resizable()
+//                                    .aspectRatio(contentMode: .fill)
+//                                    .frame(height: 200)
+//                                    .frame(maxWidth: 335)
+//                                    .background(Color.gray)
+//                            }
+//                        }
                         
                         
                         
@@ -139,7 +139,6 @@ struct InformationRow: View{
     
     var body: some View{
         HStack{
-
             Label(
                 title: { Text("\(beds) st") },
                 icon: { Image(systemName: "bed.double") }
@@ -148,7 +147,7 @@ struct InformationRow: View{
             .padding(.trailing, 10)
             
             Label(
-                title: { Text("\(size) m2") },
+                title: { Text("\(size) m²") },
                 icon: { Image(systemName: "house.fill") }
                 
             )
@@ -157,6 +156,50 @@ struct InformationRow: View{
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 5)
     }
+}
+
+struct AsyncImageView: View {
+    let imageUrl: String
+    let maxWidth: CGFloat
+    
+    init(imageUrl: String, maxWidth: CGFloat = .infinity){
+        self.imageUrl = imageUrl
+        self.maxWidth = maxWidth
+    }
+    
+    var body: some View {
+       
+        AsyncImage(url: URL(string: imageUrl)) { phase in
+            switch phase {
+            case .empty:
+                ProgressView()
+                    .frame(height: 200)
+                    .frame(maxWidth: maxWidth)
+            case .success(let image):
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(height: 300)
+                    .frame(maxWidth: maxWidth)
+                    .clipped()
+            case .failure:
+                Image(systemName: "photo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(height: 200)
+                    .frame(maxWidth: maxWidth)
+                    .background(Color.gray)
+            @unknown default:
+                Image(systemName: "photo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(height: 200)
+                    .frame(maxWidth: maxWidth)
+                    .background(Color.gray)
+            }
+        }
+    }
+    
 }
     
     
