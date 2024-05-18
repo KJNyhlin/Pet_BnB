@@ -18,7 +18,7 @@
 		0C38DD952BF4B77300B92497 /* Booking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DD942BF4B77300B92497 /* Booking.swift */; };
 		0C38DD982BF4B8C200B92497 /* FirebaseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DD972BF4B8C200B92497 /* FirebaseHelper.swift */; };
 		0C38DD9A2BF4BB0C00B92497 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DD992BF4BB0C00B92497 /* SignUpViewModel.swift */; };
-		0C38DD9C2BF4BB1D00B92497 /* HouseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DD9B2BF4BB1D00B92497 /* HouseViewModel.swift */; };
+		0C38DD9C2BF4BB1D00B92497 /* MyHouseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DD9B2BF4BB1D00B92497 /* MyHouseViewModel.swift */; };
 		0C38DD9E2BF4BB3000B92497 /* PetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DD9D2BF4BB3000B92497 /* PetViewModel.swift */; };
 		0C38DDA02BF4BB4300B92497 /* BookingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DD9F2BF4BB4300B92497 /* BookingViewModel.swift */; };
 		0C38DDA22BF4BBB900B92497 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DDA12BF4BBB900B92497 /* ExploreView.swift */; };
@@ -28,6 +28,7 @@
 		0C38DDAA2BF4BD0D00B92497 /* MyHouseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DDA92BF4BD0D00B92497 /* MyHouseView.swift */; };
 		0C38DDAC2BF4BE6B00B92497 /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DDAB2BF4BE6B00B92497 /* AppColors.swift */; };
 		0C38DDAE2BF4D3CB00B92497 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DDAD2BF4D3CB00B92497 /* SignUpView.swift */; };
+		0CCFC7742BF73A9000520151 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCFC7732BF73A9000520151 /* ProfileViewModel.swift */; };
 		6D523BF02BF380E60007CCE5 /* Pet_BnBApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D523BEF2BF380E60007CCE5 /* Pet_BnBApp.swift */; };
 		6D523BF22BF380E60007CCE5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D523BF12BF380E60007CCE5 /* ContentView.swift */; };
 		6D523BF42BF380E80007CCE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D523BF32BF380E80007CCE5 /* Assets.xcassets */; };
@@ -48,7 +49,7 @@
 		0C38DD942BF4B77300B92497 /* Booking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Booking.swift; sourceTree = "<group>"; };
 		0C38DD972BF4B8C200B92497 /* FirebaseHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseHelper.swift; sourceTree = "<group>"; };
 		0C38DD992BF4BB0C00B92497 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
-		0C38DD9B2BF4BB1D00B92497 /* HouseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseViewModel.swift; sourceTree = "<group>"; };
+		0C38DD9B2BF4BB1D00B92497 /* MyHouseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyHouseViewModel.swift; sourceTree = "<group>"; };
 		0C38DD9D2BF4BB3000B92497 /* PetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetViewModel.swift; sourceTree = "<group>"; };
 		0C38DD9F2BF4BB4300B92497 /* BookingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingViewModel.swift; sourceTree = "<group>"; };
 		0C38DDA12BF4BBB900B92497 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
@@ -58,6 +59,7 @@
 		0C38DDA92BF4BD0D00B92497 /* MyHouseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyHouseView.swift; sourceTree = "<group>"; };
 		0C38DDAB2BF4BE6B00B92497 /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
 		0C38DDAD2BF4D3CB00B92497 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		0CCFC7732BF73A9000520151 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		6D523BEC2BF380E60007CCE5 /* Pet_BnB.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pet_BnB.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D523BEF2BF380E60007CCE5 /* Pet_BnBApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pet_BnBApp.swift; sourceTree = "<group>"; };
 		6D523BF12BF380E60007CCE5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -118,7 +120,8 @@
 			isa = PBXGroup;
 			children = (
 				0C38DD992BF4BB0C00B92497 /* SignUpViewModel.swift */,
-				0C38DD9B2BF4BB1D00B92497 /* HouseViewModel.swift */,
+				0C38DD9B2BF4BB1D00B92497 /* MyHouseViewModel.swift */,
+				0CCFC7732BF73A9000520151 /* ProfileViewModel.swift */,
 				0C38DD9D2BF4BB3000B92497 /* PetViewModel.swift */,
 				0C38DD9F2BF4BB4300B92497 /* BookingViewModel.swift */,
 				6D523C022BF4EB200007CCE5 /* CreateHouseViewModel.swift */,
@@ -264,7 +267,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C38DD9C2BF4BB1D00B92497 /* HouseViewModel.swift in Sources */,
+				0C38DD9C2BF4BB1D00B92497 /* MyHouseViewModel.swift in Sources */,
 				0C38DDAA2BF4BD0D00B92497 /* MyHouseView.swift in Sources */,
 				FB5E03E32BF74B6000CB4085 /* HouseDetailView.swift in Sources */,
 				FB00D0E52BF7512800C9DB59 /* HouseDetailViewModel.swift in Sources */,
@@ -285,6 +288,7 @@
 				0C38DD912BF4B5BF00B92497 /* House.swift in Sources */,
 				0C38DDAC2BF4BE6B00B92497 /* AppColors.swift in Sources */,
 				0C38DD8F2BF4B4CA00B92497 /* User.swift in Sources */,
+				0CCFC7742BF73A9000520151 /* ProfileViewModel.swift in Sources */,
 				0C38DDA22BF4BBB900B92497 /* ExploreView.swift in Sources */,
 				0C38DDAE2BF4D3CB00B92497 /* SignUpView.swift in Sources */,
 				0C38DDA02BF4BB4300B92497 /* BookingViewModel.swift in Sources */,
