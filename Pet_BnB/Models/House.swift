@@ -14,4 +14,11 @@ struct House: Identifiable, Codable {
     var title: String
     var description: String
     var imageURL: String?
+    var beds: Int
+    var city: String
+    var ownerID: String
+    var size: Int
+    var streetNR: Int
+    var streetName: String
+    var zipCode: String
 }
