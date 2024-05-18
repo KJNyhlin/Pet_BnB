@@ -60,7 +60,7 @@ struct HouseDetailView: View {
                             .background(Color.gray)
                     }
                     
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 5) {
                     Text(house.title)
                         .font(.largeTitle)
                         .fontWeight(.bold)
