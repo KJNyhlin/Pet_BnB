@@ -62,12 +62,12 @@ struct HouseDetailView: View {
                         }
                         VStack(alignment: .leading, spacing: 8) {
                                 Text(house.title)
-                                        .font(.system(size: 26, weight: .bold))
+                                        .font(.title)
                                         .fontWeight(.bold)
                                         .padding([.leading, .trailing], 10)
                             
                                 Text("For rent: July 20, 2024 - July 27, 2024")
-                                        .font(.system(size: 16, weight: .regular))
+                                        .font(.subheadline)
                                         .padding([.leading, .trailing], 10)
 
                                 Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
@@ -93,7 +93,7 @@ struct HouseDetailView: View {
                                     
                                                     
                                 Text(house.description)
-                                        .font(.system(size: 16, weight: .regular))
+                                        .font(.subheadline)
                                         .fixedSize(horizontal: false, vertical: true)
                                         .padding([.leading, .trailing, .bottom], 10)
                         }
