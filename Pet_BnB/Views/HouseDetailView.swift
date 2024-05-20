@@ -65,10 +65,6 @@ struct HouseDetailView: View {
                                         .font(.system(size: 26, weight: .bold))
                                         .fontWeight(.bold)
                                         .padding([.leading, .trailing], 10)
-                                                    
-                                Text("★ 4.91")
-                                        .font(.subheadline)
-                                        .padding([.leading, .trailing], 10)
                             
                                 Text("For rent: July 20, 2024 - July 27, 2024")
                                         .font(.system(size: 16, weight: .regular))
@@ -79,9 +75,22 @@ struct HouseDetailView: View {
                                         .fontWeight(.bold)
                                         .padding([.leading, .trailing], 10)
                                                     
-                                Text("City: \(house.city) • \(house.beds) beds • \(house.size) sqm")
-                                        .font(.footnote)
-                                        .padding([.leading, .trailing], 10)
+                                HStack {
+                                            Label(
+                                                title: { Text("\(house.beds) st") },
+                                                icon: { Image(systemName: "bed.double") }
+                                            )
+                                            .padding(.trailing, 10)
+                                            
+                                            Label(
+                                                title: { Text("\(house.size) m²") },
+                                                icon: { Image(systemName: "house.fill") }
+                                            )
+                                            .padding(.trailing, 10)
+                                        }
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .padding(.vertical, 5)
+                                    
                                                     
                                 Text(house.description)
                                         .font(.system(size: 16, weight: .regular))
