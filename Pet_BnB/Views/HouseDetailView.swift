@@ -20,90 +20,90 @@ struct HouseDetailView: View {
     var body: some View {
         ZStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
                     if let house = viewModel.house {
-                        if let imageUrl = house.imageURL, let url = URL(string: imageUrl) {
-                            AsyncImage(url: url) { phase in
-                                switch phase {
-                                case .empty:
-                                    ProgressView()
-                                        .frame(height: 300)
-                                        .frame(maxWidth: .infinity)
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(height: 300)
-                                        .frame(maxWidth: .infinity)
-                                        .clipped()
-                                case .failure:
-                                    Image(systemName: "photo")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(height: 300)
-                                        .frame(maxWidth: .infinity)
-                                        .background(Color.gray)
-                                @unknown default:
-                                    Image(systemName: "photo")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(height: 300)
-                                        .frame(maxWidth: .infinity)
-                                        .background(Color.gray)
+                        VStack (alignment: .leading, spacing: 8) {
+                            if let imageUrl = house.imageURL, let url = URL(string: imageUrl) {
+                                AsyncImage(url: url) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        ProgressView()
+                                            .frame(height: 300)
+                                            .frame(maxWidth: .infinity)
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(height: 300)
+                                            .frame(maxWidth: .infinity)
+                                            .clipped()
+                                    case .failure:
+                                        Image(systemName: "photo")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(height: 300)
+                                            .frame(maxWidth: .infinity)
+                                            .background(Color.gray)
+                                    @unknown default:
+                                        Image(systemName: "photo")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(height: 300)
+                                            .frame(maxWidth: .infinity)
+                                            .background(Color.gray)
+                                    }
                                 }
                             }
-                        }
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(house.title)
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .padding([.leading, .trailing], 10)
-                            
-                            Text("For rent: July 20, 2024 - July 27, 2024")
-                                .font(.subheadline)
-                                .padding([.leading, .trailing], 10)
-                            
-                            Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
-                                .font(.footnote)
-                                .fontWeight(.bold)
-                                .padding([.leading, .trailing], 10)
-                            
-                            HStack {
-                                Label(
-                                    title: { Text("\(house.beds) st") },
-                                    icon: { Image(systemName: "bed.double") }
-                                )
-                                .padding(.trailing, 10)
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text(house.title)
+                                    .font(.title)
+                                    //.fontWeight(.bold)
+                                    .padding(.horizontal, 20)
                                 
-                                Label(
-                                    title: { Text("\(house.size) m²") },
-                                    icon: { Image(systemName: "house.fill") }
-                                )
-                                .padding(.trailing, 10)
+                                Text("For rent: Date missing")
+                                    .font(.subheadline)
+                                    .padding(.horizontal, 20)
+                                
+                                Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
+                                    .font(.footnote)
+                                    .fontWeight(.bold)
+                                    .padding(.horizontal, 20)
+                                
+                                HStack {
+                                    Label(
+                                        title: { Text("\(house.beds) st") },
+                                        icon: { Image(systemName: "bed.double") }
+                                    )
+                                    .padding(.trailing, 10)
+                                    
+                                    Label(
+                                        title: { Text("\(house.size) m²") },
+                                        icon: { Image(systemName: "house.fill") }
+                                    )
+                                    .padding(.trailing, 10)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.vertical, 5)
+                                .padding(.horizontal, 20)                                
+                                
+                                Text(house.description)
+                                    .font(.subheadline)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .padding(.horizontal, 20)
                             }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.vertical, 5)
-                            .padding(.horizontal, 20)
-                            
-                            
-                            Text(house.description)
-                                .font(.subheadline)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .padding([.leading, .trailing, .bottom], 10)
+                            .padding(.horizontal, 15)
+                            //  .padding([.leading, .trailing], 20)
+                            .padding(.top, 8)
                         }
-                        .padding(.horizontal, 20)
-                        .padding(.top, -2)
                     } else {
                         ProgressView()
                             .onAppear {
                                 viewModel.fetchHouse(byId: houseId)
                             }
-                            .padding(.top, 50)
                     }
                 }
-            }
-        }
-
+            
+            
+            VStack {
                 Spacer()
                 HStack {
                     Spacer()
@@ -117,8 +117,8 @@ struct HouseDetailView: View {
                     }
                     .padding([.bottom, .trailing], 30)
                 }
-            
-    
+            }
+        }
     }
 }
 
