@@ -28,6 +28,14 @@ struct ExploreView: View {
                             .padding(.leading, 16)
                     TextField("Search", text: $searchText)
                             .padding(14)
+                
+                    Button(action: {
+                        // Lägg till här filtrering!!!
+                    }) {
+                                Image(systemName: "slider.horizontal.3")
+                                .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
+                                .padding(.trailing, 16)
+                        }
             }
                     .background(Color(.white))
                     .cornerRadius(40)
@@ -44,10 +52,10 @@ struct ExploreView: View {
                         .padding(.horizontal)
             }
         }
-        .onAppear {
-                firebaseHelper.fetchHouses()
-        }
-        .navigationBarHidden(true)
+            .onAppear {
+                    firebaseHelper.fetchHouses()
+            }
+            .navigationBarHidden(true)
         }
     }
 }
