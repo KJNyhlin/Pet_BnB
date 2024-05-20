@@ -70,7 +70,7 @@ struct HouseDetailView: View {
                                         .font(.subheadline)
                                         .padding([.leading, .trailing], 10)
                                                     
-                                Text("Address: \(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
+                                Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
                                         .font(.footnote)
                                         .fontWeight(.bold)
                                         .padding([.leading, .trailing], 10)
