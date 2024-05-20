@@ -17,6 +17,7 @@ struct FilledButtonLabel: View {
             .padding(.vertical, 10)
             .background(AppColors.mainAccent)
             .cornerRadius(20)
+            .fontWeight(.bold)
           
     }
 }

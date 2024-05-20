@@ -20,6 +20,7 @@ struct ExploreView: View {
     }
         
     var body: some View {
+        NavigationView {
         VStack(spacing: 14) {
             HStack {
                     Image(systemName: "magnifyingglass")
@@ -46,67 +47,11 @@ struct ExploreView: View {
         .onAppear {
                 firebaseHelper.fetchHouses()
         }
+        .navigationBarHidden(true)
+        }
     }
 }
 
-struct HouseCardView: View {
-    var house: House
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            if let imageURL = house.imageURL, let url = URL(string: imageURL) {
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                            .frame(height: 200)
-                            .frame(maxWidth: 335)
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: 200)
-                            .frame(maxWidth: 335)
-                            .clipped()
-                    case .failure:
-                        Image(systemName: "photo")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: 200)
-                            .frame(maxWidth: 335)
-                            .background(Color.gray)
-                    @unknown default:
-                        Image(systemName: "photo")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: 200)
-                            .frame(maxWidth: 335)
-                            .background(Color.gray)
-                    }
-                }
-            } else {
-                Image(systemName: "photo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 200)
-                    .frame(maxWidth: 335)
-                    .background(Color.gray)
-            }
-            VStack(alignment: .leading, spacing: 8) {
-                Text(house.title)
-                    .font(.headline)
-                Text(house.description)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            .padding()
-        }
-        .background(Color.white)
-        .cornerRadius(20)
-        .shadow(radius: 5)
-        .padding(.vertical, 8)
-    }
-}
 
 #Preview {
     ExploreView().environmentObject(FirebaseHelper())
