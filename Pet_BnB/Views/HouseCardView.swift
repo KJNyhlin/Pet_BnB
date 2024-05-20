@@ -44,14 +44,7 @@ struct HouseCardView: View {
                                 .background(Color.gray)
                         }
                     }
-                } else {
-                    Image(systemName: "photo")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: 200)
-                        .frame(maxWidth: .infinity)
-                        .background(Color.gray)
-                }
+                } 
                 VStack(alignment: .leading, spacing: 8) {
                     Text(house.title)
                         .font(.headline)

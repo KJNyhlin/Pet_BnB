@@ -56,7 +56,6 @@ struct HouseDetailView: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(house.title)
                                     .font(.title)
-                                    //.fontWeight(.bold)
                                 
                                 Text("For rent: Date missing")
                                     .font(.subheadline)
@@ -82,7 +81,6 @@ struct HouseDetailView: View {
                                 .padding(.vertical, 5)
                                 
                                 Text(house.description)
-                                    .font(.subheadline)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
                             .padding()
@@ -96,8 +94,7 @@ struct HouseDetailView: View {
                             }
                     }
                 }
-            
-            
+
             VStack {
                 Spacer()
                 HStack {
