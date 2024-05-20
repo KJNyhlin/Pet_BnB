@@ -20,7 +20,7 @@ struct HouseDetailView: View {
     var body: some View {
         ZStack {
             ScrollView {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 16) {
                     if let house = viewModel.house {
                         if let imageUrl = house.imageURL, let url = URL(string: imageUrl) {
                             AsyncImage(url: url) { phase in
@@ -52,53 +52,47 @@ struct HouseDetailView: View {
                                         .background(Color.gray)
                                 }
                             }
-                        } else {
-                            Image(systemName: "photo")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: 300)
-                                .frame(maxWidth: .infinity)
-                                .background(Color.gray)
                         }
                         VStack(alignment: .leading, spacing: 8) {
-                                Text(house.title)
-                                        .font(.title)
-                                        .fontWeight(.bold)
-                                        .padding([.leading, .trailing], 10)
+                            Text(house.title)
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .padding([.leading, .trailing], 10)
                             
-                                Text("For rent: July 20, 2024 - July 27, 2024")
-                                        .font(.subheadline)
-                                        .padding([.leading, .trailing], 10)
-
-                                Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
-                                        .font(.footnote)
-                                        .fontWeight(.bold)
-                                        .padding([.leading, .trailing], 10)
-                                                    
-                                HStack {
-                                            Label(
-                                                title: { Text("\(house.beds) st") },
-                                                icon: { Image(systemName: "bed.double") }
-                                            )
-                                            .padding(.trailing, 10)
-                                            
-                                            Label(
-                                                title: { Text("\(house.size) m²") },
-                                                icon: { Image(systemName: "house.fill") }
-                                            )
-                                            .padding(.trailing, 10)
-                                        }
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .padding(.vertical, 5)
-                                    
-                                                    
-                                Text(house.description)
-                                        .font(.subheadline)
-                                        .fixedSize(horizontal: false, vertical: true)
-                                        .padding([.leading, .trailing, .bottom], 10)
+                            Text("For rent: July 20, 2024 - July 27, 2024")
+                                .font(.subheadline)
+                                .padding([.leading, .trailing], 10)
+                            
+                            Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
+                                .font(.footnote)
+                                .fontWeight(.bold)
+                                .padding([.leading, .trailing], 10)
+                            
+                            HStack {
+                                Label(
+                                    title: { Text("\(house.beds) st") },
+                                    icon: { Image(systemName: "bed.double") }
+                                )
+                                .padding(.trailing, 10)
+                                
+                                Label(
+                                    title: { Text("\(house.size) m²") },
+                                    icon: { Image(systemName: "house.fill") }
+                                )
+                                .padding(.trailing, 10)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.vertical, 5)
+                            .padding(.horizontal, 20)
+                            
+                            
+                            Text(house.description)
+                                .font(.subheadline)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .padding([.leading, .trailing, .bottom], 10)
                         }
-                            .padding([.leading, .trailing], 20)
-                            .padding(.top, -2)
+                        .padding(.horizontal, 20)
+                        .padding(.top, -2)
                     } else {
                         ProgressView()
                             .onAppear {
@@ -108,8 +102,8 @@ struct HouseDetailView: View {
                     }
                 }
             }
-            
-            VStack {
+        }
+
                 Spacer()
                 HStack {
                     Spacer()
@@ -123,8 +117,8 @@ struct HouseDetailView: View {
                     }
                     .padding([.bottom, .trailing], 30)
                 }
-            }
-        }
+            
+    
     }
 }
 
