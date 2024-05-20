@@ -9,8 +9,9 @@ import Foundation
 import FirebaseFirestore
 
 struct Pet: Decodable, Encodable, Identifiable {
-    var id: String?
+    var id = UUID().uuidString
     var name: String
     var species: String
+    var imageURL: String?
     var information: [String] = []
 }

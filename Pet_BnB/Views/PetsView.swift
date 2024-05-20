@@ -45,9 +45,9 @@ struct PetRowView:View{
                 .padding(.horizontal)
             VStack(alignment: .leading){
                 Text(pet.name)
-                    .font(.title)
-                Text(pet.species)
                     .font(.title3)
+                Text(pet.species)
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
             Spacer()

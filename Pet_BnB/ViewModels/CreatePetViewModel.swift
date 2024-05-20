@@ -11,6 +11,7 @@ class CreatePetViewModel: ObservableObject{
     var house: House
     @Published var pet: Pet?
     @Published var selectedSpices = "Dog"
+    @Published var informationArray: [String] = []
     let speciesOptions = ["Dog", "Cat", "Rabbit"]
     let firebaseHelper = FirebaseHelper()
     
@@ -22,11 +23,16 @@ class CreatePetViewModel: ObservableObject{
             self.pet = pet
             self.name = pet.name
             self.selectedSpices = pet.species
+            self.informationArray = pet.information
         }
         self.house = house
 
     }
     func savePet(completion: @escaping (Bool) -> Void){
+        if !isValuesSet(){
+            return
+        }
+        
         if let pet = pet{
             print("This is the edit pet save and replace")
         } else {
@@ -56,5 +62,26 @@ class CreatePetViewModel: ObservableObject{
             }
         }
         
+    }
+    
+    func isValuesSet() -> Bool{
+        if !name.isEmpty{
+            return true
+        }
+        return false
+    }
+    
+    func addInformation(information: String){
+//        let lastEmpty = informationArray.last?.isEmpty
+//        if let lastEmpty = lastEmpty{
+//            if !lastEmpty{
+//                informationArray.append("")
+//            }
+//        }
+        informationArray.append(information)
+    }
+    
+    func deleteInformation(at offsets: IndexSet) {
+        informationArray.remove(atOffsets: offsets)
     }
 }
