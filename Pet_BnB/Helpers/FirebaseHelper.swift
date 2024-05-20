@@ -109,9 +109,9 @@ class FirebaseHelper: ObservableObject {
             return
         }
         uploadImage(uiImage: uiImage){ urlString in
-            if let urlString = urlString{
+            if let urlString = urlString {
                 print("Image uploaded successfully.")
-                let ownerID = self.auth.currentUser?.uid
+                
                 let house = House(title: title, description: description, imageURL: urlString,
                                   beds: beds, size: size, streetName: StreetName, streetNR: streetNr, city: city, zipCode: zipCode, ownerID: ownerID)
                 do{
@@ -224,19 +224,20 @@ class FirebaseHelper: ObservableObject {
                 }
             }
         }
+   */
+
         
-        func fetchHouse(byId id: String, completion: @escaping (House?) -> Void) {
-            db.collection("houses").document(id).getDocument { document, error in
-                if let document = document, document.exists {
-                    let house = try? document.data(as: House.self)
-                    completion(house)
-                } else {
-                    print("House doesn't exist")
-                    completion(nil)
-                }
+    func fetchHouse(byId id: String, completion: @escaping (House?) -> Void) {
+        db.collection("houses").document(id).getDocument { document, error in
+            if let document = document, document.exists {
+                let house = try? document.data(as: House.self)
+                completion(house)
+            } else {
+                print("House doesn't exist")
+                completion(nil)
             }
         }
-  */
+    }
     
     func updateHouse(houseID: String, house: House, completion: @escaping (Bool) -> Void){
         do{
