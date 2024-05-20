@@ -16,33 +16,28 @@ struct CreateHouseView: View {
     var body: some View {
         NavigationStack{
             VStack{
-                
                 Form{
+                    PhotosPicker(selection: $vm.imageSelection, matching: .images){
+                        if let image = vm.image{
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxWidth: .infinity, maxHeight: 200)
+                        } else {
+                            Image(systemName: "photo.badge.plus")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxWidth: .infinity, maxHeight: 200)
+                        }
+                    }
+
+                    
+                    
                     Section(header: Text("Information")){
                         NewHouseFormRowView(rowTitle: "Title", rowValue: $vm.title)
                         NewHouseFormRowView(rowTitle: "Beds", rowValue: $vm.beds, keyboardType: .numberPad)
                         NewHouseFormRowView(rowTitle: "m²", rowValue: $vm.size, keyboardType: .numberPad)
 
-                        HStack{
-                            PhotosPicker(selection: $vm.imageSelection, matching: .images){
-                                Label(title: {
-                                    Text("Image")
-                                }, icon:{
-                                    Image(systemName: "photo")
-                                })
-                                
-                            }
-                            Spacer()
-                            if let image = vm.image{
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 40, height: 40)
-                            }else {
-                                Text("No image")
-                            }
-                            
-                        }
                     }
                     Section(header: Text("Adress")) {
                         NewHouseFormRowView(rowTitle: "Street", rowValue: $vm.streetName)
