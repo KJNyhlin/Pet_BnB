@@ -322,7 +322,7 @@ class FirebaseHelper: ObservableObject {
             }
         }
     
-    func getMyTimePeriods(houseID: String, completion: @escaping ([Booking]?) -> Void) {
+    func getTimePeriodsFor(houseID: String, completion: @escaping ([Booking]?) -> Void) {
         var bookings = [Booking]()
         db.collection("houses").document(houseID).collection("bookings").getDocuments() {snapshot, error in
             if let error = error {
@@ -339,14 +339,15 @@ class FirebaseHelper: ObservableObject {
                             print("Error converting document")
                             completion(nil)
                         }
-                        completion(bookings)
                     }
+                    completion(bookings)
                 }
             }
-            
         }
-        
     }
 
+    func bookPeriod(houseID: String, docID: String) {
+        self.db.collection("houses").document(houseID).collection("bookings").document(docID).updateData( ["renterID": getUserID()])
+    }
 }
 

@@ -25,7 +25,7 @@ class MyHouseViewModel: ObservableObject{
             firebaseHelper.fetchHouse(withOwner: loggedInUserID){ myHouse in
                 self.house = myHouse
                 if let houseID = myHouse?.id {
-                    self.firebaseHelper.getMyTimePeriods(houseID: houseID) {bookings in
+                    self.firebaseHelper.getTimePeriodsFor(houseID: houseID) {bookings in
                         if let bookings = bookings {
                             self.myTimePeriods.removeAll()
                             self.myTimePeriods.append(contentsOf: bookings)

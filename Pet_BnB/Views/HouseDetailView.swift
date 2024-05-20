@@ -83,7 +83,25 @@ struct HouseDetailView: View {
                                 .font(.system(size: 16, weight: .regular))
                                 .fixedSize(horizontal: false, vertical: true)
                                 .padding([.leading, .trailing, .bottom], 10)
+                            Text("Time periods")
+                                .font(.system(size: 16, weight: .regular))
                             
+                            ForEach(viewModel.bookings) {booking in
+                                HStack {
+                                    Text("ID: \(booking.id)")
+                                    Button(action: {
+                                        if let houseID = house.id,
+                                           let bookingID = booking.docID
+                                        {
+                                            viewModel.bookHouse(houseID: houseID, bookingID: bookingID)
+                                        }
+                                    }, label: {
+                                        Text("Book")
+                                    })
+                                }
+                            }
+                            
+//                            BookingsList(viewModel: viewModel)
                         }
                         .padding([.leading, .trailing], 20)
                         .padding(.top, -2)
@@ -115,6 +133,23 @@ struct HouseDetailView: View {
         }
     }
 }
+
+struct BookingsList : View {
+    @StateObject var viewModel : HouseDetailViewModel
+    var body: some View {
+        VStack {
+            Text("Time periods")
+                .font(.system(size: 16, weight: .regular))
+            if let bookings = viewModel.house?.bookings {
+                List(bookings) {
+                    Text("\($0.id)")
+                }
+            }
+            
+        }
+    }
+}
+
 
 #Preview {
     HouseDetailView(houseId: "1", firebaseHelper: FirebaseHelper())
