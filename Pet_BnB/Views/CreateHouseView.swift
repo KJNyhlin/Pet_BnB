@@ -19,16 +19,10 @@ struct CreateHouseView: View {
                 
                 Form{
                     Section(header: Text("Information")){
-                        HStack{
-                            Text("Title:")
-                                .bold()
-                            TextField("Title", text: $vm.title)
-                        }
-                        
-                        TextField("Beds", text: $vm.beds)
-                            .keyboardType(.numberPad)
-                        TextField("m2", text: $vm.size)
-                            .keyboardType(.numberPad)
+                        NewHouseFormRowView(rowTitle: "Title", rowValue: $vm.title)
+                        NewHouseFormRowView(rowTitle: "Beds", rowValue: $vm.beds, keyboardType: .numberPad)
+                        NewHouseFormRowView(rowTitle: "m²", rowValue: $vm.size, keyboardType: .numberPad)
+
                         HStack{
                             PhotosPicker(selection: $vm.imageSelection, matching: .images){
                                 Label(title: {
@@ -51,16 +45,11 @@ struct CreateHouseView: View {
                         }
                     }
                     Section(header: Text("Adress")) {
-                        HStack{
-                            Text("Street:")
-                                .bold()
-                            TextField("Street", text: $vm.streetName)
-                        }
-                        TextField("Number", text: $vm.streetNR)
-                            .keyboardType(.numberPad)
-                        TextField("Zip Code", text: $vm.zipCode)
-                            .keyboardType(.numberPad)
-                        TextField("City", text: $vm.city)
+                        NewHouseFormRowView(rowTitle: "Street", rowValue: $vm.streetName)
+                        NewHouseFormRowView(rowTitle: "Number", rowValue: $vm.streetNR, keyboardType: .numberPad)
+                        NewHouseFormRowView(rowTitle: "Zip code", rowValue: $vm.zipCode, keyboardType: .numberPad)
+                        NewHouseFormRowView(rowTitle: "City", rowValue: $vm.city)
+                        
                     }
                     
                     Section(header: Text("Description")){
@@ -85,9 +74,24 @@ struct CreateHouseView: View {
                 }
 
             }
-            .navigationTitle("Create House")
+            .navigationTitle(vm.house == nil ? "Create House": "Edit House")
         }
         
+    }
+}
+
+struct NewHouseFormRowView: View{
+    var rowTitle: String
+    @Binding var rowValue: String
+    var keyboardType: UIKeyboardType = .default
+    
+    var body: some View{
+        HStack{
+            Text("\(rowTitle):")
+                .bold()
+            TextField(rowTitle, text: $rowValue)
+                .keyboardType(keyboardType)
+        }
     }
 }
 
