@@ -10,6 +10,7 @@ import SwiftUI
 struct MyHouseView: View {
     //var myHouse: House?
     @StateObject var vm = MyHouseViewModel()
+    @State private var showingDeleteAlert = false
     var body: some View {
         NavigationStack{
             VStack{
@@ -24,38 +25,7 @@ struct MyHouseView: View {
                     if let house = vm.house,
                        let imageUrl = vm.house?.imageURL
                     {
-                        
-                        AsyncImage(url: URL(string: imageUrl)){ phase in
-                            switch phase {
-                            case .empty:
-                                ProgressView()
-                                    .frame(height: 200)
-                                    .frame(maxWidth: 335)
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(height: 200)
-                                    .frame(maxWidth: 335)
-                                    .clipped()
-                            case .failure:
-                                Image(systemName: "photo")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(height: 200)
-                                    .frame(maxWidth: 335)
-                                    .background(Color.gray)
-                            @unknown default:
-                                Image(systemName: "photo")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(height: 200)
-                                    .frame(maxWidth: 335)
-                                    .background(Color.gray)
-                            }
-                        }
-                        
-                        
+                        AsyncImageView(imageUrl: imageUrl)
                         
                         VStack(alignment: .leading){
                             Text(house.title)
@@ -63,10 +33,8 @@ struct MyHouseView: View {
                             if let beds = house.beds,
                                let size = house.size{
                                 InformationRow(beds: beds, size: size)
-                                    
+                                
                             }
-                           
-           
                             if let streetNR = house.streetNR,
                                let streetName = house.streetName,
                                let city = house.city,
@@ -78,28 +46,34 @@ struct MyHouseView: View {
                             
                             Menu {
                                 Button(role: .destructive, action: {
-                                    // Handling för när "Delete" väljs
-                                }) {
+                                    //vm.deleteHouse()
+                                    showingDeleteAlert = true
+                                }
+                                ) {
                                     Label("Delete", systemImage: "trash")
-                                        
+                                    
                                 }
                                 NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
                                     Label("Edit", systemImage: "pencil")
                                 }
-
+                                
                             } label: {
                                 FilledButtonLabel(text: "Manage")
                             }
-                                
+                            .alert(isPresented: $showingDeleteAlert) {
+                                Alert(title: Text("Delete House"), message: Text("Are you sure you want to delete this house?"), primaryButton: .destructive(Text("Delete")) {
+                                    vm.deleteHouse()
+                                }, secondaryButton: .cancel())
+                            }
+                            
                         }
-                        
                         .padding()
                         
                         
                     }
                     Spacer()
                 }
-                    
+                
             }
             .onAppear{
                 vm.downloadHouse()
@@ -107,7 +81,7 @@ struct MyHouseView: View {
         }
     }
 }
-    
+
 struct AdressView:View {
     var street: String
     var streetNR: Int
@@ -132,7 +106,6 @@ struct InformationRow: View{
     
     var body: some View{
         HStack{
-
             Label(
                 title: { Text("\(beds) st") },
                 icon: { Image(systemName: "bed.double") }
@@ -141,7 +114,7 @@ struct InformationRow: View{
             .padding(.trailing, 10)
             
             Label(
-                title: { Text("\(size) m2") },
+                title: { Text("\(size) m²") },
                 icon: { Image(systemName: "house.fill") }
                 
             )
@@ -151,10 +124,6 @@ struct InformationRow: View{
         .padding(.vertical, 5)
     }
 }
-    
-    
-    
-
 
 //#Preview {
 //    AdressView(street: "Gatan", streetNR: 3, city: "Uppsala")

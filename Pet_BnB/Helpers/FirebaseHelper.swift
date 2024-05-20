@@ -158,13 +158,12 @@ class FirebaseHelper: ObservableObject {
             }
             
             guard let documents = snapshot?.documents, !documents.isEmpty else {
-                // Inga hus hittades med det angivna ägare-ID:et
+                // No houses found
                 completion(nil)
                 return
             }
             
-            // Om vi når hit betyder det att det finns minst ett hus med rätt ägare-ID
-            // Vi tar bara det första huset som matchar kriterierna
+            // If we get here we found houses we for now return only the first one
             do {
                 let document = documents[0]
                 let house = try document.data(as: House.self)
@@ -239,7 +238,7 @@ class FirebaseHelper: ObservableObject {
         }
   */
     
-    func updateHouse(houseID: String, house: House, with values: [String: Any], completion: @escaping (Bool) -> Void){
+    func updateHouse(houseID: String, house: House, completion: @escaping (Bool) -> Void){
         do{
             let houseData = try Firestore.Encoder().encode(house)
             print(houseData)
@@ -265,6 +264,22 @@ class FirebaseHelper: ObservableObject {
             
         }
     }
+    
+    func delete(house: House){
+        if let url = house.imageURL{
+            deleteImage(atUrl: url)
+        }
+        if let id = house.id{
+            db.collection("houses").document(id).delete { error in
+                if let error = error {
+                    print("Error deleting document: \(error.localizedDescription)")
+                } else {
+                    print("Document successfully deleted")
+                }
+            }
+        }
+    }
+    
     
     func uploadImage(uiImage: UIImage, completion: @escaping (String?) -> Void) {
         guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else {

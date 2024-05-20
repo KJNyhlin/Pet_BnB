@@ -19,7 +19,12 @@ struct CreateHouseView: View {
                 
                 Form{
                     Section(header: Text("Information")){
-                        TextField("Title", text: $vm.title)
+                        HStack{
+                            Text("Title:")
+                                .bold()
+                            TextField("Title", text: $vm.title)
+                        }
+                        
                         TextField("Beds", text: $vm.beds)
                             .keyboardType(.numberPad)
                         TextField("m2", text: $vm.size)
@@ -46,7 +51,11 @@ struct CreateHouseView: View {
                         }
                     }
                     Section(header: Text("Adress")) {
-                        TextField("Street", text: $vm.streetName)
+                        HStack{
+                            Text("Street:")
+                                .bold()
+                            TextField("Street", text: $vm.streetName)
+                        }
                         TextField("Number", text: $vm.streetNR)
                             .keyboardType(.numberPad)
                         TextField("Zip Code", text: $vm.zipCode)
