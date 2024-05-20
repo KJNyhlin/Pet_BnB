@@ -75,7 +75,7 @@ struct HouseDetailView: View {
                                         .fontWeight(.bold)
                                         .padding([.leading, .trailing], 10)
                                                     
-                                Text("City: \(house.city) • Beds: \(house.beds) • Size: \(house.size) sqm")
+                                Text("City: \(house.city) • \(house.beds) beds • \(house.size) sqm")
                                         .font(.footnote)
                                         .padding([.leading, .trailing], 10)
                                                     
