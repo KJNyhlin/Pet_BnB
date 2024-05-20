@@ -11,6 +11,10 @@ import SwiftUI
 class MyHouseViewModel: ObservableObject{
     @Published var house: House? = nil
     let firebaseHelper = FirebaseHelper()
+    @Published var startDate = Date.now
+    @Published var endDate = Date.now
+    @Published var myTimePeriods = [Booking]()
+    
     init(house: House? = nil) {
 
     }
@@ -20,7 +24,14 @@ class MyHouseViewModel: ObservableObject{
         if let loggedInUserID = loggedInUserID {
             firebaseHelper.fetchHouse(withOwner: loggedInUserID){ myHouse in
                 self.house = myHouse
-                
+                if let houseID = myHouse?.id {
+                    self.firebaseHelper.getMyTimePeriods(houseID: houseID) {bookings in
+                        if let bookings = bookings {
+                            self.myTimePeriods.removeAll()
+                            self.myTimePeriods.append(contentsOf: bookings)
+                        }
+                    }
+                }
             }
         }
     }
@@ -32,4 +43,16 @@ class MyHouseViewModel: ObservableObject{
         }
         
     }
+    
+    func saveTimePeriod(startDate: Date, endDate: Date) {
+            guard let userID = firebaseHelper.getUserID() else {return}
+            guard let house = house else {return}
+            if let houseID = house.id {
+                let newBooking = Booking(houseID: houseID, fromDate: startDate, toDate: endDate)
+                firebaseHelper.save(booking: newBooking, for: house)
+            }
+            
+        }
+    
+    
 }

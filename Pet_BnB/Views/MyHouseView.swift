@@ -11,6 +11,7 @@ struct MyHouseView: View {
     //var myHouse: House?
     @StateObject var vm = MyHouseViewModel()
     @State private var showingDeleteAlert = false
+    @State private var showAddPeriodSheet = false
     var body: some View {
         NavigationStack{
             VStack{
@@ -36,6 +37,7 @@ struct MyHouseView: View {
                             AdressView(street: house.streetName, streetNR: house.streetNR, city: house.city, zipCode: house.zipCode)
          
                             Text(house.description)
+                            TimePeriodList(vm: vm)
                             Spacer()
                             
                             Menu {
@@ -50,6 +52,12 @@ struct MyHouseView: View {
                                 NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
                                     Label("Edit", systemImage: "pencil")
                                 }
+                                Button(action: {
+//                                    vm.saveTimePeriod()
+                                    showAddPeriodSheet.toggle()
+                                }, label: {
+                                    Text("Add period")
+                                })
                                 
                             } label: {
                                 FilledButtonLabel(text: "Manage")
@@ -59,6 +67,9 @@ struct MyHouseView: View {
                                     vm.deleteHouse()
                                 }, secondaryButton: .cancel())
                             }
+                            .sheet(isPresented: $showAddPeriodSheet, content: {
+                                AddPeriodSheet(vm: vm)
+                            })
                             
                         }
                         .padding()
@@ -116,6 +127,39 @@ struct InformationRow: View{
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 5)
+    }
+}
+
+struct  TimePeriodList : View {
+    @StateObject var vm : MyHouseViewModel
+    var body: some View {
+        List(vm.myTimePeriods) {
+            Text("\($0.id)")
+        }
+    }
+}
+
+struct AddPeriodSheet: View {
+    @StateObject var vm : MyHouseViewModel
+    @State var startDate = Date.now
+    @State var endDate = Date.now
+    
+    var body: some View {
+        VStack {
+            Text("Select a time period for others to book")
+            DatePicker(selection: $startDate, in: Date.now..., displayedComponents: .date) {
+                    Text("Select a date")
+                }
+            
+            
+            DatePicker(selection: $endDate, in: Date.now..., displayedComponents: .date) {
+                    Text("Select a date")
+                }
+            Button(action: {vm.saveTimePeriod(startDate: startDate, endDate: endDate)}, label: {
+                Text("Save")
+            })
+            
+        }
     }
 }
 
