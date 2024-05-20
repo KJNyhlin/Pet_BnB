@@ -69,7 +69,11 @@ struct HouseDetailView: View {
                                 Text("★ 4.91")
                                         .font(.subheadline)
                                         .padding([.leading, .trailing], 10)
-                                                    
+                            
+                                Text("For rent: July 20, 2024 - July 27, 2024")
+                                        .font(.system(size: 16, weight: .regular))
+                                        .padding([.leading, .trailing], 10)
+
                                 Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
                                         .font(.footnote)
                                         .fontWeight(.bold)
