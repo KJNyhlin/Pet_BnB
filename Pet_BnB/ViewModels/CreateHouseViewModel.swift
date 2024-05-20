@@ -37,20 +37,21 @@ class CreateHouseViewModel: ObservableObject{
             self.title = house.title
             description = house.description
             imageURL = house.imageURL
-            if let city = house.city,
-               let beds = house.beds,
-               let size = house.size,
-               let streetNR = house.streetNR,
-               let streetName = house.streetName,
-               let imageURL = house.imageURL,
-               let zipCode = house.zipCode
+            if let imageURL = house.imageURL
+                //let city = house.city,
+              // let beds = house.beds,
+             //  let size = house.size,
+             //  let streetNR = house.streetNR,
+            //   let streetName = house.streetName,
+               
+           //    let zipCode = house.zipCode
             {
-                self.city = city
-                self.beds = "\(beds)"
-                self.size = "\(size)"
-                self.streetNR = "\(streetNR)"
-                self.zipCode = "\(zipCode)"
-                self.streetName = streetName
+                self.city = house.city
+                self.beds = "\(house.beds)"
+                self.size = "\(house.size)"
+                self.streetNR = "\(house.streetNR)"
+                self.zipCode = "\(house.zipCode)"
+                self.streetName = house.streetName
                 firebaseHelper.downloadImage(from: imageURL){ image in
                     self.image = image
                 }
@@ -83,31 +84,34 @@ class CreateHouseViewModel: ObservableObject{
                 completion(false)
                 return
             }
-            if imageSelection != nil {
-                
-                print("Image changed upload new Image!!!!!!")
-                firebaseHelper.uploadImage(uiImage: image) { urlString in
-                    if let urlString = urlString, let id = house.id {
-                        if let oldURL = house.imageURL{
-                            self.firebaseHelper.deleteImage(atUrl: oldURL)
+            if let userID = firebaseHelper.getUserID(){
+                if imageSelection != nil {
+                    
+                    print("Image changed upload new Image!!!!!!")
+                    firebaseHelper.uploadImage(uiImage: image) { urlString in
+                        if let urlString = urlString,
+                           let id = house.id{
+                            if let oldURL = house.imageURL{
+                                self.firebaseHelper.deleteImage(atUrl: oldURL)
+                            }
+                            
+                            let changedHouse = House(title: self.title, description: self.description, imageURL: urlString, beds: bedsInt, size: sizeInt, streetName: self.streetName, streetNR: streetNRInt, city: self.city, zipCode: zipCodeInt, ownerID: userID)
+                            self.firebaseHelper.updateHouse(houseID: id, house: changedHouse) { success in
+                                completion(success)
+                            }
+                        } else {
+                            completion(false)
                         }
- 
-                        let changedHouse = House(title: self.title, description: self.description, imageURL: urlString, beds: bedsInt, size: sizeInt, streetName: self.streetName, streetNR: streetNRInt, city: self.city, zipCode: zipCodeInt)
-                        self.firebaseHelper.updateHouse(houseID: id, house: changedHouse) { success in
+                    }
+                } else {
+                    if let id = house.id {
+                        let changedHouse = House(title: title, description: description, beds: bedsInt, size: sizeInt, streetName: streetName, streetNR: streetNRInt, city: city, zipCode: zipCodeInt, ownerID: userID)
+                        firebaseHelper.updateHouse(houseID: id, house: changedHouse) { success in
                             completion(success)
                         }
                     } else {
                         completion(false)
                     }
-                }
-            } else {
-                if let id = house.id {
-                    let changedHouse = House(title: title, description: description, beds: bedsInt, size: sizeInt, streetName: streetName, streetNR: streetNRInt, city: city, zipCode: zipCodeInt)
-                    firebaseHelper.updateHouse(houseID: id, house: changedHouse) { success in
-                        completion(success)
-                    }
-                } else {
-                    completion(false)
                 }
             }
         }
