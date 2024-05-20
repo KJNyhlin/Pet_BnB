@@ -30,17 +30,11 @@ struct MyHouseView: View {
                         VStack(alignment: .leading){
                             Text(house.title)
                                 .font(.title)
-                    //        if let beds = house.beds,
-                   //            let size = house.size{
+            
                             InformationRow(beds: house.beds, size: house.size)
                                 
-                 //           }
-                 //           if let streetNR = house.streetNR,
-                 //              let streetName = house.streetName,
-                 //              let city = house.city,
-                 //              let zipCode = house.zipCode{
                             AdressView(street: house.streetName, streetNR: house.streetNR, city: house.city, zipCode: house.zipCode)
-                  //          }
+         
                             Text(house.description)
                             Spacer()
                             

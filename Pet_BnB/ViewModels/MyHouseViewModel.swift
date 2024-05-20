@@ -32,6 +32,4 @@ class MyHouseViewModel: ObservableObject{
         }
         
     }
-    
-    
 }

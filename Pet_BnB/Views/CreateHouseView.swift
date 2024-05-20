@@ -78,7 +78,6 @@ struct CreateHouseView: View {
                             FilledButtonLabel(text: "Save")
                                 .padding(.vertical, 10)
                                 .padding(.horizontal, 30)
-                            
                                
                         })
                     }

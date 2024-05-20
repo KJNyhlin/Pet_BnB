@@ -109,8 +109,7 @@ class FirebaseHelper: ObservableObject {
             return
         }
         uploadImage(uiImage: uiImage){ urlString in
-            if let urlString = urlString,
-               let ownerID = self.auth.currentUser?.uid{
+            if let urlString = urlString {
                 print("Image uploaded successfully.")
                 
                 let house = House(title: title, description: description, imageURL: urlString,

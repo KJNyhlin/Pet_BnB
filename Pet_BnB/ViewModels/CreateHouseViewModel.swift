@@ -38,13 +38,6 @@ class CreateHouseViewModel: ObservableObject{
             description = house.description
             imageURL = house.imageURL
             if let imageURL = house.imageURL
-                //let city = house.city,
-              // let beds = house.beds,
-             //  let size = house.size,
-             //  let streetNR = house.streetNR,
-            //   let streetName = house.streetName,
-               
-           //    let zipCode = house.zipCode
             {
                 self.city = house.city
                 self.beds = "\(house.beds)"
