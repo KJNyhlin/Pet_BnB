@@ -21,34 +21,34 @@ struct HouseDetailView: View {
         ZStack {
             ScrollView {
                     if let house = viewModel.house {
-                        VStack (alignment: .leading, spacing: 8) {
+                        VStack () {
                             if let imageUrl = house.imageURL, let url = URL(string: imageUrl) {
                                 AsyncImage(url: url) { phase in
                                     switch phase {
                                     case .empty:
                                         ProgressView()
                                             .frame(height: 300)
-                                            .frame(maxWidth: .infinity)
+                                            .frame(maxWidth: 400)
                                     case .success(let image):
                                         image
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
                                             .frame(height: 300)
-                                            .frame(maxWidth: .infinity)
+                                            .frame(maxWidth: 400)
                                             .clipped()
                                     case .failure:
                                         Image(systemName: "photo")
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
                                             .frame(height: 300)
-                                            .frame(maxWidth: .infinity)
+                                            .frame(maxWidth: 400)
                                             .background(Color.gray)
                                     @unknown default:
                                         Image(systemName: "photo")
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
                                             .frame(height: 300)
-                                            .frame(maxWidth: .infinity)
+                                            .frame(maxWidth: 400)
                                             .background(Color.gray)
                                     }
                                 }
@@ -57,16 +57,13 @@ struct HouseDetailView: View {
                                 Text(house.title)
                                     .font(.title)
                                     //.fontWeight(.bold)
-                                    .padding(.horizontal, 20)
                                 
                                 Text("For rent: Date missing")
                                     .font(.subheadline)
-                                    .padding(.horizontal, 20)
                                 
                                 Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
                                     .font(.footnote)
                                     .fontWeight(.bold)
-                                    .padding(.horizontal, 20)
                                 
                                 HStack {
                                     Label(
@@ -83,16 +80,14 @@ struct HouseDetailView: View {
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.vertical, 5)
-                                .padding(.horizontal, 20)                                
                                 
                                 Text(house.description)
                                     .font(.subheadline)
                                     .fixedSize(horizontal: false, vertical: true)
-                                    .padding(.horizontal, 20)
                             }
-                            .padding(.horizontal, 15)
-                            //  .padding([.leading, .trailing], 20)
-                            .padding(.top, 8)
+                            .padding()
+                            .padding(.horizontal, 5)
+                            .padding(.top, -10)
                         }
                     } else {
                         ProgressView()
