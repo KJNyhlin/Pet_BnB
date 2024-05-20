@@ -8,8 +8,9 @@
 import Foundation
 import FirebaseFirestore
 
-struct Pet: Decodable, Encodable {
-    @DocumentID var docID: String?
+struct Pet: Decodable, Encodable, Identifiable {
+    var id: String?
     var name: String
     var species: String
+    var information: [String] = []
 }

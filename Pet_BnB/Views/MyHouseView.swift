@@ -36,6 +36,20 @@ struct MyHouseView: View {
                             AdressView(street: house.streetName, streetNR: house.streetNR, city: house.city, zipCode: house.zipCode)
          
                             Text(house.description)
+                                .bold()
+                           
+//                            VStack{
+//                                Text("Pets:")
+//                                    .font(.subheadline)
+//                                ScrollView{
+//                                    VStack(alignment: .leading){
+//
+//                                        PetsView(vm: PetsViewModel(pets: house.pets))
+//                                    }
+//                                }
+//                            }
+//                            .padding(.vertical)
+//                            
                             Spacer()
                             
                             Menu {
@@ -49,6 +63,9 @@ struct MyHouseView: View {
                                 }
                                 NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
                                     Label("Edit", systemImage: "pencil")
+                                }
+                                NavigationLink(destination:PetsView(vm: PetsViewModel(house: house, pets: house.pets))){
+                                    Label("Pets", systemImage: "pawprint.fill")
                                 }
                                 
                             } label: {

@@ -259,6 +259,18 @@ class FirebaseHelper: ObservableObject {
         }
     }
     
+    func update(houseId: String, with values: [String: Any], completion: @escaping (Bool) -> Void){
+        db.collection("houses").document(houseId).updateData(values){ error in
+            if let error = error{
+                print("Error saving values to house \(error)")
+                completion(false)
+            } else {
+                print("Values updated!")
+                completion(true)
+            }
+        }
+    }
+    
     func deleteImage(atUrl url: String){
         let storageRef = Storage.storage().reference(forURL: url)
         storageRef.delete(){ error in
