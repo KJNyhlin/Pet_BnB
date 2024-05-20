@@ -61,32 +61,31 @@ struct HouseDetailView: View {
                                 .background(Color.gray)
                         }
                         VStack(alignment: .leading, spacing: 8) {
-                            Text(house.title)
-                                .font(.system(size: 26, weight: .bold))
-                                .fontWeight(.bold)
-                                .padding([.leading, .trailing], 10)
-                            
-                            Text("★ 4.91")
-                                .font(.subheadline)
-                                .padding([.leading, .trailing], 10)
-                            
-                            Text("Address ")
-                                .font(.footnote)
-                                .fontWeight(.bold)
-                                .padding([.leading, .trailing], 10)
-                            
-                            Text("City • beds • sqm ")
-                                .font(.footnote)
-                                .padding([.leading, .trailing], 10)
-                            
-                            Text(house.description)
-                                .font(.system(size: 16, weight: .regular))
-                                .fixedSize(horizontal: false, vertical: true)
-                                .padding([.leading, .trailing, .bottom], 10)
-                            
+                                Text(house.title)
+                                        .font(.system(size: 26, weight: .bold))
+                                        .fontWeight(.bold)
+                                        .padding([.leading, .trailing], 10)
+                                                    
+                                Text("★ 4.91")
+                                        .font(.subheadline)
+                                        .padding([.leading, .trailing], 10)
+                                                    
+                                Text("Address: \(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
+                                        .font(.footnote)
+                                        .fontWeight(.bold)
+                                        .padding([.leading, .trailing], 10)
+                                                    
+                                Text("City: \(house.city) • Beds: \(house.beds) • Size: \(house.size) sqm")
+                                        .font(.footnote)
+                                        .padding([.leading, .trailing], 10)
+                                                    
+                                Text(house.description)
+                                        .font(.system(size: 16, weight: .regular))
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .padding([.leading, .trailing, .bottom], 10)
                         }
-                        .padding([.leading, .trailing], 20)
-                        .padding(.top, -2)
+                            .padding([.leading, .trailing], 20)
+                            .padding(.top, -2)
                     } else {
                         ProgressView()
                             .onAppear {
