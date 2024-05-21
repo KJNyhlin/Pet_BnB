@@ -88,16 +88,19 @@ struct HouseDetailView: View {
                             
                             ForEach(viewModel.bookings) {booking in
                                 HStack {
-                                    Text("ID: \(booking.id)")
-                                    Button(action: {
-                                        if let houseID = house.id,
-                                           let bookingID = booking.docID
-                                        {
-                                            viewModel.bookHouse(houseID: houseID, bookingID: bookingID)
-                                        }
-                                    }, label: {
-                                        Text("Book")
-                                    })
+                                    Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
+                                    if booking.renterID == nil {
+                                        Button(action: {
+                                            if let houseID = house.id,
+                                               let bookingID = booking.docID
+                                            {
+                                                viewModel.bookHouse(houseID: houseID, booking: booking)
+                                            }
+                                        }, label: {
+                                            
+                                            Text("Book")
+                                        })
+                                    }
                                 }
                             }
                             

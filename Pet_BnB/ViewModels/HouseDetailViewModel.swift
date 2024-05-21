@@ -41,10 +41,12 @@ class HouseDetailViewModel: ObservableObject {
         }
     }
     
-    func bookHouse(houseID: String, bookingID: String) {
-        self.firebaseHelper.bookPeriod(houseID: houseID, docID: bookingID)
-        
+    func bookHouse(houseID: String, booking: Booking) {
+        if booking.renterID == nil {
+            if let bookingID = booking.docID {
+                self.firebaseHelper.bookPeriod(houseID: houseID, docID: bookingID)
+            }
+        }
     }
-    
     
 }

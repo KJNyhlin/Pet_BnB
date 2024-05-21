@@ -68,7 +68,7 @@ struct MyHouseView: View {
                                 }, secondaryButton: .cancel())
                             }
                             .sheet(isPresented: $showAddPeriodSheet, content: {
-                                AddPeriodSheet(vm: vm)
+                                AddPeriodSheet(vm: vm, showAddPeriodSheet: $showAddPeriodSheet)
                             })
                             
                         }
@@ -134,7 +134,7 @@ struct  TimePeriodList : View {
     @StateObject var vm : MyHouseViewModel
     var body: some View {
         List(vm.myTimePeriods) {
-            Text("\($0.id)")
+            Text("\($0.fromDate.formatted(date: .numeric, time: .omitted)) - \($0.toDate.formatted(date: .numeric, time: .omitted))")
         }
     }
 }
@@ -143,6 +143,7 @@ struct AddPeriodSheet: View {
     @StateObject var vm : MyHouseViewModel
     @State var startDate = Date.now
     @State var endDate = Date.now
+    @Binding var showAddPeriodSheet : Bool
     
     var body: some View {
         VStack {
@@ -155,7 +156,11 @@ struct AddPeriodSheet: View {
             DatePicker(selection: $endDate, in: Date.now..., displayedComponents: .date) {
                     Text("Select a date")
                 }
-            Button(action: {vm.saveTimePeriod(startDate: startDate, endDate: endDate)}, label: {
+            Button(action: {
+                vm.saveTimePeriod(startDate: startDate, endDate: endDate)
+                showAddPeriodSheet.toggle()
+                
+            }, label: {
                 Text("Save")
             })
             
