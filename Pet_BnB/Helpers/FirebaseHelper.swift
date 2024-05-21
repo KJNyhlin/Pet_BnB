@@ -324,6 +324,42 @@ class FirebaseHelper: ObservableObject {
         }
     }
 
+    func save(booking: Booking, for house: House) {
+            if let houseID = house.id {
+                do {
+                    try db.collection("houses").document(houseID).collection("bookings").addDocument(from: booking)
+                } catch {
+                    print("Error writing to bookings for house")
+                }
+            }
+        }
+    
+    func getTimePeriodsFor(houseID: String, completion: @escaping ([Booking]?) -> Void) {
+        var bookings = [Booking]()
+        db.collection("houses").document(houseID).collection("bookings").getDocuments() {snapshot, error in
+            if let error = error {
+                print("Error loading bookings: \(error)")
+                completion(nil)
+            } else {
+                if let documents = snapshot?.documents {
+                    for document in documents {
+                        print("\(document)")
+                        do {
+                            let booking = try document.data(as: Booking.self)
+                            bookings.append(booking)
+                        } catch {
+                            print("Error converting document")
+                            completion(nil)
+                        }
+                    }
+                    completion(bookings)
+                }
+            }
+        }
+    }
 
+    func bookPeriod(houseID: String, docID: String) {
+        self.db.collection("houses").document(houseID).collection("bookings").document(docID).updateData( ["renterID": getUserID()])
+    }
 }
 
