@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 class CreatePetViewModel: ObservableObject{
     var house: House
@@ -35,31 +36,68 @@ class CreatePetViewModel: ObservableObject{
         
         if let pet = pet{
             print("This is the edit pet save and replace")
+            if let index = house.pets?.firstIndex(where: { $0.id == pet.id }){
+                house.pets?[index].name = name
+                house.pets?[index].species = selectedSpices
+                house.pets?[index].information = informationArray
+                
+            }
+            
         } else {
             
-            house.pets?.append(Pet(name: name, species: selectedSpices))
+            house.pets?.append(Pet(name: name, species: selectedSpices, information: informationArray))
             
-            do {
-                let petsData = try house.pets?.map { try JSONEncoder().encode($0) } ?? []
-                let petsDict = try petsData.map { try JSONSerialization.jsonObject(with: $0) }
-                if let houseID = house.id{
-                    print(house)
-                    firebaseHelper.update(houseId: houseID, with: ["pets": petsDict]){ success in
-                        completion(success)
-                        
-                        //                    if success{
-                        //                        completion(success)
-                        //                    } else{
-                        //                        print("Could not save!!!")
-                        //                        completion(success)
-                        //                    }
-                        
-                    }
-                }
-            } catch {
-                print("Error encoding pets: \(error)")
-                completion(false)
             }
+            
+//            do {
+//                let petsData = try house.pets?.map { try JSONEncoder().encode($0) } ?? []
+//                let petsDict = try petsData.map { try JSONSerialization.jsonObject(with: $0) }
+//                if let houseID = house.id{
+//                    print(house)
+//                    firebaseHelper.update(houseId: houseID, with: ["pets": petsDict]){ success in
+//                        completion(success)
+//                        
+//                        //                    if success{
+//                        //                        completion(success)
+//                        //                    } else{
+//                        //                        print("Could not save!!!")
+//                        //                        completion(success)
+//                        //                    }
+//                        
+//                    }
+//                }
+//            } catch {
+//                print("Error encoding pets: \(error)")
+//                completion(false)
+//            }
+        savePetsToFirebase() { success in
+            completion(success)
+        }
+
+        
+    }
+    
+    func savePetsToFirebase(completion: @escaping (Bool) -> Void){
+        do {
+            let petsData = try house.pets?.map { try JSONEncoder().encode($0) } ?? []
+            let petsDict = try petsData.map { try JSONSerialization.jsonObject(with: $0) }
+            if let houseID = house.id{
+                print(house)
+                firebaseHelper.update(houseId: houseID, with: ["pets": petsDict]){ success in
+                    completion(success)
+                    
+                    //                    if success{
+                    //                        completion(success)
+                    //                    } else{
+                    //                        print("Could not save!!!")
+                    //                        completion(success)
+                    //                    }
+                    
+                }
+            }
+        } catch {
+            print("Error encoding pets: \(error)")
+            completion(false)
         }
         
     }

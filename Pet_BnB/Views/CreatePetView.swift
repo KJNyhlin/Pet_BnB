@@ -17,6 +17,7 @@ struct CreatePetView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 200, height: 200)
+                .padding()
             
             EntryFields(placeHolder: "Name", promt: "", field: $vm.name)
             
@@ -47,6 +48,13 @@ struct CreatePetView: View {
                         title: { Text("Information \(vm.informationArray.count)") },
                         icon: { Image(systemName: "plus") }
                     )
+                    .frame(maxWidth: .infinity)
+                    .padding(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 25.0)
+                            .stroke(AppColors.mainAccent, lineWidth: 3)
+                    )
+                    .padding(.vertical)
                 })
                 VStack{
                     ForEach(0..<vm.informationArray.count, id: \.self){ index in

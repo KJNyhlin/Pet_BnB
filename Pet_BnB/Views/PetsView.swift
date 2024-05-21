@@ -12,15 +12,19 @@ struct PetsView: View {
     var body: some View {
         VStack{
             if let pets = vm.house.pets{
-                ForEach(pets) { pet in
-                    PetRowView(pet: pet)
+                List{
+                    ForEach(pets) { pet in
+                        NavigationLink(destination: CreatePetView(vm: CreatePetViewModel(pet: pet, house: vm.house))){
+                            PetRowView(pet: pet)
+                        }
+                    }
                 }
             } else{
                 Text("No pets added")
                 Text("Please add a pet")
             }
-
-           Spacer()
+            
+            Spacer()
             VStack(alignment: .trailing){
                 NavigationLink(destination: CreatePetView(vm:CreatePetViewModel(pet: nil, house: vm.house))){
                     
@@ -29,7 +33,7 @@ struct PetsView: View {
                         .frame(maxWidth: 100)
                 }
             }
-
+            
         }
     }
 }
@@ -53,8 +57,6 @@ struct PetRowView:View{
             Spacer()
         }
         .frame(maxWidth: .infinity)
-        .padding()
-        .border(.black)
         .padding()
         
     }

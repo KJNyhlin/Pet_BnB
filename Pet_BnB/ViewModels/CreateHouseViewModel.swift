@@ -23,6 +23,7 @@ class CreateHouseViewModel: ObservableObject{
     let firebaseHelper = FirebaseHelper()
 
     @Published var image: UIImage?
+    @Published var savingInProgress = false
 
     @Published var imageSelection: PhotosPickerItem? = nil {
           didSet {

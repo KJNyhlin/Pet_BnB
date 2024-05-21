@@ -16,5 +16,4 @@ class PetsViewModel: ObservableObject {
         self.house = house
         self.pets = pets
     }
-    
 }
