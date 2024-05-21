@@ -19,12 +19,12 @@ class FirebaseHelper: ObservableObject {
     let auth = Auth.auth()
     @Published var houses = [House]()
 
-    func getUserID()-> String? {
+    func getUserID() -> String? {
         return auth.currentUser?.uid
     }
 
-    func createAccount(name: String, password: String, completion: @escaping (String?)-> Void) {
-        auth.createUser(withEmail: name, password: password) {result, error in
+    func createAccount(name: String, password: String, completion: @escaping (String?) -> Void) {
+        auth.createUser(withEmail: name, password: password) { result, error in
             if let error = error {
                 print("Error sign up: \(error)")
                 completion(nil)
@@ -39,14 +39,13 @@ class FirebaseHelper: ObservableObject {
     }
     
     func signIn(email: String, password: String) {
-        auth.signIn(withEmail: email, password: password) {result, error in
+        auth.signIn(withEmail: email, password: password) { result, error in
             if let error = error {
                 print("Error signing in: \(error)")
             } else {
-                guard let userID = result?.user.uid else {return}
-                self.loadUserInfo(userID: userID) {user in
+                guard let userID = result?.user.uid else { return }
+                self.loadUserInfo(userID: userID) { user in
                     print("\(user)")
-                
                 }
             }
         }
@@ -60,16 +59,14 @@ class FirebaseHelper: ObservableObject {
         }
     }
     
-    func loadUserInfo(userID: String, completion: @escaping (User?)-> Void) {
-        
-        db.collection("users").document(userID).getDocument {document, error in
+    func loadUserInfo(userID: String, completion: @escaping (User?) -> Void) {
+        db.collection("users").document(userID).getDocument { document, error in
             if let error = error {
                 print("Error loading userinfo: \(error)")
                 completion(nil)
             } else if let document = document {
                 do {
                     let user = try document.data(as: User.self)
-                    
                     completion(user)
                 } catch {
                     print("Error loading user")
@@ -77,22 +74,27 @@ class FirebaseHelper: ObservableObject {
                 }
             }
         }
-        
     }
     
-    func savePersonalInfoToDB( firstName: String, surName: String) {
-        
-        guard let userID = auth.currentUser?.uid else {return}
+    func savePersonalInfoToDB(firstName: String, surName: String) {
+        guard let userID = auth.currentUser?.uid else { return }
         let userInfo = User(firstName: firstName, surName: surName)
         
         do {
-            try db.collection("users").document(userID).setData(from: userInfo) {error in
-            }
-            } catch {
-                print("Error")
+            try db.collection("users").document(userID).setData(from: userInfo) { error in }
+        } catch {
+            print("Error")
         }
-        
     }
+
+    func saveImageURLToDB(userID: String, imageURL: String) {
+        db.collection("users").document(userID).updateData(["imageURL": imageURL]) { error in
+            if let error = error {
+                print("Error updating imageURL: \(error)")
+            }
+        }
+    }
+
     
     
     func saveHouse(uiImage: UIImage, title: String, description: String, beds: Int, size: Int, StreetName: String, streetNr: Int, city: String, zipCode: Int,  completion: @escaping (Bool) -> Void){
@@ -303,7 +305,7 @@ class FirebaseHelper: ObservableObject {
         
         let uuid = UUID()
         let storageRef = storage.reference()
-        let imageRef = storageRef.child("houses/\(uuid.uuidString).jpg")
+        let imageRef = storageRef.child("profile_images/\(uuid.uuidString).jpg")
         
         imageRef.putData(imageData, metadata: nil) { metadata, error in
             if let error = error {
@@ -323,7 +325,8 @@ class FirebaseHelper: ObservableObject {
             }
         }
     }
-
+    
+    
     func save(booking: Booking, for house: House) {
             if let houseID = house.id {
                 do {
