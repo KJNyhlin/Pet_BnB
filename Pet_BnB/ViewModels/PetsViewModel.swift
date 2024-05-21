@@ -10,10 +10,28 @@ import Foundation
 class PetsViewModel: ObservableObject {
     //var houseID: String
     @Published var house: House
-    @Published var pets: [Pet]?
+  //  @Published var pets: [Pet] = []
+    var firebaseHelper = FirebaseHelper()
     
     init(house: House, pets: [Pet]?) {
         self.house = house
-        self.pets = pets
+//        if let pets = pets {
+//            self.pets = pets
+//        }
+        
+    }
+    
+    func deletePet(at offsets: IndexSet) {
+        house.pets?.remove(atOffsets: offsets)
+        if let houseID = house.id,
+           let pets = house.pets{
+            
+            firebaseHelper.save(pets: pets, toHouseId: houseID){ success in
+                
+            }
+        }
+        
+       
+      //  pets.remove(atOffsets: offsets)
     }
 }

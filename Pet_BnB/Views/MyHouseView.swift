@@ -12,6 +12,7 @@ struct MyHouseView: View {
     @StateObject var vm = MyHouseViewModel()
     @State private var showingDeleteAlert = false
     @State private var showAddPeriodSheet = false
+    
     var body: some View {
         NavigationStack{
             VStack{

@@ -10,7 +10,7 @@ import SwiftUI
 struct CreatePetView: View {
     @StateObject var vm: CreatePetViewModel
     @Environment(\.presentationMode) var presentationMode
-    @State var infromationSheetShown = false
+ //   @State var infromationSheetShown = false
     var body: some View {
         VStack{
             Image(systemName: "pawprint.fill")
@@ -96,63 +96,63 @@ struct CreatePetView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 80)
         .padding(.vertical ,20)
-        .sheet(isPresented: $infromationSheetShown) {
-            InformationSheet(vm: vm, isPresented: $infromationSheetShown)
-        }
+//        .sheet(isPresented: $infromationSheetShown) {
+//            InformationSheet(vm: vm, isPresented: $infromationSheetShown)
+//        }
         
     }
 }
-
-struct InformationSheet: View {
-    @ObservedObject var vm: CreatePetViewModel
-    //@Binding var informationArray: [String]
-    @Binding var isPresented: Bool
-    @State private var inputText: String = ""
-    var body: some View {
-        VStack{
-            
-            HStack(){
-                EntryFields(placeHolder: "Information", promt: "", field: $inputText )
-                    .multilineTextAlignment(.leading)
-                
-                Button("Add"){
-                    if inputText.isEmpty{
-                        return
-                    }else{
-                        vm.addInformation(information: inputText)
-                        inputText = ""
-                    }
-                    
-                }
-                
-            }
-            .padding(.top, 40)
-            List{
-                ForEach(Array(vm.informationArray.enumerated()), id: \.element) { index, information in
-                    PetInformationRow(vm: vm, arrayID: index, information: information)
-                }
-                .onDelete(perform: vm.deleteInformation)
-                
-                
-            }
-        }
-    }
-}
-
-struct PetInformationRow: View {
-    @ObservedObject var vm: CreatePetViewModel
-    var arrayID: Int
-    var information: String
-    
-    var body: some View {
-        HStack{
-            Image(systemName: "circle.fill")
-                .foregroundColor(AppColors.mainAccent)
-            Text(information)
-        }
-        
-    }
-}
+//
+//struct InformationSheet: View {
+//    @ObservedObject var vm: CreatePetViewModel
+//    //@Binding var informationArray: [String]
+//    @Binding var isPresented: Bool
+//    @State private var inputText: String = ""
+//    var body: some View {
+//        VStack{
+//            
+//            HStack(){
+//                EntryFields(placeHolder: "Information", promt: "", field: $inputText )
+//                    .multilineTextAlignment(.leading)
+//                
+//                Button("Add"){
+//                    if inputText.isEmpty{
+//                        return
+//                    }else{
+//                        vm.addInformation(information: inputText)
+//                        inputText = ""
+//                    }
+//                    
+//                }
+//                
+//            }
+//            .padding(.top, 40)
+//            List{
+//                ForEach(Array(vm.informationArray.enumerated()), id: \.element) { index, information in
+//                    PetInformationRow(vm: vm, arrayID: index, information: information)
+//                }
+//                .onDelete(perform: vm.deleteInformation)
+//                
+//                
+//            }
+//        }
+//    }
+//}
+//
+//struct PetInformationRow: View {
+//    @ObservedObject var vm: CreatePetViewModel
+//    var arrayID: Int
+//    var information: String
+//    
+//    var body: some View {
+//        HStack{
+//            Image(systemName: "circle.fill")
+//                .foregroundColor(AppColors.mainAccent)
+//            Text(information)
+//        }
+//        
+//    }
+//}
 
 
 

@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 class CreatePetViewModel: ObservableObject{
-    var house: House
+    @Published var house: House
     @Published var pet: Pet?
     @Published var selectedSpices = "Dog"
     @Published var informationArray: [String] = []
@@ -38,19 +38,22 @@ class CreatePetViewModel: ObservableObject{
         if !isValuesSet(){
             return
         }
-        
+        if house.pets == nil{
+            house.pets = []
+        }
         if let pet = pet{
             print("This is the edit pet save and replace")
             if let index = house.pets?.firstIndex(where: { $0.id == pet.id }){
                 house.pets?[index].name = name
                 house.pets?[index].species = selectedSpices
                 house.pets?[index].information = informationArray
+                house.pets?[index].description = description
                 
             }
             
         } else {
             
-            house.pets?.append(Pet(name: name, species: selectedSpices, information: informationArray))
+            house.pets?.append(Pet(name: name, species: selectedSpices, information: informationArray, description: description))
             
             }
             
@@ -75,14 +78,25 @@ class CreatePetViewModel: ObservableObject{
 //                print("Error encoding pets: \(error)")
 //                completion(false)
 //            }
-        savePetsToFirebase() { success in
-            completion(success)
+//        savePetsToFirebase() { success in
+//            completion(success)
+//        }
+        if let houseID = house.id,
+           let pets = house.pets {
+            firebaseHelper.save(pets: pets, toHouseId: houseID){ success in
+                completion(success)
+            }
+
         }
+        else{
+            completion(false)
+        }
+        
 
         
     }
     
-    func savePetsToFirebase(completion: @escaping (Bool) -> Void){
+    func savePetsToFirebase( completion: @escaping (Bool) -> Void){
         do {
             let petsData = try house.pets?.map { try JSONEncoder().encode($0) } ?? []
             let petsDict = try petsData.map { try JSONSerialization.jsonObject(with: $0) }
@@ -90,14 +104,6 @@ class CreatePetViewModel: ObservableObject{
                 print(house)
                 firebaseHelper.update(houseId: houseID, with: ["pets": petsDict]){ success in
                     completion(success)
-                    
-                    //                    if success{
-                    //                        completion(success)
-                    //                    } else{
-                    //                        print("Could not save!!!")
-                    //                        completion(success)
-                    //                    }
-                    
                 }
             }
         } catch {
@@ -107,6 +113,22 @@ class CreatePetViewModel: ObservableObject{
         
     }
     
+    func save(pets: [Pet], toHouseId houseID: String, completion: @escaping (Bool) -> Void){
+        do {
+            let petsData = try pets.map { try JSONEncoder().encode($0) }
+            let petsDict = try petsData.map { try JSONSerialization.jsonObject(with: $0) }
+            firebaseHelper.update(houseId: houseID, with: ["pets": petsDict]){ success in
+                completion(success)
+            }
+        } catch {
+            print("Error encoding pets: \(error)")
+            completion(false)
+        }
+        
+    }
+    
+
+    
     func isValuesSet() -> Bool{
         if !name.isEmpty{
             return true
@@ -114,17 +136,32 @@ class CreatePetViewModel: ObservableObject{
         return false
     }
     
-    func addInformation(information: String){
-//        let lastEmpty = informationArray.last?.isEmpty
-//        if let lastEmpty = lastEmpty{
-//            if !lastEmpty{
-//                informationArray.append("")
-//            }
-//        }
-        informationArray.append(information)
+    func deletePet(at offsets: IndexSet) {
+        house.pets?.remove(atOffsets: offsets)
+        if let houseID = house.id,
+           let pets = house.pets{
+            
+            firebaseHelper.save(pets: pets, toHouseId: houseID){ success in
+                
+            }
+        }
+        
+       
+      //  pets.remove(atOffsets: offsets)
     }
     
-    func deleteInformation(at offsets: IndexSet) {
-        informationArray.remove(atOffsets: offsets)
-    }
+    
+//    func addInformation(information: String){
+////        let lastEmpty = informationArray.last?.isEmpty
+////        if let lastEmpty = lastEmpty{
+////            if !lastEmpty{
+////                informationArray.append("")
+////            }
+////        }
+//        informationArray.append(information)
+//    }
+//    
+//    func deleteInformation(at offsets: IndexSet) {
+//        informationArray.remove(atOffsets: offsets)
+//    }
 }
