@@ -39,10 +39,12 @@ struct ContentView: View {
             .tint(AppColors.mainAccent)
             
         }
-        .padding()
+        //.padding()
     }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(FirebaseHelper()
+            )
 }
