@@ -37,6 +37,7 @@ struct CreatePetView: View {
             )
             TextEditor(text: $vm.description)
                 .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 400)
+                .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: 25.0)
                         .stroke(AppColors.mainAccent, lineWidth: 3)

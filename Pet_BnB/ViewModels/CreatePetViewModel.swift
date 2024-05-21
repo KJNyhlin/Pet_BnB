@@ -136,19 +136,19 @@ class CreatePetViewModel: ObservableObject{
         return false
     }
     
-    func deletePet(at offsets: IndexSet) {
-        house.pets?.remove(atOffsets: offsets)
-        if let houseID = house.id,
-           let pets = house.pets{
-            
-            firebaseHelper.save(pets: pets, toHouseId: houseID){ success in
-                
-            }
-        }
-        
-       
-      //  pets.remove(atOffsets: offsets)
-    }
+//    func deletePet(at offsets: IndexSet) {
+//        house.pets?.remove(atOffsets: offsets)
+//        if let houseID = house.id,
+//           let pets = house.pets{
+//            
+//            firebaseHelper.save(pets: pets, toHouseId: houseID){ success in
+//                
+//            }
+//        }
+//        
+//       
+//      //  pets.remove(atOffsets: offsets)
+//    }
     
     
 //    func addInformation(information: String){
