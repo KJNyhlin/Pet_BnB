@@ -21,5 +21,5 @@ struct House: Identifiable, Codable {
     var city: String
     var zipCode: Int
     var ownerID: String
-    
+    var bookings: [Booking]?
 }

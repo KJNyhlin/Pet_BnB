@@ -82,6 +82,27 @@ struct HouseDetailView: View {
                                 
                                 Text(house.description)
                                     .fixedSize(horizontal: false, vertical: true)
+                              
+                                Text("Time periods")
+                                  .font(.system(size: 16, weight: .regular))
+
+                                ForEach(viewModel.bookings) {booking in
+                                    HStack {
+                                        Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
+                                        if booking.renterID == nil {
+                                            Button(action: {
+                                                if let houseID = house.id,
+                                                   let bookingID = booking.docID
+                                                {
+                                                    viewModel.bookHouse(houseID: houseID, booking: booking)
+                                                }
+                                            }, label: {
+
+                                                Text("Book")
+                                            })
+                                        }
+                                    }
+                                }
                             }
                             .padding()
                             .padding(.horizontal, 5)
@@ -113,6 +134,23 @@ struct HouseDetailView: View {
         }
     }
 }
+
+struct BookingsList : View {
+    @StateObject var viewModel : HouseDetailViewModel
+    var body: some View {
+        VStack {
+            Text("Time periods")
+                .font(.system(size: 16, weight: .regular))
+            if let bookings = viewModel.house?.bookings {
+                List(bookings) {
+                    Text("\($0.id)")
+                }
+            }
+            
+        }
+    }
+}
+
 
 #Preview {
     HouseDetailView(houseId: "1", firebaseHelper: FirebaseHelper())
