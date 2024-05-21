@@ -18,6 +18,7 @@ class CreatePetViewModel: ObservableObject{
     
     @Published var name: String = ""
     @Published var species: String = ""
+    @Published var description: String = ""
     
     init(pet: Pet?, house: House) {
         if let pet = pet{
@@ -25,6 +26,10 @@ class CreatePetViewModel: ObservableObject{
             self.name = pet.name
             self.selectedSpices = pet.species
             self.informationArray = pet.information
+            if let description = pet.description{
+                self.description = description
+            }
+
         }
         self.house = house
 

@@ -16,7 +16,7 @@ struct CreatePetView: View {
             Image(systemName: "pawprint.fill")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 200, height: 200)
+                .frame(width: 100, height: 100)
                 .padding()
             
             EntryFields(placeHolder: "Name", promt: "", field: $vm.name)
@@ -35,40 +35,48 @@ struct CreatePetView: View {
                 RoundedRectangle(cornerRadius: 25.0)
                     .stroke(AppColors.mainAccent, lineWidth: 3)
             )
+            TextEditor(text: $vm.description)
+                .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 400)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 25.0)
+                        .stroke(AppColors.mainAccent, lineWidth: 3)
+                )
+                .padding(.vertical)
+                
             
             
             
             
-            ScrollView{
-                Button(action: {
-                    // vm.addInformation()
-                    infromationSheetShown = true
-                }, label: {
-                    Label(
-                        title: { Text("Information \(vm.informationArray.count)") },
-                        icon: { Image(systemName: "plus") }
-                    )
-                    .frame(maxWidth: .infinity)
-                    .padding(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 25.0)
-                            .stroke(AppColors.mainAccent, lineWidth: 3)
-                    )
-                    .padding(.vertical)
-                })
-                VStack{
-                    ForEach(0..<vm.informationArray.count, id: \.self){ index in
-                        EntryFields(placeHolder: "Text", promt: "", field: $vm.informationArray[index])
-                    }
-                    Spacer()
-                    
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .border(.black)
-            }
+            
+//            Button(action: {
+//                // vm.addInformation()
+//                infromationSheetShown = true
+//            }, label: {
+//                Label(
+//                    title: { Text("Information \(vm.informationArray.count)") },
+//                    icon: { Image(systemName: "plus") }
+//                )
+//                .frame(maxWidth: .infinity)
+//                .padding(10)
+//                .overlay(
+//                    RoundedRectangle(cornerRadius: 25.0)
+//                        .stroke(AppColors.mainAccent, lineWidth: 3)
+//                )
+//                .padding(.vertical)
+//            })
+            //                VStack{
+            //                    ForEach(0..<vm.informationArray.count, id: \.self){ index in
+            //                        EntryFields(placeHolder: "Text", promt: "", field: $vm.informationArray[index])
+            //                    }
+            //                    Spacer()
+            //
+            //                }
+            //                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            //                .border(.black)
+            //          }
             
             
-            
+            Spacer()
             Button(action: {
                 Task{
                     vm.savePet(){ success in
@@ -122,10 +130,10 @@ struct InformationSheet: View {
             List{
                 ForEach(Array(vm.informationArray.enumerated()), id: \.element) { index, information in
                     PetInformationRow(vm: vm, arrayID: index, information: information)
-            }
+                }
                 .onDelete(perform: vm.deleteInformation)
-
-            
+                
+                
             }
         }
     }
@@ -135,7 +143,7 @@ struct PetInformationRow: View {
     @ObservedObject var vm: CreatePetViewModel
     var arrayID: Int
     var information: String
-
+    
     var body: some View {
         HStack{
             Image(systemName: "circle.fill")
