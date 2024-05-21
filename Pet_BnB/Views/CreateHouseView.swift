@@ -64,10 +64,9 @@ struct CreateHouseView: View {
                                 .padding(.horizontal, 30)
                                
                         })
+                        .disabled(vm.savingInProgress)
                     }
-
                 }
-
             }
             .navigationTitle(vm.house == nil ? "Create House": "Edit House")
         }
