@@ -20,38 +20,31 @@ struct HouseCardView: View {
                         case .empty:
                             ProgressView()
                                 .frame(height: 200)
-                                .frame(maxWidth: 335)
+                                .frame(maxWidth: .infinity)
                         case .success(let image):
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(height: 200)
-                                .frame(maxWidth: 335)
+                                .frame(maxWidth: .infinity)
                                 .clipped()
                         case .failure:
                             Image(systemName: "photo")
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(height: 200)
-                                .frame(maxWidth: 335)
+                                .frame(maxWidth: .infinity)
                                 .background(Color.gray)
                         @unknown default:
                             Image(systemName: "photo")
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(height: 200)
-                                .frame(maxWidth: 335)
+                                .frame(maxWidth: .infinity)
                                 .background(Color.gray)
                         }
                     }
-                } else {
-                    Image(systemName: "photo")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: 200)
-                        .frame(maxWidth: 335)
-                        .background(Color.gray)
-                }
+                } 
                 VStack(alignment: .leading, spacing: 8) {
                     Text(house.title)
                         .font(.headline)
@@ -65,6 +58,7 @@ struct HouseCardView: View {
             .cornerRadius(20)
             .shadow(radius: 5)
             .padding(.vertical, 8)
+            .frame(maxWidth: 335)
         }
         .buttonStyle(PlainButtonStyle())
     }
