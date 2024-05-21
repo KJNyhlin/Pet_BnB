@@ -53,9 +53,12 @@ struct CreateHouseView: View {
                         Button(action: {
                             vm.saveHouse(){ success in
                                 if success{
+                                    
                                     DispatchQueue.main.async {
                                         self.presentationMode.wrappedValue.dismiss()
                                     }
+                                } else{
+                                    vm.saveing(inProgress: false)
                                 }
                             }
                         }, label: {
