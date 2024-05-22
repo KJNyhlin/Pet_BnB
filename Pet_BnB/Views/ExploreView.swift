@@ -55,8 +55,9 @@ struct ExploreView: View {
             ScrollView {
                         VStack(spacing: 10) {
                             ForEach(filteredHouses) { house in
-                                HouseCardView(house: house)                                .environmentObject(firebaseHelper)
-                            }
+                                HouseCardView(house: house)
+                                .environmentObject(firebaseHelper)
+                                                    }
                         }
                         .padding(.horizontal)
             }
