@@ -10,7 +10,9 @@ import SwiftUI
 struct FilterView: View {
     @Binding var isPresented: Bool
     @Binding var minBeds: Int
+    @Binding var maxBeds: Int
     @Binding var minSize: Int
+    @Binding var maxSize: Int
     
     var body: some View {
         VStack {
