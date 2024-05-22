@@ -6,15 +6,16 @@
 //
 
 import Foundation
+import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct Chat{
+struct Chat: Encodable{
     @DocumentID var id: String?
     var participants: [String]
-    //var lastMessage: String
-    //var lastMessageTimeStamp
-    var unReadMessagesCount: [String: Bool]
-    var messages: [Message]
+    var lastMessage: String
+    var lastMessageTimeStamp: Timestamp
+    var unreadMessagesCount: [String: Int]
+  //  var messages: [Message] = []
     
 }
 

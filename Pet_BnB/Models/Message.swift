@@ -6,12 +6,13 @@
 //
 
 import Foundation
+import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct Message{
+struct Message: Identifiable, Encodable{
     @DocumentID var id: String?
     var senderID: String
-    var timestamp = Date()
+    var timestamp: Timestamp
     var text: String
     var isRead: [String: Bool]
     
