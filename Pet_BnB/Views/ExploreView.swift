@@ -10,6 +10,9 @@ import SwiftUI
 struct ExploreView: View {
     @EnvironmentObject var firebaseHelper: FirebaseHelper
     @State private var searchText: String = ""
+    @State private var showFilter: Bool = false
+    @State private var minBeds: Int = 1
+    @State private var minSize: Int = 10
     
     var filteredHouses: [House] {
         if searchText.isEmpty {
