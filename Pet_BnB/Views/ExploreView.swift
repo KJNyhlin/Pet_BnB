@@ -46,7 +46,7 @@ struct ExploreView: View {
                             .padding(.trailing, 16)
                         }
                         .sheet(isPresented: $showFilter) {
-                            FilterView(isPresented: $showFilter, minBeds: $minBeds, minSize: $minSize)
+                            FilterView(isPresented: $showFilter, minBeds: $minBeds, maxBeds: $maxBeds, minSize: $minSize, maxSize: $maxSize)
                         }
             }
                 .background(Color(.white))
