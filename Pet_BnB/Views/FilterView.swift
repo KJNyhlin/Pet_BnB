@@ -26,17 +26,22 @@ struct FilterView: View {
                 }
                 .padding()
             }
-            
+
             Form {
                 Section(header: Text("Number of Beds")) {
-                    Stepper(value: $minBeds, in: 1...10) {
-                        Text("\(minBeds) beds")
+                    Stepper(value: $minBeds, in: 1...maxBeds) {
+                        Text("Minimum \(minBeds) beds")
+                    }
+                    Stepper(value: $maxBeds, in: minBeds...150) {
+                        Text("Maximum \(maxBeds) beds")
                     }
                 }
-                
                 Section(header: Text("Size (in sqm)")) {
-                    Stepper(value: $minSize, in: 10...1000, step: 10) {
-                        Text("\(minSize) sqm")
+                    Stepper(value: $minSize, in: 10...maxSize, step: 10) {
+                        Text("Minimum \(minSize) sqm")
+                    }
+                    Stepper(value: $maxSize, in: minSize...1000, step: 10) {
+                        Text("Maximum \(maxSize) sqm")
                     }
                 }
             }
