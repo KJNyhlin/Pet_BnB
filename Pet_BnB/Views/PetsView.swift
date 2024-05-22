@@ -8,34 +8,42 @@
 import SwiftUI
 
 struct PetsView: View {
+
     @StateObject var vm: PetsViewModel
+ 
     var body: some View {
         VStack{
-            if let pets = vm.house.pets{
+
+            if let pets = vm.house.pets, !pets.isEmpty{
                 List{
                     ForEach(pets) { pet in
-                        NavigationLink(destination: CreatePetView(vm: CreatePetViewModel(pet: pet, house: vm.house))){
+                        NavigationLink(destination: CreatePetView(vm:vm, pet: pet)){
                             PetRowView(pet: pet)
+
                         }
                     }
+                    .onDelete(perform: vm.deletePet)
                 }
-            } else{
+            }
+            else{
                 Text("No pets added")
                 Text("Please add a pet")
             }
             
             Spacer()
             VStack(alignment: .trailing){
-                NavigationLink(destination: CreatePetView(vm:CreatePetViewModel(pet: nil, house: vm.house))){
-                    
-                    
+                
+                NavigationLink(destination: CreatePetView(vm: vm, pet: nil)){
+
                     FilledButtonLabel(text: "Add Pet")
                         .frame(maxWidth: 100)
                 }
             }
             
         }
+
     }
+        
 }
 
 struct PetRowView:View{

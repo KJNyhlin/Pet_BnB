@@ -12,6 +12,7 @@ struct MyHouseView: View {
     @StateObject var vm = MyHouseViewModel()
     @State private var showingDeleteAlert = false
     @State private var showAddPeriodSheet = false
+    
     var body: some View {
         NavigationStack{
             VStack{
@@ -39,19 +40,7 @@ struct MyHouseView: View {
                             Text(house.description)
 
                                 .bold()
-                           
-//                            VStack{
-//                                Text("Pets:")
-//                                    .font(.subheadline)
-//                                ScrollView{
-//                                    VStack(alignment: .leading){
-//
-//                                        PetsView(vm: PetsViewModel(pets: house.pets))
-//                                    }
-//                                }
-//                            }
-//                            .padding(.vertical)
-//                            
+                         
 
                             TimePeriodList(vm: vm)
 
@@ -66,12 +55,15 @@ struct MyHouseView: View {
                                     Label("Delete", systemImage: "trash")
                                     
                                 }
-                                NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
-                                    Label("Edit", systemImage: "pencil")
-                                }
+                                if let house = vm.house{
+    
+                                    NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
+                                        Label("Edit", systemImage: "pencil")
+                                    }
 
-                                NavigationLink(destination:PetsView(vm: PetsViewModel(house: house, pets: house.pets))){
-                                    Label("Pets", systemImage: "pawprint.fill")
+                                    NavigationLink(destination:PetsView(vm:PetsViewModel(pet: nil, house: house))){
+                                        Label("Pets", systemImage: "pawprint.fill")
+                                    }
                                 }
 
                                 Button(action: {

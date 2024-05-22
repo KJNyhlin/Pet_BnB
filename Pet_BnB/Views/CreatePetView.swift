@@ -8,15 +8,26 @@
 import SwiftUI
 
 struct CreatePetView: View {
-    @StateObject var vm: CreatePetViewModel
+    @ObservedObject var vm: PetsViewModel
     @Environment(\.presentationMode) var presentationMode
-    @State var infromationSheetShown = false
+    var pet: Pet?
+    
+ //   @State var infromationSheetShown = false
+//    init(vm: CreatePetViewModel, pet: Pet) {
+//        self.vm = vm
+//       
+//        self.vm.pet = pet
+//    }
+
+
+    
+    
     var body: some View {
         VStack{
             Image(systemName: "pawprint.fill")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 200, height: 200)
+                .frame(width: 100, height: 100)
                 .padding()
             
             EntryFields(placeHolder: "Name", promt: "", field: $vm.name)
@@ -35,40 +46,49 @@ struct CreatePetView: View {
                 RoundedRectangle(cornerRadius: 25.0)
                     .stroke(AppColors.mainAccent, lineWidth: 3)
             )
+            TextEditor(text: $vm.description)
+                .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 400)
+                .padding()
+                .overlay(
+                    RoundedRectangle(cornerRadius: 25.0)
+                        .stroke(AppColors.mainAccent, lineWidth: 3)
+                )
+                .padding(.vertical)
+                
             
             
             
             
-            ScrollView{
-                Button(action: {
-                    // vm.addInformation()
-                    infromationSheetShown = true
-                }, label: {
-                    Label(
-                        title: { Text("Information \(vm.informationArray.count)") },
-                        icon: { Image(systemName: "plus") }
-                    )
-                    .frame(maxWidth: .infinity)
-                    .padding(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 25.0)
-                            .stroke(AppColors.mainAccent, lineWidth: 3)
-                    )
-                    .padding(.vertical)
-                })
-                VStack{
-                    ForEach(0..<vm.informationArray.count, id: \.self){ index in
-                        EntryFields(placeHolder: "Text", promt: "", field: $vm.informationArray[index])
-                    }
-                    Spacer()
-                    
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .border(.black)
-            }
+            
+//            Button(action: {
+//                // vm.addInformation()
+//                infromationSheetShown = true
+//            }, label: {
+//                Label(
+//                    title: { Text("Information \(vm.informationArray.count)") },
+//                    icon: { Image(systemName: "plus") }
+//                )
+//                .frame(maxWidth: .infinity)
+//                .padding(10)
+//                .overlay(
+//                    RoundedRectangle(cornerRadius: 25.0)
+//                        .stroke(AppColors.mainAccent, lineWidth: 3)
+//                )
+//                .padding(.vertical)
+//            })
+            //                VStack{
+            //                    ForEach(0..<vm.informationArray.count, id: \.self){ index in
+            //                        EntryFields(placeHolder: "Text", promt: "", field: $vm.informationArray[index])
+            //                    }
+            //                    Spacer()
+            //
+            //                }
+            //                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            //                .border(.black)
+            //          }
             
             
-            
+            Spacer()
             Button(action: {
                 Task{
                     vm.savePet(){ success in
@@ -88,67 +108,68 @@ struct CreatePetView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 80)
         .padding(.vertical ,20)
-        .sheet(isPresented: $infromationSheetShown) {
-            InformationSheet(vm: vm, isPresented: $infromationSheetShown)
+        .onAppear{
+            vm.pet = pet
         }
+//        .sheet(isPresented: $infromationSheetShown) {
+//            InformationSheet(vm: vm, isPresented: $infromationSheetShown)
+//        }
         
     }
-}
-
-struct InformationSheet: View {
-    @ObservedObject var vm: CreatePetViewModel
-    //@Binding var informationArray: [String]
-    @Binding var isPresented: Bool
-    @State private var inputText: String = ""
-    var body: some View {
-        VStack{
-            
-            HStack(){
-                EntryFields(placeHolder: "Information", promt: "", field: $inputText )
-                    .multilineTextAlignment(.leading)
-                
-                Button("Add"){
-                    if inputText.isEmpty{
-                        return
-                    }else{
-                        vm.addInformation(information: inputText)
-                        inputText = ""
-                    }
-                    
-                }
-                
-            }
-            .padding(.top, 40)
-            List{
-                ForEach(Array(vm.informationArray.enumerated()), id: \.element) { index, information in
-                    PetInformationRow(vm: vm, arrayID: index, information: information)
-            }
-                .onDelete(perform: vm.deleteInformation)
-
-            
-            }
-        }
-    }
-}
-
-struct PetInformationRow: View {
-    @ObservedObject var vm: CreatePetViewModel
-    var arrayID: Int
-    var information: String
-
-    var body: some View {
-        HStack{
-            Image(systemName: "circle.fill")
-                .foregroundColor(AppColors.mainAccent)
-            Text(information)
-        }
         
-    }
 }
+//
+//struct InformationSheet: View {
+//    @ObservedObject var vm: CreatePetViewModel
+//    //@Binding var informationArray: [String]
+//    @Binding var isPresented: Bool
+//    @State private var inputText: String = ""
+//    var body: some View {
+//        VStack{
+//            
+//            HStack(){
+//                EntryFields(placeHolder: "Information", promt: "", field: $inputText )
+//                    .multilineTextAlignment(.leading)
+//                
+//                Button("Add"){
+//                    if inputText.isEmpty{
+//                        return
+//                    }else{
+//                        vm.addInformation(information: inputText)
+//                        inputText = ""
+//                    }
+//                    
+//                }
+//                
+//            }
+//            .padding(.top, 40)
+//            List{
+//                ForEach(Array(vm.informationArray.enumerated()), id: \.element) { index, information in
+//                    PetInformationRow(vm: vm, arrayID: index, information: information)
+//                }
+//                .onDelete(perform: vm.deleteInformation)
+//                
+//                
+//            }
+//        }
+//    }
+//}
+//
+//struct PetInformationRow: View {
+//    @ObservedObject var vm: CreatePetViewModel
+//    var arrayID: Int
+//    var information: String
+//    
+//    var body: some View {
+//        HStack{
+//            Image(systemName: "circle.fill")
+//                .foregroundColor(AppColors.mainAccent)
+//            Text(information)
+//        }
+//        
+//    }
+//}
 
-
-
-
-#Preview {
-    CreatePetView(vm: CreatePetViewModel(pet: Pet(name: "Rufus", species: "Dog"), house: House(title: "", description: "", beds: 1, size: 1, streetName: "", streetNR: 1, city: "", zipCode: 1, ownerID: "")))
-}
+//#Preview {
+//    CreatePetView(vm: CreatePetViewModel(pet: Pet(name: "Rufus", species: "Dog"), house: House(title: "", description: "", beds: 1, size: 1, streetName: "", streetNR: 1, city: "", zipCode: 1, ownerID: "")))
+//}

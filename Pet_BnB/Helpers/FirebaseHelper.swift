@@ -272,6 +272,23 @@ class FirebaseHelper: ObservableObject {
             }
         }
     }
+    func save(pets: [Pet], toHouseId houseID: String, completion: @escaping (Bool) -> Void){
+        do {
+            let petsData = try pets.map { try JSONEncoder().encode($0) }
+            let petsDict = try petsData.map { try JSONSerialization.jsonObject(with: $0) }
+            update(houseId: houseID, with: ["pets": petsDict]){ success in
+                completion(success)
+            }
+        } catch {
+            print("Error encoding pets: \(error)")
+            completion(false)
+        }
+        
+    }
+    
+    
+    
+    
     
     func deleteImage(atUrl url: String){
         let storageRef = Storage.storage().reference(forURL: url)

@@ -14,4 +14,5 @@ struct Pet: Decodable, Encodable, Identifiable {
     var species: String
     var imageURL: String?
     var information: [String] = []
+    var description: String?
 }
