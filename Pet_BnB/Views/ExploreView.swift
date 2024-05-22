@@ -12,7 +12,9 @@ struct ExploreView: View {
     @State private var searchText: String = ""
     @State private var showFilter: Bool = false
     @State private var minBeds: Int = 1
+    @State private var maxBeds: Int = 150
     @State private var minSize: Int = 10
+    @State private var maxSize: Int = 1000
     
     var filteredHouses: [House] {
             firebaseHelper.houses.filter { house in
