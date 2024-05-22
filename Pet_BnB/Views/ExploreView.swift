@@ -18,7 +18,8 @@ struct ExploreView: View {
             firebaseHelper.houses.filter { house in
                 let matchesSearchText = searchText.isEmpty ||
                     house.title.lowercased().contains(searchText.lowercased()) ||
-                    house.city.lowercased().contains(searchText.lowercased())
+                    house.city.lowercased().contains(searchText.lowercased()) ||
+                    house.description.lowercased().contains(searchText.lowercased())
                 let matchesBeds = house.beds >= minBeds
                 let matchesSize = house.size >= minSize
                 return matchesSearchText && matchesBeds && matchesSize
