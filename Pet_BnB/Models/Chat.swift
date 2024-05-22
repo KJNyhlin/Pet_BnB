@@ -1,0 +1,20 @@
+//
+//  Chat.swift
+//  Pet_BnB
+//
+//  Created by Kristian Thun on 2024-05-22.
+//
+
+import Foundation
+import FirebaseFirestoreSwift
+
+struct Chat{
+    @DocumentID var id: String?
+    var participants: [String]
+    //var lastMessage: String
+    //var lastMessageTimeStamp
+    var unReadMessagesCount: [String: Bool]
+    var messages: [Message]
+    
+}
+
