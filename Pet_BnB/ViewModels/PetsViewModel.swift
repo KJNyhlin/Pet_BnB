@@ -13,7 +13,7 @@ class PetsViewModel: ObservableObject {
   //  @Published var pets: [Pet] = []
     var firebaseHelper = FirebaseHelper()
     
-    init(house: House, pets: [Pet]?) {
+    init(house: House) {
         self.house = house
 //        if let pets = pets {
 //            self.pets = pets

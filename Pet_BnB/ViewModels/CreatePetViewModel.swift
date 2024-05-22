@@ -10,7 +10,21 @@ import SwiftUI
 
 class CreatePetViewModel: ObservableObject{
     @Published var house: House
-    @Published var pet: Pet?
+    @Published var pet: Pet? {
+        didSet {
+            if let pet = pet {
+                self.name = pet.name
+                self.selectedSpices = pet.species
+                self.description = pet.description ?? ""
+                self.informationArray = pet.information
+            } else {
+                self.name = ""
+                self.selectedSpices = "Dog"
+                self.description = ""
+                self.informationArray = []
+            }
+        }
+    }
     @Published var selectedSpices = "Dog"
     @Published var informationArray: [String] = []
     let speciesOptions = ["Dog", "Cat", "Rabbit"]
@@ -21,16 +35,17 @@ class CreatePetViewModel: ObservableObject{
     @Published var description: String = ""
     
     init(pet: Pet?, house: House) {
-        if let pet = pet{
-            self.pet = pet
-            self.name = pet.name
-            self.selectedSpices = pet.species
-            self.informationArray = pet.information
-            if let description = pet.description{
-                self.description = description
-            }
-
-        }
+        self.pet = pet
+//        if let pet = pet{
+//            self.pet = pet
+//            self.name = pet.name
+//            self.selectedSpices = pet.species
+//            self.informationArray = pet.information
+//            if let description = pet.description{
+//                self.description = description
+//            }
+//
+//        }
         self.house = house
 
     }
@@ -136,19 +151,19 @@ class CreatePetViewModel: ObservableObject{
         return false
     }
     
-//    func deletePet(at offsets: IndexSet) {
-//        house.pets?.remove(atOffsets: offsets)
-//        if let houseID = house.id,
-//           let pets = house.pets{
-//            
-//            firebaseHelper.save(pets: pets, toHouseId: houseID){ success in
-//                
-//            }
-//        }
-//        
-//       
-//      //  pets.remove(atOffsets: offsets)
-//    }
+    func deletePet(at offsets: IndexSet) {
+        house.pets?.remove(atOffsets: offsets)
+        if let houseID = house.id,
+           let pets = house.pets{
+            
+            firebaseHelper.save(pets: pets, toHouseId: houseID){ success in
+                
+            }
+        }
+        
+       
+      //  pets.remove(atOffsets: offsets)
+    }
     
     
 //    func addInformation(information: String){

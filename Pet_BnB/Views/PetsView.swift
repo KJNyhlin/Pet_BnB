@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct PetsView: View {
-    @StateObject var vm: PetsViewModel
+//    @StateObject var vm: PetsViewModel
+    @StateObject var vm: CreatePetViewModel
  
     var body: some View {
         VStack{
@@ -16,8 +17,10 @@ struct PetsView: View {
             if let pets = vm.house.pets, !pets.isEmpty{
                 List{
                     ForEach(pets) { pet in
-                        NavigationLink(destination: CreatePetView(vm: CreatePetViewModel(pet: pet, house: vm.house))){
+//                        NavigationLink(destination: CreatePetView(vm: CreatePetViewModel(pet: pet, house: vm.house))){
+                        NavigationLink(destination: CreatePetView(vm:vm, pet: pet)){
                             PetRowView(pet: pet)
+
                         }
                     }
                     .onDelete(perform: vm.deletePet)
@@ -31,8 +34,8 @@ struct PetsView: View {
             Spacer()
             VStack(alignment: .trailing){
                 
-                NavigationLink(destination: CreatePetView(vm:CreatePetViewModel(pet: nil, house: vm.house))){
-                    
+                NavigationLink(destination: CreatePetView(vm: vm, pet: nil)){
+
                     
                     FilledButtonLabel(text: "Add Pet")
                         .frame(maxWidth: 100)
@@ -40,7 +43,9 @@ struct PetsView: View {
             }
             
         }
+
     }
+        
 }
 
 struct PetRowView:View{

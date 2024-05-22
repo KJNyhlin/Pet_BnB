@@ -8,9 +8,20 @@
 import SwiftUI
 
 struct CreatePetView: View {
-    @StateObject var vm: CreatePetViewModel
+    @ObservedObject var vm: CreatePetViewModel
     @Environment(\.presentationMode) var presentationMode
+    var pet: Pet?
+    
  //   @State var infromationSheetShown = false
+//    init(vm: CreatePetViewModel, pet: Pet) {
+//        self.vm = vm
+//       
+//        self.vm.pet = pet
+//    }
+
+
+    
+    
     var body: some View {
         VStack{
             Image(systemName: "pawprint.fill")
@@ -97,11 +108,15 @@ struct CreatePetView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 80)
         .padding(.vertical ,20)
+        .onAppear{
+            vm.pet = pet
+        }
 //        .sheet(isPresented: $infromationSheetShown) {
 //            InformationSheet(vm: vm, isPresented: $infromationSheetShown)
 //        }
         
     }
+        
 }
 //
 //struct InformationSheet: View {
@@ -158,6 +173,6 @@ struct CreatePetView: View {
 
 
 
-#Preview {
-    CreatePetView(vm: CreatePetViewModel(pet: Pet(name: "Rufus", species: "Dog"), house: House(title: "", description: "", beds: 1, size: 1, streetName: "", streetNR: 1, city: "", zipCode: 1, ownerID: "")))
-}
+//#Preview {
+//    CreatePetView(vm: CreatePetViewModel(pet: Pet(name: "Rufus", species: "Dog"), house: House(title: "", description: "", beds: 1, size: 1, streetName: "", streetNR: 1, city: "", zipCode: 1, ownerID: "")))
+//}

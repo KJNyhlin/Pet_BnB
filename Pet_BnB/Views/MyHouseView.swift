@@ -67,12 +67,15 @@ struct MyHouseView: View {
                                     Label("Delete", systemImage: "trash")
                                     
                                 }
-                                NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
-                                    Label("Edit", systemImage: "pencil")
-                                }
+                                if let house = vm.house{
+    
+                                    NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
+                                        Label("Edit", systemImage: "pencil")
+                                    }
 
-                                NavigationLink(destination:PetsView(vm: PetsViewModel(house: house, pets: house.pets))){
-                                    Label("Pets", systemImage: "pawprint.fill")
+                                    NavigationLink(destination:PetsView(vm: CreatePetViewModel(pet: nil, house: house))){
+                                        Label("Pets", systemImage: "pawprint.fill")
+                                    }
                                 }
 
                                 Button(action: {
