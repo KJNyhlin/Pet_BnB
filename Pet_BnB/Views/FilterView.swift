@@ -32,7 +32,7 @@ struct FilterView: View {
                     Stepper(value: $minBeds, in: 1...maxBeds) {
                         Text("Minimum \(minBeds) beds")
                     }
-                    Stepper(value: $maxBeds, in: minBeds...150) {
+                    Stepper(value: $maxBeds, in: minBeds...150) {       // Ändra senare till något logiskt
                         Text("Maximum \(maxBeds) beds")
                     }
                 }
@@ -40,7 +40,7 @@ struct FilterView: View {
                     Stepper(value: $minSize, in: 10...maxSize, step: 10) {
                         Text("Minimum \(minSize) sqm")
                     }
-                    Stepper(value: $maxSize, in: minSize...1000, step: 10) {
+                    Stepper(value: $maxSize, in: minSize...1000, step: 10) {        // Ändra senare till något logiskt
                         Text("Maximum \(maxSize) sqm")
                     }
                 }
