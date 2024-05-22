@@ -28,6 +28,7 @@
 		0C38DDAA2BF4BD0D00B92497 /* MyHouseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DDA92BF4BD0D00B92497 /* MyHouseView.swift */; };
 		0C38DDAC2BF4BE6B00B92497 /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DDAB2BF4BE6B00B92497 /* AppColors.swift */; };
 		0C38DDAE2BF4D3CB00B92497 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DDAD2BF4D3CB00B92497 /* SignUpView.swift */; };
+		0CC9B8D92BFDF2BA00F0D7C8 /* DateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC9B8D82BFDF2BA00F0D7C8 /* DateManager.swift */; };
 		0CCFC7742BF73A9000520151 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCFC7732BF73A9000520151 /* ProfileViewModel.swift */; };
 		6D12FC9A2BFB6560005D765C /* PetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D12FC992BFB6560005D765C /* PetsView.swift */; };
 		6D12FC9C2BFB686F005D765C /* PetsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D12FC9B2BFB686F005D765C /* PetsViewModel.swift */; };
@@ -64,6 +65,7 @@
 		0C38DDA92BF4BD0D00B92497 /* MyHouseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyHouseView.swift; sourceTree = "<group>"; };
 		0C38DDAB2BF4BE6B00B92497 /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
 		0C38DDAD2BF4D3CB00B92497 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		0CC9B8D82BFDF2BA00F0D7C8 /* DateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateManager.swift; sourceTree = "<group>"; };
 		0CCFC7732BF73A9000520151 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		6D12FC992BFB6560005D765C /* PetsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetsView.swift; sourceTree = "<group>"; };
 		6D12FC9B2BFB686F005D765C /* PetsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetsViewModel.swift; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 			isa = PBXGroup;
 			children = (
 				0C38DD972BF4B8C200B92497 /* FirebaseHelper.swift */,
+				0CC9B8D82BFDF2BA00F0D7C8 /* DateManager.swift */,
 				0C38DDAB2BF4BE6B00B92497 /* AppColors.swift */,
 			);
 			path = Helpers;
@@ -303,6 +306,7 @@
 				6D523BF02BF380E60007CCE5 /* Pet_BnBApp.swift in Sources */,
 				0C38DD912BF4B5BF00B92497 /* House.swift in Sources */,
 				0C38DDAC2BF4BE6B00B92497 /* AppColors.swift in Sources */,
+				0CC9B8D92BFDF2BA00F0D7C8 /* DateManager.swift in Sources */,
 				0C38DD8F2BF4B4CA00B92497 /* User.swift in Sources */,
 				6D12FC9C2BFB686F005D765C /* PetsViewModel.swift in Sources */,
 				6D12FC9A2BFB6560005D765C /* PetsView.swift in Sources */,
