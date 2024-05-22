@@ -38,16 +38,19 @@ struct ExploreView: View {
                     Button(action: {
                         showFilter.toggle()
                     }) {
-                                Image(systemName: "slider.horizontal.3")
-                                .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
-                                .padding(.trailing, 16)
+                            Image(systemName: "slider.horizontal.3")
+                            .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
+                            .padding(.trailing, 16)
+                        }
+                        .sheet(isPresented: $showFilter) {
+                            FilterView(isPresented: $showFilter, minBeds: $minBeds, minSize: $minSize)
                         }
             }
-                    .background(Color(.white))
-                    .cornerRadius(40)
-                    .padding(.horizontal)
-                    .padding(.top)
-                    .shadow(radius: 5)
+                .background(Color(.white))
+                .cornerRadius(40)
+                .padding(.horizontal)
+                .padding(.top)
+                .shadow(radius: 5)
                 
             ScrollView {
                         VStack(spacing: 10) {
