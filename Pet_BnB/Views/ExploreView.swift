@@ -36,7 +36,7 @@ struct ExploreView: View {
                             .padding(14)
                 
                     Button(action: {
-                        // Lägg till här filtrering!!!
+                        showFilter.toggle()
                     }) {
                                 Image(systemName: "slider.horizontal.3")
                                 .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
