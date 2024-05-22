@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct PetsView: View {
-//    @StateObject var vm: PetsViewModel
-    @StateObject var vm: CreatePetViewModel
+
+    @StateObject var vm: PetsViewModel
  
     var body: some View {
         VStack{
@@ -17,7 +17,6 @@ struct PetsView: View {
             if let pets = vm.house.pets, !pets.isEmpty{
                 List{
                     ForEach(pets) { pet in
-//                        NavigationLink(destination: CreatePetView(vm: CreatePetViewModel(pet: pet, house: vm.house))){
                         NavigationLink(destination: CreatePetView(vm:vm, pet: pet)){
                             PetRowView(pet: pet)
 
@@ -36,7 +35,6 @@ struct PetsView: View {
                 
                 NavigationLink(destination: CreatePetView(vm: vm, pet: nil)){
 
-                    
                     FilledButtonLabel(text: "Add Pet")
                         .frame(maxWidth: 100)
                 }

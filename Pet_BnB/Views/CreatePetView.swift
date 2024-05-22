@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CreatePetView: View {
-    @ObservedObject var vm: CreatePetViewModel
+    @ObservedObject var vm: PetsViewModel
     @Environment(\.presentationMode) var presentationMode
     var pet: Pet?
     
@@ -169,9 +169,6 @@ struct CreatePetView: View {
 //        
 //    }
 //}
-
-
-
 
 //#Preview {
 //    CreatePetView(vm: CreatePetViewModel(pet: Pet(name: "Rufus", species: "Dog"), house: House(title: "", description: "", beds: 1, size: 1, streetName: "", streetNR: 1, city: "", zipCode: 1, ownerID: "")))

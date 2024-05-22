@@ -40,19 +40,7 @@ struct MyHouseView: View {
                             Text(house.description)
 
                                 .bold()
-                           
-//                            VStack{
-//                                Text("Pets:")
-//                                    .font(.subheadline)
-//                                ScrollView{
-//                                    VStack(alignment: .leading){
-//
-//                                        PetsView(vm: PetsViewModel(pets: house.pets))
-//                                    }
-//                                }
-//                            }
-//                            .padding(.vertical)
-//                            
+                         
 
                             TimePeriodList(vm: vm)
 
@@ -73,7 +61,7 @@ struct MyHouseView: View {
                                         Label("Edit", systemImage: "pencil")
                                     }
 
-                                    NavigationLink(destination:PetsView(vm: CreatePetViewModel(pet: nil, house: house))){
+                                    NavigationLink(destination:PetsView(vm:PetsViewModel(pet: nil, house: house))){
                                         Label("Pets", systemImage: "pawprint.fill")
                                     }
                                 }
