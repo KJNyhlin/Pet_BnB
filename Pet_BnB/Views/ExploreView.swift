@@ -15,11 +15,14 @@ struct ExploreView: View {
     @State private var minSize: Int = 10
     
     var filteredHouses: [House] {
-        if searchText.isEmpty {
-            return firebaseHelper.houses
-        } else {
-            return firebaseHelper.houses.filter { $0.title.lowercased().contains(searchText.lowercased()) }
-        }
+            firebaseHelper.houses.filter { house in
+                let matchesSearchText = searchText.isEmpty ||
+                    house.title.lowercased().contains(searchText.lowercased()) ||
+                    house.city.lowercased().contains(searchText.lowercased())
+                let matchesBeds = house.beds >= minBeds
+                let matchesSize = house.size >= minSize
+                return matchesSearchText && matchesBeds && matchesSize
+            }
     }
         
     var body: some View {
