@@ -14,7 +14,7 @@ class ChatViewModel: ObservableObject{
     @Published var chat: Chat?
     @Published var messages: [Message] = []
     var firebaseHelper = FirebaseHelper()
-    var toUserID: String
+  //  var toUserID: String
     private var db = Firestore.firestore()
     private var listenerRegistration: ListenerRegistration?
   //  var isChatNew = false
@@ -85,7 +85,7 @@ class ChatViewModel: ObservableObject{
     }
     
     func createChat(senderID: String, compleation: @escaping (String?) -> Void){
-        var newChat = Chat(participants: [senderID, toUserID], lastMessage: messageInput, lastMessageTimeStamp: Timestamp(), unreadMessagesCount:[senderID:0])
+        let newChat = Chat(participants: [senderID, toUserID], lastMessage: messageInput, lastMessageTimeStamp: Timestamp(), unreadMessagesCount:[senderID:0])
         do{
             let ref = try db.collection("chats").addDocument(from: newChat)
             compleation(ref.documentID)

@@ -27,7 +27,7 @@ struct ContentView: View {
                     title: { Text("My house") },
                     icon: { Image(systemName: "house") }
                 ) }
-                MessagesView().tabItem { Label(
+                ChatsListView().tabItem { Label(
                     title: { Text("Messages") },
                     icon: { Image(systemName: "bubble") }
                 ) }
