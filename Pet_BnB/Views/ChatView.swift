@@ -14,6 +14,7 @@ struct ChatView: View {
         ZStack{
             Color.secondary
                 .ignoresSafeArea()
+ 
             VStack{
                 Spacer()
                 VStack{
@@ -33,6 +34,7 @@ struct ChatView: View {
                 MessageInputView(messageInput: $vm.messageInput, sendAction: vm.sendMessage)
             }
             .padding()
+
         }
     }
 }

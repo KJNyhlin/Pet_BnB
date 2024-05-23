@@ -13,14 +13,20 @@ struct ChatsListView: View {
     
     
     var body: some View {
-        List{
-            ForEach(vm.chats){ chat in
-                NavigationLink(destination: ChatView(vm: ChatViewModel(toUserID: String, chat: <#T##Chat?#>))){
-                    ChatListRow(chat: chat, user: vm.getUserFromID(chat: chat))
+        VStack{
+            NavigationStack{
+                List{
+                    ForEach(vm.chats){ chat in
+                        if let toUser = vm.getUserFrom(chat: chat),
+                           let toUserID = toUser.docID{
+                            NavigationLink(destination: ChatView(vm: ChatViewModel(toUserID: toUserID, chat: chat))){
+                                ChatListRow(chat: chat, user: vm.getUserFrom(chat: chat))
+                            }
+                        }
+                    }
                 }
-             
+
             }
-            
         }
     }
 }
@@ -30,13 +36,13 @@ struct ChatListRow: View{
     var user: User?
     var body: some View{
         VStack(alignment: .leading){
-            if let name = user?.firstName{
-                Text(name)
+//            if let name = user?.firstName{
+                Text(user?.firstName ?? "No name")
                     .bold()
-            } else {
-                Text("No name")
-                    .bold()
-            }
+//            } else {
+//                Text("No name")
+//                    .bold()
+//            }
             Text(chat.lastMessage)
         }
     }

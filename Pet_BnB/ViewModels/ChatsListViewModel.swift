@@ -75,17 +75,4 @@ class ChatsListViewModel: ObservableObject{
         }
         return nil
     }
-    
-    func getToUserFrom(chat: Chat) -> User?{
-        if let loggedInUserID = firebaseHelper.getUserID(){
-            for userID in chat.participants{
-                if userID != loggedInUserID{
-                    return chatParticipants[userID]
-                }
-            }
-            
-        }
-        return nil
-    }
-    
 }
