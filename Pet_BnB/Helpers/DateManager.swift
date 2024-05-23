@@ -110,4 +110,10 @@ extension Date {
         let calendar = Calendar.current
         return calendar.date(byAdding: .month, value: -monthsToMove, to: self)
     }
+    
+    func isDateInMonth(date: Date, selectedMonth: Date) ->Bool {
+        print(date.formatted(.dateTime.month()))
+        print(selectedMonth.formatted(.dateTime.month()))
+        return date.formatted(.dateTime.month()) == selectedMonth.formatted(.dateTime.month())
+    }
 }

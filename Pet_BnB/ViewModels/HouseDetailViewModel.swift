@@ -71,13 +71,11 @@ class HouseDetailViewModel: ObservableObject {
     }
     
     func getColor(from booking: Booking) -> Color {
-        
         if let bookingID = booking.docID {
             if bookingID == selectedBookingID {
                 return AppColors.mainAccent
             }
         }
-        
         if booking.renterID != nil {
             return AppColors.inactive
         } else {
@@ -105,6 +103,9 @@ class HouseDetailViewModel: ObservableObject {
         }
     }
     
+    func showBookingsForMonth(booking: Booking) -> Bool {
+        return date.isDateInMonth(date: booking.fromDate, selectedMonth: date) || date.isDateInMonth(date: booking.toDate, selectedMonth: date) 
+    }
     
     
 //    func daysInMonth(for date: Date) -> [Date] {

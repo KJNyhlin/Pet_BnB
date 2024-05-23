@@ -140,16 +140,20 @@ struct BookingsList: View {
         VStack {
             BookingCalendarView(viewModel: viewModel)
             ForEach(viewModel.bookings) {booking in
-                HStack {
-                    Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
-                    if booking.renterID == nil {
-                        Image(systemName: viewModel.checkIfChecked(booking: booking) ? "checkmark.square" : "square")
-                            .onTapGesture {
-                                viewModel.setBookingID(booking: booking)
-                            }
+                if viewModel.showBookingsForMonth(booking: booking) {
+                    
+                    HStack {
+                        Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
+                        if booking.renterID == nil {
+                            Image(systemName: viewModel.checkIfChecked(booking: booking) ? "checkmark.square" : "square")
+                                .onTapGesture {
+                                    
+                                    viewModel.setBookingID(booking: booking)
+                                }
+                        }
                     }
+                    
                 }
-                
             }
             Button(action: {
                 showAlert.toggle()
