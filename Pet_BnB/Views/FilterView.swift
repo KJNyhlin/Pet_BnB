@@ -13,6 +13,8 @@ struct FilterView: View {
     @Binding var maxBeds: Int
     @Binding var minSize: Int
     @Binding var maxSize: Int
+    @State private var isBedsFilterOn: Bool = false
+    @State private var isSizeFilterOn: Bool = false
     
     var body: some View {
         ZStack {
@@ -38,23 +40,37 @@ struct FilterView: View {
                 .padding()
                 
                 Form {
-                    Section(header: Text("Number of Beds")) {
-                        Stepper(value: $minBeds, in: 1...maxBeds) {
-                            Text("Minimum \(minBeds) beds")
-                        }
-                        Stepper(value: $maxBeds, in: minBeds...150) {       // Ändra senare till något logiskt
-                            Text("Maximum \(maxBeds) beds")
-                        }
-                    }
-                    Section(header: Text("Size (in sqm)")) {
-                        Stepper(value: $minSize, in: 10...maxSize, step: 10) {
-                            Text("Minimum \(minSize) sqm")
-                        }
-                        Stepper(value: $maxSize, in: minSize...1000, step: 10) {        // Ändra senare till något logiskt
-                            Text("Maximum \(maxSize) sqm")
-                        }
-                    }
-                }
+                                    Section(header: Text("Number of Beds")) {
+                                        Toggle(isOn: $isBedsFilterOn) {
+                                            Text("Beds Filter")
+                                        }
+                                        .padding(.bottom, 5)
+                                        
+                                        if isBedsFilterOn {
+                                            Stepper(value: $minBeds, in: 1...maxBeds) {
+                                                Text("Minimum \(minBeds) beds")
+                                            }
+                                            Stepper(value: $maxBeds, in: minBeds...150) {
+                                                Text("Maximum \(maxBeds) beds")
+                                            }
+                                        }
+                                    }
+                                    Section(header: Text("Size (in sqm)")) {
+                                        Toggle(isOn: $isSizeFilterOn) {
+                                            Text("Size Filter")
+                                        }
+                                        .padding(.bottom, 5)
+                                        
+                                        if isSizeFilterOn {
+                                            Stepper(value: $minSize, in: 10...maxSize, step: 10) {
+                                                Text("Minimum \(minSize) sqm")
+                                            }
+                                            Stepper(value: $maxSize, in: minSize...1000, step: 10) {
+                                                Text("Maximum \(maxSize) sqm")
+                                            }
+                                        }
+                                    }
+                                }
                 .background(Color(UIColor.systemGray6))
                 .cornerRadius(10)
                 .shadow(radius: 5)
