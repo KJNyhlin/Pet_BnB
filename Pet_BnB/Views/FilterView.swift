@@ -25,7 +25,7 @@ struct FilterView: View {
              */
             VStack {
                 HStack {
-                    Text("Filter")
+                    Text("Adjust Search Filters")
                         .font(.title)
                         .padding()
                     Spacer()
