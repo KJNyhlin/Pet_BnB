@@ -18,7 +18,7 @@ struct ExploreView: View {
     
     var isFilterActive: Bool {
             return minBeds > 1 || maxBeds < 150 || minSize > 10 || maxSize < 1000
-        }
+    }
     
     var filteredHouses: [House] {
             firebaseHelper.houses.filter { house in
@@ -46,8 +46,8 @@ struct ExploreView: View {
                         showFilter.toggle()
                     }) {
                             Image(systemName: "slider.horizontal.3")
-                            .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
-                            .padding(.trailing, 16)
+                                .foregroundColor(isFilterActive ? Color(red: 248/256, green: 187/256, blue: 1/256) : Color(red: 0.2, green: 0.2, blue: 0.2))
+                                .padding(.trailing, 16)
                         }
                         .sheet(isPresented: $showFilter) {
                             FilterView(isPresented: $showFilter, minBeds: $minBeds, maxBeds: $maxBeds, minSize: $minSize, maxSize: $maxSize)
