@@ -25,8 +25,8 @@ struct FilterView: View {
              */
             VStack {
                 HStack {
-                    Text("Adjust Search Filters")
-                        .font(.title)
+                    Text("Add Search Criteria")
+                        .font(.title.bold())
                         .padding()
                     Spacer()
                     Button("Done") {
@@ -34,10 +34,6 @@ struct FilterView: View {
                     }
                     .padding()
                 }
-                .background(Color(UIColor.systemGray6))
-                .cornerRadius(10)
-                .shadow(radius: 5)
-                .padding()
                 
                 Form {
                     Section(header: Text("Number of Beds")) {
