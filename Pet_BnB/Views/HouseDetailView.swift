@@ -57,9 +57,6 @@ struct HouseDetailView: View {
                                 Text(house.title)
                                     .font(.title)
                                 
-                                Text("For rent: Date missing")
-                                    .font(.subheadline)
-                                
                                 Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
                                     .font(.footnote)
                                     .fontWeight(.bold)
