@@ -16,7 +16,7 @@ struct ChatView: View {
                 .ignoresSafeArea()
  
             VStack{
-                Spacer()
+          
                 VStack{
   //                  if let chat = vm.chat{
                     
@@ -49,10 +49,12 @@ struct MessageView: View{
                 .padding()
                 .background(fromLoggedIn ? .blue : AppColors.mainAccent)
                 .cornerRadius(20)
+                .padding(fromLoggedIn ? .leading : .trailing, 50)
+                
             
         }
         .frame(maxWidth: .infinity, alignment: fromLoggedIn ? .trailing : .leading)
-        .border(.orange)
+        
      //   .padding()
     }
 }
@@ -63,23 +65,28 @@ struct MessageInputView: View {
     var body: some View {
         HStack(){
      //       EntryFields(placeHolder: "Message", promt: "", field: $messageInput)
-            TextField("Message", text: $messageInput)
+            TextField("Message", text: $messageInput, axis: .vertical)
                 .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                
+                .lineLimit(5)
                 .frame(maxWidth: .infinity)
                 .padding(10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 25.0)
                         .stroke(AppColors.mainAccent, lineWidth: 3)
                 )
+ 
             Button(action: {
                 sendAction()
                 
             }, label: {
-               Text("Send")
+                Text("Send")
                     .padding()
                     .background()
                     .cornerRadius(10)
+                
             })
+         
         }
         //.padding(.horizontal)
     }

@@ -104,7 +104,7 @@ class ChatViewModel: ObservableObject{
                     print("No documents")
                     return
                 }
-               
+                self.markMessageAsRead(chatID: chatID)
                 self.messages = documents.compactMap { queryDocumentSnapshot -> Message? in
                     return try? queryDocumentSnapshot.data(as: Message.self)
                 }
@@ -133,7 +133,6 @@ class ChatViewModel: ObservableObject{
     
     func getChat(participants: [String]) async -> Chat?{
         let sortedParticipants = sort(array: participants)
-       // var test = ["NcXIPqzGOsdUk7MFthFDFg5wpCn1", "1SQkGlReCERsA9HdawiEXbZR2j93"]
         
         do {
             let querySnapshot = try await db.collection("chats").whereField("participants", isEqualTo: sortedParticipants)
@@ -161,4 +160,29 @@ class ChatViewModel: ObservableObject{
         return false
     }
     
+    func markMessageAsRead(chatID: String){
+        let chatRef = db.collection("chats").document(chatID)
+        if let userID = firebaseHelper.getUserID(){
+            chatRef.updateData(["unreadMessagesCount.\(userID)": 0]) { error in
+                if let error = error{
+                    print("Error marking as read!")
+                }
+            }
+//            let messagesRef = chatRef.collection("messages")
+//            messagesRef.whereField("isRead.\(userID)", isEqualTo: false).getDocuments { snapshot, error in
+//                if let snapshot = snapshot {
+//                    for document in snapshot.documents {
+//                        let messageRef = messagesRef.document(document.documentID)
+//                        messageRef.updateData([
+//                            "isRead.\(userID)": true
+//                        ])
+//                    }
+//                }
+//            }
+        }
+        
+    }
+    
 }
+
+
