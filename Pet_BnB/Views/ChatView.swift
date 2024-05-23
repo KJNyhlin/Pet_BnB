@@ -15,25 +15,31 @@ struct ChatView: View {
             Color.secondary
                 .ignoresSafeArea()
             VStack{
+                Spacer()
                 VStack{
-//                    if let chat = vm.chat{
-//                        ForEach(chat.messages){ message in
-//                            //            Text(message.text)
-//                            MessageView(message: message)
-//                        }
-//                    }
+  //                  if let chat = vm.chat{
+                    
+                    List{
+                        ForEach(vm.messages){ message in
+                            //            Text(message.text)
+                            MessageView(message: message, fromLoggedIn: vm.fromLoggedInUser(id: message.senderID))
+                            //                    }
+                        }
+                    }
+                    .listStyle(.plain)
+                    .frame(maxHeight: .infinity)
+                    
                 }
                 MessageInputView(messageInput: $vm.messageInput, sendAction: vm.sendMessage)
             }
             .padding()
         }
-
     }
 }
 
 struct MessageView: View{
     var message: Message
-    var fromLoggedIn: Bool = true
+    var fromLoggedIn: Bool
         
     var body: some View{
         HStack{

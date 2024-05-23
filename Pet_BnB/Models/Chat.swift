@@ -9,7 +9,7 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct Chat: Encodable{
+struct Chat: Encodable, Decodable{
     @DocumentID var id: String?
     var participants: [String]
     var lastMessage: String
