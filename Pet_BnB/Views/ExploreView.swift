@@ -35,7 +35,7 @@ struct ExploreView: View {
                     Image(systemName: "magnifyingglass")
                             .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
                             .padding(.leading, 16)
-                    TextField("Search city or description", text: $searchText)
+                    TextField("Search city or keyword", text: $searchText)
                             .padding(14)
                 
                     Button(action: {
