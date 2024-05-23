@@ -26,6 +26,10 @@ struct FilterView: View {
                 }
                 .padding()
             }
+                .background(Color(UIColor.systemGray6))
+                .cornerRadius(10)
+                .shadow(radius: 5)
+                .padding()
 
             Form {
                 Section(header: Text("Number of Beds")) {
@@ -45,6 +49,11 @@ struct FilterView: View {
                     }
                 }
             }
+            .background(Color(UIColor.systemGray6))
+            .cornerRadius(10)
+            .shadow(radius: 5)
+            .padding()
+            
             Spacer()
         }
     }
