@@ -16,6 +16,10 @@ struct ExploreView: View {
     @State private var minSize: Int = 10
     @State private var maxSize: Int = 1000
     
+    var isFilterActive: Bool {
+            return minBeds > 1 || maxBeds < 150 || minSize > 10 || maxSize < 1000
+        }
+    
     var filteredHouses: [House] {
             firebaseHelper.houses.filter { house in
                 let matchesSearchText = searchText.isEmpty ||
