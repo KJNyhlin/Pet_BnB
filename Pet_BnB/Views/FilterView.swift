@@ -75,6 +75,18 @@ struct FilterView: View {
                 Spacer()
             }
         }
+            .onChange(of: isBedsFilterOn) { newValue in
+               if !newValue {
+                   minBeds = 1
+                   maxBeds = 150
+               }
+           }
+           .onChange(of: isSizeFilterOn) { newValue in
+               if !newValue {
+                   minSize = 10
+                   maxSize = 1000
+               }
+           }
             .onAppear {
                 isBedsFilterOn = minBeds > 1 || maxBeds < 150
                 isSizeFilterOn = minSize > 10 || maxSize < 1000
