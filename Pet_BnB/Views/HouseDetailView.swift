@@ -135,33 +135,39 @@ struct BookingsList: View {
     @State var showAlert : Bool = false
     @State var startDate = Date.now
     var body: some View {
-//        DatePicker("Select period", selection: $startDate, displayedComponents: .date)
-//            .datePickerStyle(.graphical)
-        BookingCalendarView(viewModel: viewModel)
-        ForEach(viewModel.bookings) {booking in
-            HStack {
-                
-                if booking.renterID == nil {
+        //        DatePicker("Select period", selection: $startDate, displayedComponents: .date)
+        //            .datePickerStyle(.graphical)
+        VStack {
+            BookingCalendarView(viewModel: viewModel)
+            ForEach(viewModel.bookings) {booking in
+                HStack {
                     Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
                     if booking.renterID == nil {
-                        Button(action: {
-                            showAlert.toggle()
-                        }, label: {
-                            
-                            Text("Book")
-                        })
+                        Image(systemName: viewModel.checkIfChecked(booking: booking) ? "checkmark.square" : "square")
+                            .onTapGesture {
+                                viewModel.setBookingID(booking: booking)
+                            }
                     }
                 }
-            }
-            .alert("Do you want to reserv the time period?", isPresented: $showAlert) {
                 
-                Button("No", role: .cancel) {}
-                Button("Yes", role: .none) {
+            }
+            Button(action: {
+                showAlert.toggle()
+            }, label: {
+                FilledButtonLabel(text: "Book")
+                    .frame(width: 100)
                     
-                    if let houseID = house.id
-                    {
-                        viewModel.bookHouse(houseID: houseID, booking: booking)
-                    }
+            })
+            .disabled(viewModel.selectedBookingID == "")
+        }
+        .alert("Do you want to reserv the time period?", isPresented: $showAlert) {
+            
+            Button("No", role: .cancel) {}
+            Button("Yes", role: .none) {
+                
+                if let houseID = house.id
+                {
+                    viewModel.bookHouse(houseID: houseID)
                 }
             }
         }
@@ -183,6 +189,7 @@ struct BookingCalendarView: View{
                 
             CalendarBodyView(days: $viewModel.daysInMonth, viewModel: viewModel)
                 .padding(10)
+            
         }
     }
 }
@@ -212,6 +219,7 @@ struct CalendarBodyView: View{
             ForEach(days, id: \.self) { day in
                 let dayNumber = Calendar.current.component(.day, from: day)
                 CalendarDayView(dayNumber: dayNumber, bookings: viewModel.bookings, date: day, viewModel: viewModel)
+                    
             }
         }
     }
@@ -236,6 +244,10 @@ struct CalendarDayView: View {
                                         topLeadingRadius: 25.0,
                                         bottomLeadingRadius: 25.0
                                     ))
+                                .onTapGesture {
+                                print("!!!")
+                                    viewModel.setBookingID(booking: booking)
+                                }
                         
                             
                     } else if Calendar.current.isDate(date, inSameDayAs: booking.toDate) {
@@ -246,15 +258,28 @@ struct CalendarDayView: View {
                                     bottomTrailingRadius: 25.0,
                                     topTrailingRadius: 25.0
                                 ))
+                            .onTapGesture {
+                            print("!!!")
+                                viewModel.setBookingID(booking: booking)
+                            }
                             
                     }
                     
                     else if (booking.fromDate ... booking.toDate).contains(date) {
                         viewModel.getColor(from: booking)
+                            .onTapGesture {
+                            print("!!!")
+                                viewModel.setBookingID(booking: booking)
+                            }
                             
                     }
+                    Text("")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        
+                        
                     
                 }
+                
                 Text("\(dayNumber)")
                     .font(.caption)
                     .bold()
@@ -264,6 +289,7 @@ struct CalendarDayView: View {
 //        .padding(8)
 //        .border(Color.black)
 //        .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
+        
         
     }
 }

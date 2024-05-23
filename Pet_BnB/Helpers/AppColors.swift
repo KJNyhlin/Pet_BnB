@@ -11,4 +11,5 @@ import SwiftUI
 struct AppColors {
     static let mainAccent = Color(red: 248/256, green: 187/256, blue: 1/256)
     static let inactive = Color(red: 228/256, green: 230/256, blue: 232/256)
+    static let freeBookingColor = Color(red: 50/256, green: 169/256, blue: 84/256)
 }
