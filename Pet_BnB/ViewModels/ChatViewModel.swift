@@ -75,6 +75,7 @@ class ChatViewModel: ObservableObject{
                 createChat(senderID: userID){ chatID in
                     print(chatID)
                     if let chatID = chatID{
+                        self.setupMessageListener(chatID: chatID)
                         self.sendMessage(chatID: chatID, text: self.messageInput, senderID: userID, reciverID: self.toUserID)
                     }
                
