@@ -53,7 +53,7 @@ struct MyHouseView: View {
 //                            .padding(.vertical)
 //                            
 
-                            TimePeriodList(vm: vm)
+//                            TimePeriodList(vm: vm)
 
                             Spacer()
                             
@@ -73,13 +73,17 @@ struct MyHouseView: View {
                                 NavigationLink(destination:PetsView(vm: PetsViewModel(house: house, pets: house.pets))){
                                     Label("Pets", systemImage: "pawprint.fill")
                                 }
-
-                                Button(action: {
-//                                    vm.saveTimePeriod()
-                                    showAddPeriodSheet.toggle()
-                                }, label: {
-                                    Text("Add period")
-                                })
+                                if let house = vm.house {
+                                    NavigationLink(destination: TimePeriodView(vm: TimePeriodViewModel(house: house))) {
+                                        Label("Time Periods", systemImage: "clock")
+                                    }
+                                }
+//                                Button(action: {
+////                                    vm.saveTimePeriod()
+//                                    showAddPeriodSheet.toggle()
+//                                }, label: {
+//                                    Text("Add period")
+//                                })
 
                                 
                             } label: {
@@ -90,10 +94,10 @@ struct MyHouseView: View {
                                     vm.deleteHouse()
                                 }, secondaryButton: .cancel())
                             }
-                            .sheet(isPresented: $showAddPeriodSheet, content: {
-                                AddPeriodSheet(vm: vm, showAddPeriodSheet: $showAddPeriodSheet)
-                            })
-                            
+//                            .sheet(isPresented: $showAddPeriodSheet, content: {
+//                                AddPeriodSheet(vm: vm, showAddPeriodSheet: $showAddPeriodSheet)
+//                            })
+//                            
                         }
                         .padding()
                         
@@ -152,44 +156,44 @@ struct InformationRow: View{
         .padding(.vertical, 5)
     }
 }
+//
+//struct  TimePeriodList : View {
+//    @StateObject var vm : MyHouseViewModel
+//    var body: some View {
+//        List(vm.myTimePeriods) {
+//            Text("\($0.fromDate.formatted(date: .numeric, time: .omitted)) - \($0.toDate.formatted(date: .numeric, time: .omitted))")
+//        }
+//    }
+//}
 
-struct  TimePeriodList : View {
-    @StateObject var vm : MyHouseViewModel
-    var body: some View {
-        List(vm.myTimePeriods) {
-            Text("\($0.fromDate.formatted(date: .numeric, time: .omitted)) - \($0.toDate.formatted(date: .numeric, time: .omitted))")
-        }
-    }
-}
-
-struct AddPeriodSheet: View {
-    @StateObject var vm : MyHouseViewModel
-    @State var startDate = Date.now
-    @State var endDate = Date.now
-    @Binding var showAddPeriodSheet : Bool
-    
-    var body: some View {
-        VStack {
-            Text("Select a time period for others to book")
-            DatePicker(selection: $startDate, in: Date.now..., displayedComponents: .date) {
-                    Text("Select a date")
-                }
-            
-            
-            DatePicker(selection: $endDate, in: Date.now..., displayedComponents: .date) {
-                    Text("Select a date")
-                }
-            Button(action: {
-                vm.saveTimePeriod(startDate: startDate, endDate: endDate)
-                showAddPeriodSheet.toggle()
-                
-            }, label: {
-                Text("Save")
-            })
-            
-        }
-    }
-}
+//struct AddPeriodSheet: View {
+//    @StateObject var vm : MyHouseViewModel
+//    @State var startDate = Date.now
+//    @State var endDate = Date.now
+//    @Binding var showAddPeriodSheet : Bool
+//    
+//    var body: some View {
+//        VStack {
+//            Text("Select a time period for others to book")
+//            DatePicker(selection: $startDate, in: Date.now..., displayedComponents: .date) {
+//                    Text("Select a date")
+//                }
+//            
+//            
+//            DatePicker(selection: $endDate, in: Date.now..., displayedComponents: .date) {
+//                    Text("Select a date")
+//                }
+//            Button(action: {
+//                vm.saveTimePeriod(startDate: startDate, endDate: endDate)
+//                showAddPeriodSheet.toggle()
+//                
+//            }, label: {
+//                Text("Save")
+//            })
+//            
+//        }
+//    }
+//}
 
 //#Preview {
 //    AdressView(street: "Gatan", streetNR: 3, city: "Uppsala")
