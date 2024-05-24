@@ -48,7 +48,40 @@ struct ChatListRow: View{
                 .font(.system(size: 8))
                 .foregroundColor(AppColors.mainAccent)
                 .opacity(hasUnreadMessages ? 100 : 0)
-            Image(systemName: "person.circle")
+       //     Image(systemName: "person.circle")
+            if let url = user?.imageURL{
+                AsyncImage(url: URL(string: url)) { phase in
+                    var size:CGFloat = 40
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                            .frame(height: size)
+                            .frame(maxWidth: size)
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: size)
+                            .frame(maxWidth: size)
+                            .clipShape(Circle())
+                    case .failure:
+                        Image(systemName: "person.circle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: size)
+                            .frame(maxWidth: size)
+                            .background(Color.gray)
+                    @unknown default:
+                        Image(systemName: "person.circle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: size)
+                            .frame(maxWidth: size)
+                            .background(Color.gray)
+                    }
+                }
+            }
+           
                 
             VStack(alignment: .leading){
                 //            if let name = user?.firstName{
