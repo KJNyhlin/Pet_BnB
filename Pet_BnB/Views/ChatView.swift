@@ -20,43 +20,40 @@ struct ChatView: View {
             
             
             //                  if let chat = vm.chat{
-
-          
-                List{
-                    ForEach(vm.messages){ message in
-                        
-                        MessageView(message: message, fromLoggedIn: vm.fromLoggedInUser(id: message.senderID))
-                            .listRowSeparator(.hidden)
+            
+            
+            List{
+                ForEach(vm.messages){ message in
                     
-                     
-                        //                    }
-                    }
+                    MessageView(message: message, fromLoggedIn: vm.fromLoggedInUser(id: message.senderID))
+                        .listRowSeparator(.hidden)
                 }
-                .listStyle(.plain)
-
-                
             }
+            .listStyle(.plain)
             
             
+        
+        
+        
+        
+        
+        VStack{
             
-            
-            VStack{
-                
-                MessageInputView(messageInput: $vm.messageInput, sendAction: vm.sendMessage)
-                
-            }
-            
+            MessageInputView(messageInput: $vm.messageInput, sendAction: vm.sendMessage)
             
         }
         
+        
+    }
+    
         .padding()
         .onDisappear {
             vm.removeListener()
         }
-        
-        //        }
-        
-    }
+    
+    //        }
+    
+}
 }
 
 struct MessageView: View{
