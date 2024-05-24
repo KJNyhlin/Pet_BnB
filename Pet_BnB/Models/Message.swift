@@ -9,7 +9,7 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-struct Message: Identifiable, Encodable, Decodable{
+struct Message: Identifiable, Encodable, Decodable, Equatable, Hashable{
     @DocumentID var id: String?
     var senderID: String
     var timestamp: Timestamp

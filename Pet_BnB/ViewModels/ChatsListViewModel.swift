@@ -10,11 +10,16 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 class ChatsListViewModel: ObservableObject{
-    @Published var chats: [Chat]
+    @Published var chats: [Chat] {
+        didSet{
+            totalUnreadMessages(chats: chats)
+        }
+    }
     var firebaseHelper = FirebaseHelper()
     private var listenerRegistration: ListenerRegistration?
     private var db = Firestore.firestore()
     @Published var chatParticipants: [String: User] = [:]
+    @Published var unreadCount = 0
     
     init(chats: [Chat] = [], firebaseHelper: FirebaseHelper = FirebaseHelper(), listenerRegistration: ListenerRegistration? = nil) {
         self.chats = chats
@@ -25,6 +30,10 @@ class ChatsListViewModel: ObservableObject{
     }
     
     private func setupChatsListener() {
+        if listenerRegistration != nil {
+            return
+        }
+        
         if let loggedInUserId = firebaseHelper.getUserID(){
             listenerRegistration = db.collection("chats").whereField("participants", arrayContains: loggedInUserId)
                 .order(by: "lastMessageTimeStamp", descending: false)
@@ -34,14 +43,16 @@ class ChatsListViewModel: ObservableObject{
                         return
                     }
                    
-                    print(documents)
-                    
-                    
+                    //print(documents)
+             
                     self.chats = documents.compactMap { queryDocumentSnapshot -> Chat? in
                         return try? queryDocumentSnapshot.data(as: Chat.self)
                     }
+                    
+               //     self.totalUnreadMessages(chats: self.chats)            //self.totalUnreadMessages(chat: <#T##Chat#>)
                     self.fetchParticipantNames()
                 }
+            print("listener setup")
         }
 
     }
@@ -64,6 +75,7 @@ class ChatsListViewModel: ObservableObject{
             }
         }
     }
+    
     func getUserFrom(chat: Chat) -> User?{
         if let loggedInUserID = firebaseHelper.getUserID(){
             for userID in chat.participants{
@@ -82,5 +94,17 @@ class ChatsListViewModel: ObservableObject{
             }
         }
         return false
+    }
+    func totalUnreadMessages(chats: [Chat]){
+        var count = 0
+        if let userID = firebaseHelper.getUserID(){
+            for chat in chats{
+                if let unread = chat.unreadMessagesCount[userID]{
+                   count += unread
+                }
+            }
+        }
+        unreadCount = count
+        print("Unread count = \(unreadCount)")
     }
 }

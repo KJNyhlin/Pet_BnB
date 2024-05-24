@@ -17,6 +17,7 @@ class ChatViewModel: ObservableObject{
     var toUserID: String
     private var db = Firestore.firestore()
     private var listenerRegistration: ListenerRegistration?
+    
   //  var isChatNew = false
     
     @Published var messageInput: String = ""

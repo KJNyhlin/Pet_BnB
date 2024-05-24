@@ -10,52 +10,59 @@ import SwiftUI
 struct ChatView: View {
     @StateObject var vm: ChatViewModel
     
+    
     var body: some View {
-//        ZStack{
-//            Color.secondary
- //
- 
-            VStack{
-               
-       
-  //                  if let chat = vm.chat{
-
-                    List{
-                        ForEach(vm.messages){ message in
-                            //            Text(message.text)
-                            MessageView(message: message, fromLoggedIn: vm.fromLoggedInUser(id: message.senderID))
-                                .listRowSeparator(.hidden)
-                            //                    }
-                        }
-                    }
-                    .listStyle(.plain)
-                    
-                    
-                
-                
-                VStack{
-                  
-                    MessageInputView(messageInput: $vm.messageInput, sendAction: vm.sendMessage)
-                        
-                }
-             
-                   
-            }
+        //        ZStack{
+        //            Color.secondary
+        //
         
-            .padding()
-            .onDisappear {
-                vm.removeListener()
+        VStack{
+            
+            
+            //                  if let chat = vm.chat{
+
+          
+                List{
+                    ForEach(vm.messages){ message in
+                        
+                        MessageView(message: message, fromLoggedIn: vm.fromLoggedInUser(id: message.senderID))
+                            .listRowSeparator(.hidden)
+                    
+                     
+                        //                    }
+                    }
+                }
+                .listStyle(.plain)
+
+                
             }
-
-//        }
-
+            
+            
+            
+            
+            VStack{
+                
+                MessageInputView(messageInput: $vm.messageInput, sendAction: vm.sendMessage)
+                
+            }
+            
+            
+        }
+        
+        .padding()
+        .onDisappear {
+            vm.removeListener()
+        }
+        
+        //        }
+        
     }
 }
 
 struct MessageView: View{
     var message: Message
     var fromLoggedIn: Bool
-        
+    
     var body: some View{
         HStack{
             Text(message.text)
@@ -63,12 +70,12 @@ struct MessageView: View{
                 .background(fromLoggedIn ? .blue : AppColors.mainAccent)
                 .cornerRadius(20)
                 .padding(fromLoggedIn ? .leading : .trailing, 50)
-                
+            
             
         }
         .frame(maxWidth: .infinity, alignment: fromLoggedIn ? .trailing : .leading)
         
-     //   .padding()
+        //   .padding()
     }
 }
 
@@ -77,10 +84,10 @@ struct MessageInputView: View {
     var sendAction: () -> Void
     var body: some View {
         HStack(){
-     //       EntryFields(placeHolder: "Message", promt: "", field: $messageInput)
+            //       EntryFields(placeHolder: "Message", promt: "", field: $messageInput)
             TextField("Message", text: $messageInput, axis: .vertical)
                 .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-                
+            
                 .lineLimit(5)
                 .frame(maxWidth: .infinity)
                 .padding(10)
@@ -89,7 +96,7 @@ struct MessageInputView: View {
                     RoundedRectangle(cornerRadius: 25.0)
                         .stroke(AppColors.mainAccent, lineWidth: 3)
                 )
- 
+            
             Button(action: {
                 sendAction()
                 
@@ -100,7 +107,7 @@ struct MessageInputView: View {
                     .cornerRadius(10)
                 
             })
-         
+            
         }
         //.background()
         //.background(.regularMaterial)

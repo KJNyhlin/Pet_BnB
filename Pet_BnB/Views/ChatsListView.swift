@@ -9,11 +9,13 @@ import SwiftUI
 
 
 struct ChatsListView: View {
-    @StateObject var vm: ChatsListViewModel = ChatsListViewModel()
+    //   @StateObject var vm: ChatsListViewModel = ChatsListViewModel()
+    @EnvironmentObject var vm: ChatsListViewModel
     
     var body: some View {
         VStack{
             NavigationStack{
+                
                 List{
                     ForEach(vm.chats){ chat in
                         if let toUser = vm.getUserFrom(chat: chat),
@@ -23,8 +25,11 @@ struct ChatsListView: View {
                             }
                         }
                     }
+                    
                 }
             }
+            
+            
         }
     }
 }
@@ -39,7 +44,7 @@ struct ChatListRow: View{
                 .font(.footnote)
                 .foregroundColor(AppColors.mainAccent)
                 .opacity(hasUnreadMessages ? 100 : 0)
-
+            
             VStack(alignment: .leading){
                 //            if let name = user?.firstName{
                 
