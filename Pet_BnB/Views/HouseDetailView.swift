@@ -68,7 +68,7 @@ struct HouseDetailView: View {
                                         icon: { Image(systemName: "bed.double") }
                                     )
                                     .padding(.trailing, 10)
-                                    
+
                                     Label(
                                         title: { Text("\(house.size) m²") },
                                         icon: { Image(systemName: "house.fill") }

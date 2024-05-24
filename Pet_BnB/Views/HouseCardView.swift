@@ -21,6 +21,21 @@ struct HouseCardView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(house.title)
                         .font(.headline)
+                    HStack {
+                        Label(
+                            title: { Text("\(house.beds) st") },
+                                icon: { Image(systemName: "bed.double") }
+                            )
+                            .padding(.trailing, 10)
+                                        
+                        Label(
+                            title: { Text("\(house.size) m²") },
+                                icon: { Image(systemName: "house.fill") }
+                            )
+                    }
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                                        
                     Text(house.description)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
