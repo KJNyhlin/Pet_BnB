@@ -25,7 +25,8 @@ struct ExploreView: View {
                 let matchesSearchText = searchText.isEmpty ||
                     house.title.lowercased().contains(searchText.lowercased()) ||
                     house.city.lowercased().contains(searchText.lowercased()) ||
-                    house.description.lowercased().contains(searchText.lowercased())
+                    house.description.lowercased().contains(searchText.lowercased()) ||
+                    house.pets?.contains { $0.species.lowercased().contains(searchText.lowercased()) } ?? false
                 let matchesBeds = house.beds >= minBeds && house.beds <= maxBeds
                 let matchesSize = house.size >= minSize && house.size <= maxSize
                 return matchesSearchText && matchesBeds && matchesSize
