@@ -36,7 +36,7 @@ class ChatsListViewModel: ObservableObject{
         
         if let loggedInUserId = firebaseHelper.getUserID(){
             listenerRegistration = db.collection("chats").whereField("participants", arrayContains: loggedInUserId)
-                .order(by: "lastMessageTimeStamp", descending: false)
+                .order(by: "lastMessageTimeStamp", descending: true)
                 .addSnapshotListener { (querySnapshot, error) in
                     guard let documents = querySnapshot?.documents else {
                         print("No documents")
@@ -50,14 +50,14 @@ class ChatsListViewModel: ObservableObject{
                     }
                     
                //     self.totalUnreadMessages(chats: self.chats)            //self.totalUnreadMessages(chat: <#T##Chat#>)
-                    self.fetchParticipantNames()
+                    self.fetchParticipants()
                 }
             print("listener setup")
         }
 
     }
     
-    private func fetchParticipantNames() {
+    private func fetchParticipants() {
         print("fetchParticipantNames called!!!")
         for chat in chats {
             for participant in chat.participants {
@@ -108,5 +108,26 @@ class ChatsListViewModel: ObservableObject{
         }
         unreadCount = count
         print("Unread count = \(unreadCount)")
+    }
+    
+    func getDateString(timeStamp: Timestamp) -> String {
+        let date = timeStamp.dateValue()
+        let dateFormatter = DateFormatter()
+        let calendar = Calendar.current
+        dateFormatter.locale = Locale.current
+        
+        if calendar.isDateInToday(date){
+            dateFormatter.dateFormat = "HH:mm"
+
+        } else if calendar.isDateInYesterday(date)  {
+            return "yesterday"
+        } else if let daysAgo = calendar.dateComponents([.day], from: date, to: Date()).day, daysAgo <= 7 {
+            // if days ago is within a week print the name of the day
+            dateFormatter.dateFormat = "EEEE"
+        } else{
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+        }
+       
+        return dateFormatter.string(from: date)
     }
 }

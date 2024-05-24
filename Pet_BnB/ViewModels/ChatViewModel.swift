@@ -127,7 +127,7 @@ class ChatViewModel: ObservableObject{
         // Update the last message and timestamp
         chatRef.updateData([
             "lastMessage": text,
-            "lastMessageTimestamp": Timestamp(),
+            "lastMessageTimeStamp": Timestamp(),
             "unreadMessagesCount.\(reciverID)": FieldValue.increment(Int64(1))
         ])
         

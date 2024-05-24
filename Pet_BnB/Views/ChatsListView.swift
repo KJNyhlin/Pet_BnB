@@ -21,16 +21,19 @@ struct ChatsListView: View {
                         if let toUser = vm.getUserFrom(chat: chat),
                            let toUserID = toUser.docID{
                             NavigationLink(destination: ChatView(vm: ChatViewModel(toUserID: toUserID, chat: chat))){
-                                ChatListRow(chat: chat, user: vm.getUserFrom(chat: chat), hasUnreadMessages: vm.hasUnReadMessages(chat: chat))
+                                ChatListRow(chat: chat, user: toUser, hasUnreadMessages: vm.hasUnReadMessages(chat: chat), timeString: vm.getDateString(timeStamp: chat.lastMessageTimeStamp))
                             }
                         }
                     }
                     
                 }
+                .navigationTitle("Messages")
+                .navigationBarTitleDisplayMode(.inline)
             }
             
             
         }
+        
     }
 }
 
@@ -38,25 +41,34 @@ struct ChatListRow: View{
     var chat: Chat
     var user: User?
     var hasUnreadMessages: Bool
+    var timeString: String
     var body: some View{
         HStack{
             Image(systemName: "circle.fill")
-                .font(.footnote)
+                .font(.system(size: 8))
                 .foregroundColor(AppColors.mainAccent)
                 .opacity(hasUnreadMessages ? 100 : 0)
-            
+            Image(systemName: "person.circle")
+                
             VStack(alignment: .leading){
                 //            if let name = user?.firstName{
                 
                 
-                
-                Text(user?.firstName ?? "No name")
-                    .bold()
-                //            } else {
-                //                Text("No name")
-                //                    .bold()
-                //            }
+                HStack{
+                    Text(user?.firstName ?? "No name")
+                        .bold()
+                    Spacer()
+                    Text(timeString)
+                        .foregroundColor(.secondary)
+                        .font(.subheadline)
+                }
+
                 Text(chat.lastMessage)
+                    .font(.subheadline)
+                    .lineLimit(2)
+                    .foregroundColor(.secondary)
+
+                
             }
         }
     }

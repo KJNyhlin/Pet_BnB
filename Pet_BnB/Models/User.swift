@@ -14,4 +14,5 @@ struct User : Decodable, Encodable {
     var surName: String?
     var pet: Pet?
     var imageURL: String?
+    
 }
