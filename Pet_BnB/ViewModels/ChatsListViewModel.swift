@@ -24,15 +24,15 @@ class ChatsListViewModel: ObservableObject{
     init(chats: [Chat] = [], firebaseHelper: FirebaseHelper = FirebaseHelper(), listenerRegistration: ListenerRegistration? = nil) {
         self.chats = chats
         self.firebaseHelper = firebaseHelper
-        self.listenerRegistration = listenerRegistration
+       // self.listenerRegistration = listenerRegistration
       
         setupChatsListener()
     }
     
     private func setupChatsListener() {
-        if listenerRegistration != nil {
-            return
-        }
+//        if listenerRegistration != nil {
+//            return
+//        }
         
         if let loggedInUserId = firebaseHelper.getUserID(){
             listenerRegistration = db.collection("chats").whereField("participants", arrayContains: loggedInUserId)
@@ -58,6 +58,7 @@ class ChatsListViewModel: ObservableObject{
     }
     
     private func fetchParticipantNames() {
+        print("fetchParticipantNames called!!!")
         for chat in chats {
             for participant in chat.participants {
                 if chatParticipants[participant] == nil { // Fetch only if not already fetched
@@ -87,6 +88,7 @@ class ChatsListViewModel: ObservableObject{
         }
         return nil
     }
+    
     func hasUnReadMessages(chat: Chat) -> Bool{
         if let userID = firebaseHelper.getUserID(){
             if let unread = chat.unreadMessagesCount[userID]{

@@ -9,51 +9,39 @@ import SwiftUI
 
 struct ChatView: View {
     @StateObject var vm: ChatViewModel
-    
-    
+        
     var body: some View {
-        //        ZStack{
-        //            Color.secondary
-        //
         
         VStack{
             
-            
-            //                  if let chat = vm.chat{
-            
-            
-            List{
-                ForEach(vm.messages){ message in
-                    
-                    MessageView(message: message, fromLoggedIn: vm.fromLoggedInUser(id: message.senderID))
-                        .listRowSeparator(.hidden)
+            ScrollViewReader { proxy in
+                List{
+                    ForEach(vm.messages){ message in
+                        
+                        MessageView(message: message, fromLoggedIn: vm.fromLoggedInUser(id: message.senderID))
+                            .listRowSeparator(.hidden)
+                            .id(message.id)
+                    }
                 }
-            }
-            .listStyle(.plain)
+                .listStyle(.plain)
+                .onChange(of: vm.messages){
+                    proxy.scrollTo(vm.messages.last?.id)
+                }
             
-            
-        
-        
-        
-        
-        
+           }
         VStack{
             
             MessageInputView(messageInput: $vm.messageInput, sendAction: vm.sendMessage)
             
         }
         
-        
     }
-    
         .padding()
         .onDisappear {
             vm.removeListener()
         }
     
-    //        }
-    
-}
+    }
 }
 
 struct MessageView: View{

@@ -123,20 +123,21 @@ class ChatViewModel: ObservableObject{
         let newMessage = Message(senderID: senderID, timestamp: Timestamp(), text: text, isRead: [:])
     
         let chatRef = db.collection("chats").document(chatID)
-        
+        try? chatRef.collection("messages").addDocument(from: newMessage)
         // Update the last message and timestamp
         chatRef.updateData([
             "lastMessage": text,
-            "lastMessageTimestamp": Timestamp()
+            "lastMessageTimestamp": Timestamp(),
+            "unreadMessagesCount.\(reciverID)": FieldValue.increment(Int64(1))
         ])
         
         // Add the message to the subcollection
-        try? chatRef.collection("messages").addDocument(from: newMessage)
+
         
         // Update unread message count for other participants
 
-        chatRef.updateData(["unreadMessagesCount.\(reciverID)": FieldValue.increment(Int64(1))
-        ])
+//        chatRef.updateData(["unreadMessagesCount.\(reciverID)": FieldValue.increment(Int64(1))
+//        ])
     }
     
     func getChat(participants: [String]) async -> Chat?{
