@@ -11,31 +11,44 @@ struct ChatView: View {
     @StateObject var vm: ChatViewModel
     
     var body: some View {
-        ZStack{
-            Color.secondary
-                .ignoresSafeArea()
+//        ZStack{
+//            Color.secondary
+ //
  
             VStack{
-          
-                VStack{
+               
+       
   //                  if let chat = vm.chat{
-                    
+
                     List{
                         ForEach(vm.messages){ message in
                             //            Text(message.text)
                             MessageView(message: message, fromLoggedIn: vm.fromLoggedInUser(id: message.senderID))
+                                .listRowSeparator(.hidden)
                             //                    }
                         }
                     }
                     .listStyle(.plain)
-                    .frame(maxHeight: .infinity)
                     
+                    
+                
+                
+                VStack{
+                  
+                    MessageInputView(messageInput: $vm.messageInput, sendAction: vm.sendMessage)
+                        
                 }
-                MessageInputView(messageInput: $vm.messageInput, sendAction: vm.sendMessage)
+             
+                   
             }
+        
             .padding()
+            .onDisappear {
+                vm.removeListener()
+            }
 
-        }
+//        }
+
     }
 }
 
@@ -71,6 +84,7 @@ struct MessageInputView: View {
                 .lineLimit(5)
                 .frame(maxWidth: .infinity)
                 .padding(10)
+            //    .background(.regularMaterial)
                 .overlay(
                     RoundedRectangle(cornerRadius: 25.0)
                         .stroke(AppColors.mainAccent, lineWidth: 3)
@@ -88,6 +102,8 @@ struct MessageInputView: View {
             })
          
         }
+        //.background()
+        //.background(.regularMaterial)
         //.padding(.horizontal)
     }
 }

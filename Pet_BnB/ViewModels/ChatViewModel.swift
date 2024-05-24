@@ -96,7 +96,7 @@ class ChatViewModel: ObservableObject{
         }
     }
     
-    private func setupMessageListener(chatID: String) {
+    func setupMessageListener(chatID: String) {
         listenerRegistration = db.collection("chats").document(chatID).collection("messages")
             .order(by: "timestamp", descending: false)
             .addSnapshotListener { (querySnapshot, error) in
@@ -110,6 +110,12 @@ class ChatViewModel: ObservableObject{
                 }
             }
     }
+    
+    func removeListener() {
+        listenerRegistration?.remove()
+        listenerRegistration = nil
+    }
+    
     
     func sendMessage(chatID: String, text: String, senderID: String, reciverID: String) {
         print("InSendMessage")
@@ -127,6 +133,7 @@ class ChatViewModel: ObservableObject{
         try? chatRef.collection("messages").addDocument(from: newMessage)
         
         // Update unread message count for other participants
+        print("sender:\(senderID) Reciver: \(reciverID)")
         chatRef.updateData(["unreadMessagesCount.\(reciverID)": FieldValue.increment(Int64(1))
         ])
     }
@@ -180,8 +187,9 @@ class ChatViewModel: ObservableObject{
 //                }
 //            }
         }
-        
+
     }
+    
     
 }
 

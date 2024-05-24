@@ -75,4 +75,12 @@ class ChatsListViewModel: ObservableObject{
         }
         return nil
     }
+    func hasUnReadMessages(chat: Chat) -> Bool{
+        if let userID = firebaseHelper.getUserID(){
+            if let unread = chat.unreadMessagesCount[userID]{
+                return unread > 0
+            }
+        }
+        return false
+    }
 }
