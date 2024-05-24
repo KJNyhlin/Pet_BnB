@@ -133,7 +133,7 @@ class ChatViewModel: ObservableObject{
         try? chatRef.collection("messages").addDocument(from: newMessage)
         
         // Update unread message count for other participants
-        print("sender:\(senderID) Reciver: \(reciverID)")
+
         chatRef.updateData(["unreadMessagesCount.\(reciverID)": FieldValue.increment(Int64(1))
         ])
     }

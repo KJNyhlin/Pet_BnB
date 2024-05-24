@@ -11,7 +11,6 @@ import SwiftUI
 struct ChatsListView: View {
     @StateObject var vm: ChatsListViewModel = ChatsListViewModel()
     
-    
     var body: some View {
         VStack{
             NavigationStack{
@@ -25,8 +24,6 @@ struct ChatsListView: View {
                         }
                     }
                 }
-                
-
             }
         }
     }
