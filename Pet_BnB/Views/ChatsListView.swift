@@ -22,6 +22,7 @@ struct ChatsListView: View {
                            let toUserID = toUser.docID{
                             NavigationLink(destination: ChatView(vm: ChatViewModel(toUserID: toUserID, chat: chat))){
                                 ChatListRow(chat: chat, user: toUser, hasUnreadMessages: vm.hasUnReadMessages(chat: chat), timeString: vm.getDateString(timeStamp: chat.lastMessageTimeStamp))
+                                    
                             }
                         }
                     }
@@ -29,6 +30,7 @@ struct ChatsListView: View {
                 }
                 .navigationTitle("Messages")
                 .navigationBarTitleDisplayMode(.inline)
+                
             }
             
             
@@ -80,8 +82,18 @@ struct ChatListRow: View{
                             .background(Color.gray)
                     }
                 }
+                .padding(.trailing, 5)
+                
+            } else {
+                Image(systemName: "person.circle")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(height: 40)
+                    .frame(maxWidth: 40)
+                    //.background(Color.gray)
+                    .padding(.trailing, 5)
             }
-           
+                
                 
             VStack(alignment: .leading){
                 //            if let name = user?.firstName{
