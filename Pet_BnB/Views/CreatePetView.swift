@@ -14,8 +14,8 @@ struct CreatePetView: View {
     var pet: Pet?
 
     @State private var isImagePickerPresented = false
-    @State private var isSaving = false // För att hålla koll på sparningsstatus
-    @State private var showAlert = false // För att visa varning vid bakåtnavigering
+    @State private var isSaving = false
+    @State private var showAlert = false
 
     var body: some View {
         VStack {
@@ -69,14 +69,14 @@ struct CreatePetView: View {
                     Spacer()
 
                     Button(action: {
-                        isSaving = true // Markera att sparningsoperationen pågår
+                        isSaving = true
                         Task {
                             if let selectedImage = vm.image {
                                 vm.uploadPetImage(selectedImage) { url in
                                     vm.imageURL = url
                                     vm.savePet { success in
                                         if success {
-                                            isSaving = false // Avmarkera att sparningsoperationen pågår
+                                            isSaving = false
                                             DispatchQueue.main.async {
                                                 self.presentationMode.wrappedValue.dismiss()
                                             }
@@ -86,7 +86,7 @@ struct CreatePetView: View {
                             } else {
                                 vm.savePet { success in
                                     if success {
-                                        isSaving = false // Avmarkera att sparningsoperationen pågår
+                                        isSaving = false
                                         DispatchQueue.main.async {
                                             self.presentationMode.wrappedValue.dismiss()
                                         }
@@ -96,7 +96,7 @@ struct CreatePetView: View {
                         }
                     }, label: {
                         if isSaving {
-                            ProgressView() // Visa en laddningsindikator under sparningsprocessen
+                            ProgressView() // Visa en laddningsindikator under sparprocessen
                         } else {
                             FilledButtonLabel(text: "Save")
                         }
@@ -124,14 +124,14 @@ struct CreatePetView: View {
                             self.presentationMode.wrappedValue.dismiss()
                         },
                         secondaryButton: .default(Text("Save")) {
-                            isSaving = true // Markera att sparningsoperationen pågår
+                            isSaving = true
                             Task {
                                 if let selectedImage = vm.image {
                                     vm.uploadPetImage(selectedImage) { url in
                                         vm.imageURL = url
                                         vm.savePet { success in
                                             if success {
-                                                isSaving = false // Avmarkera att sparningsoperationen pågår
+                                                isSaving = false
                                                 DispatchQueue.main.async {
                                                     self.presentationMode.wrappedValue.dismiss()
                                                 }
@@ -141,7 +141,7 @@ struct CreatePetView: View {
                                 } else {
                                     vm.savePet { success in
                                         if success {
-                                            isSaving = false // Avmarkera att sparningsoperationen pågår
+                                            isSaving = false
                                             DispatchQueue.main.async {
                                                 self.presentationMode.wrappedValue.dismiss()
                                             }

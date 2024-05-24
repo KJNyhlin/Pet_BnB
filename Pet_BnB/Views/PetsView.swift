@@ -51,20 +51,20 @@ struct PetRowView: View {
                     case .success(let image):
                         image
                             .resizable()
-                            .scaledToFill() // För att bevara proportionerna och fylla ramen
+                            .scaledToFill()
                             .frame(width: 50, height: 50)
                             .clipShape(Circle())
                             .clipped()
                     case .failure:
                         Image(systemName: "photo")
                             .resizable()
-                            .scaledToFit() // För att bevara proportionerna
+                            .scaledToFit()
                             .frame(width: 50, height: 50)
                             .padding(.horizontal)
                     @unknown default:
                         Image(systemName: "photo")
                             .resizable()
-                            .scaledToFit() // För att bevara proportionerna
+                            .scaledToFit()
                             .frame(width: 50, height: 50)
                             .padding(.horizontal)
                     }
@@ -72,7 +72,7 @@ struct PetRowView: View {
             } else {
                 Image(systemName: "photo")
                     .resizable()
-                    .scaledToFit() // För att bevara proportionerna
+                    .scaledToFit()
                     .frame(width: 50, height: 50)
                     .padding(.horizontal)
             }
