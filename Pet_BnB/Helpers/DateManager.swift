@@ -53,7 +53,7 @@ class DateManager{
     
     func getFirstWeekdayIndex(from days: [Date]) -> Int{
         guard let firstDay = days.first else {return 0}
-        let weekday = Calendar.current.component(.weekday, from: firstDay)
+        let weekday = Calendar.current.component(.weekday, from: firstDay + 1)
         return (weekday + 5) % 7
     }
     
@@ -65,15 +65,77 @@ class DateManager{
 
 extension Date {
     var startDateOfMonth: Date {
-        guard let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: self)) else {
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        let components = calendar.dateComponents([.year, .month], from: self)
+        guard let date = calendar.date(from: components) else {
             fatalError("Unable to get start date from date")
         }
         return date
     }
+    
 
     var endDateOfMonth: Date {
-        guard let date = Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: self.startDateOfMonth) else {
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        let components = DateComponents(month: 1, day: -1)
+        guard let date = calendar.date(byAdding: components, to: self.startDateOfMonth) else {
             fatalError("Unable to get end date from date")
+        }
+        return date
+    }
+    var formattedForBooking: Date {
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(abbreviation: "UTC")!
+        
+        let components = calendar.dateComponents([.year, .month, .day], from: self)
+        
+        var newComponents = DateComponents()
+        newComponents.year = components.year
+        newComponents.month = components.month
+        newComponents.day = components.day
+        newComponents.hour = 12
+        newComponents.minute = 0
+        
+        guard let date = calendar.date(from: newComponents) else {
+            fatalError("Unable to convert date")
+        }
+        return date
+    }
+    
+    var formattedForStartDate: Date {
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(abbreviation: "UTC")!
+        
+        let components = calendar.dateComponents([.year, .month, .day], from: self)
+        
+        var newComponents = DateComponents()
+        newComponents.year = components.year
+        newComponents.month = components.month
+        newComponents.day = components.day
+        newComponents.hour = 0
+        newComponents.minute = 1
+        
+        guard let date = calendar.date(from: newComponents) else {
+            fatalError("Unable to convert date")
+        }
+        return date
+    }
+    var formattedForEndDate: Date {
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(abbreviation: "UTC")!
+        
+        let components = calendar.dateComponents([.year, .month, .day], from: self)
+        
+        var newComponents = DateComponents()
+        newComponents.year = components.year
+        newComponents.month = components.month
+        newComponents.day = components.day
+        newComponents.hour = 23
+        newComponents.minute = 59
+        
+        guard let date = calendar.date(from: newComponents) else {
+            fatalError("Unable to convert date")
         }
         return date
     }
@@ -89,6 +151,7 @@ extension Date {
             allDays.append(currentDate)
             if let newDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate){
                 currentDate = newDate
+                
             }
         }
         return allDays
@@ -115,5 +178,9 @@ extension Date {
         print(date.formatted(.dateTime.month()))
         print(selectedMonth.formatted(.dateTime.month()))
         return date.formatted(.dateTime.month()) == selectedMonth.formatted(.dateTime.month())
+    }
+    
+    var startOfDay: Date {
+        Calendar.current.startOfDay(for: self)
     }
 }
