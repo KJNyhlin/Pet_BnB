@@ -6,118 +6,180 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct CreatePetView: View {
     @ObservedObject var vm: PetsViewModel
     @Environment(\.presentationMode) var presentationMode
     var pet: Pet?
-    
- //   @State var infromationSheetShown = false
-//    init(vm: CreatePetViewModel, pet: Pet) {
-//        self.vm = vm
-//       
-//        self.vm.pet = pet
-//    }
 
+    @State private var isImagePickerPresented = false
+    @State private var isSaving = false // För att hålla koll på sparningsstatus
+    @State private var showAlert = false // För att visa varning vid bakåtnavigering
 
-    
-    
     var body: some View {
-        VStack{
-            Image(systemName: "pawprint.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 100, height: 100)
-                .padding()
-            
-            EntryFields(placeHolder: "Name", promt: "", field: $vm.name)
-            
-            // EntryFields(placeHolder: "Spiecies", promt: "", field: $vm.name)
-            
-            Picker("Spices", selection: $vm.selectedSpices){
-                ForEach(vm.speciesOptions, id: \.self){ specie in
-                    Text(specie)
-                }
-            }
-            .tint(.black)
-            .frame(maxWidth: .infinity)
-            .pickerStyle(MenuPickerStyle())
-            .overlay(
-                RoundedRectangle(cornerRadius: 25.0)
-                    .stroke(AppColors.mainAccent, lineWidth: 3)
-            )
-            TextEditor(text: $vm.description)
-                .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 400)
-                .padding()
-                .overlay(
-                    RoundedRectangle(cornerRadius: 25.0)
-                        .stroke(AppColors.mainAccent, lineWidth: 3)
-                )
-                .padding(.vertical)
-                
-            
-            
-            
-            
-            
-//            Button(action: {
-//                // vm.addInformation()
-//                infromationSheetShown = true
-//            }, label: {
-//                Label(
-//                    title: { Text("Information \(vm.informationArray.count)") },
-//                    icon: { Image(systemName: "plus") }
-//                )
-//                .frame(maxWidth: .infinity)
-//                .padding(10)
-//                .overlay(
-//                    RoundedRectangle(cornerRadius: 25.0)
-//                        .stroke(AppColors.mainAccent, lineWidth: 3)
-//                )
-//                .padding(.vertical)
-//            })
-            //                VStack{
-            //                    ForEach(0..<vm.informationArray.count, id: \.self){ index in
-            //                        EntryFields(placeHolder: "Text", promt: "", field: $vm.informationArray[index])
-            //                    }
-            //                    Spacer()
-            //
-            //                }
-            //                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            //                .border(.black)
-            //          }
-            
-            
-            Spacer()
-            Button(action: {
-                Task{
-                    vm.savePet(){ success in
-                        if success{
-                            DispatchQueue.main.async {
-                                self.presentationMode.wrappedValue.dismiss()
-                            }
+        VStack {
+            HStack(spacing: 0) {
+                VStack {
+                    ZStack {
+                        if let image = vm.image {
+                            Image(uiImage: image)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 150, height: 150)
+                                .clipShape(Circle())
+                                .clipped()
+                                .padding(.leading, 20)
+                        } else {
+                            Image(systemName: "pawprint.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 100, height: 100)
+                                .padding()
                         }
                     }
+                    .onTapGesture {
+                        isImagePickerPresented = true
+                    }
+
+                    EntryFields(placeHolder: "Name", promt: "", field: $vm.name)
+
+                    Picker("Species", selection: $vm.selectedSpices) {
+                        ForEach(vm.speciesOptions, id: \.self) { specie in
+                            Text(specie)
+                        }
+                    }
+                    .tint(.black)
+                    .frame(maxWidth: .infinity)
+                    .pickerStyle(MenuPickerStyle())
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 25.0)
+                            .stroke(AppColors.mainAccent, lineWidth: 3)
+                    )
+
+                    TextEditor(text: $vm.description)
+                        .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 400)
+                        .padding()
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 25.0)
+                                .stroke(AppColors.mainAccent, lineWidth: 3)
+                        )
+                        .padding(.vertical)
+
+                    Spacer()
+
+                    Button(action: {
+                        isSaving = true // Markera att sparningsoperationen pågår
+                        Task {
+                            if let selectedImage = vm.image {
+                                vm.uploadPetImage(selectedImage) { url in
+                                    vm.imageURL = url
+                                    vm.savePet { success in
+                                        if success {
+                                            isSaving = false // Avmarkera att sparningsoperationen pågår
+                                            DispatchQueue.main.async {
+                                                self.presentationMode.wrappedValue.dismiss()
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                vm.savePet { success in
+                                    if success {
+                                        isSaving = false // Avmarkera att sparningsoperationen pågår
+                                        DispatchQueue.main.async {
+                                            self.presentationMode.wrappedValue.dismiss()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }, label: {
+                        if isSaving {
+                            ProgressView() // Visa en laddningsindikator under sparningsprocessen
+                        } else {
+                            FilledButtonLabel(text: "Save")
+                        }
+                    })
                 }
-                
-            }, label: {
-                FilledButtonLabel(text: "Save")
-            })
-            
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 80)
+                .padding(.vertical, 20)
+                .onAppear {
+                    if let pet = pet {
+                        vm.name = pet.name
+                        vm.selectedSpices = pet.species
+                        vm.description = pet.description ?? ""
+                        vm.imageURL = pet.imageURL
+                        vm.loadImageFromURL(pet.imageURL ?? "")
+                        vm.pet = pet // Tilldela pet för att redigera
+                    }
+                }
+                .photosPicker(isPresented: $isImagePickerPresented, selection: $vm.imageSelection, matching: .images, photoLibrary: .shared())
+                .alert(isPresented: $showAlert) {
+                    Alert(
+                        title: Text("Don't you want to save your changes?"),
+                        message: Text("You have unsaved changes."),
+                        primaryButton: .destructive(Text("Discard changes")) {
+                            self.presentationMode.wrappedValue.dismiss()
+                        },
+                        secondaryButton: .default(Text("Save")) {
+                            isSaving = true // Markera att sparningsoperationen pågår
+                            Task {
+                                if let selectedImage = vm.image {
+                                    vm.uploadPetImage(selectedImage) { url in
+                                        vm.imageURL = url
+                                        vm.savePet { success in
+                                            if success {
+                                                isSaving = false // Avmarkera att sparningsoperationen pågår
+                                                DispatchQueue.main.async {
+                                                    self.presentationMode.wrappedValue.dismiss()
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    vm.savePet { success in
+                                        if success {
+                                            isSaving = false // Avmarkera att sparningsoperationen pågår
+                                            DispatchQueue.main.async {
+                                                self.presentationMode.wrappedValue.dismiss()
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    )
+                }
+                .navigationBarBackButtonHidden(true)
+                .navigationBarItems(leading: Button(action: {
+                    if vm.hasUnsavedChanges(pet: pet) {
+                        showAlert = true
+                    } else {
+                        self.presentationMode.wrappedValue.dismiss()
+                    }
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.blue)
+                })
+            }
         }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, 80)
-        .padding(.vertical ,20)
-        .onAppear{
-            vm.pet = pet
-        }
-//        .sheet(isPresented: $infromationSheetShown) {
-//            InformationSheet(vm: vm, isPresented: $infromationSheetShown)
-//        }
-        
     }
-        
 }
+
+extension PetsViewModel {
+    func hasUnsavedChanges(pet: Pet?) -> Bool {
+        guard let pet = pet else {
+            return false
+        }
+        return name != pet.name ||
+               selectedSpices != pet.species ||
+               description != pet.description ||
+               image != nil && imageURL != pet.imageURL
+    }
+}
+
 //
 //struct InformationSheet: View {
 //    @ObservedObject var vm: CreatePetViewModel
