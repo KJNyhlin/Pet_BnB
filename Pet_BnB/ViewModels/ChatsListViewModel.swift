@@ -57,11 +57,14 @@ class ChatsListViewModel: ObservableObject{
 
     }
     
+    // Make use of function in firebasehelper
+    
     private func fetchParticipants() {
         print("fetchParticipantNames called!!!")
         for chat in chats {
             for participant in chat.participants {
                 if chatParticipants[participant] == nil { // Fetch only if not already fetched
+                    
                     db.collection("users").document(participant).getDocument { documentSnapshot, error in
                         if let document = documentSnapshot, document.exists {
                             if let user = try? document.data(as: User.self) {

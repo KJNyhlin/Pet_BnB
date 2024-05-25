@@ -13,6 +13,7 @@ import FirebaseFirestoreSwift
 class ChatViewModel: ObservableObject{
     @Published var chat: Chat?
     @Published var messages: [Message] = []
+    
     var firebaseHelper = FirebaseHelper()
     var toUserID: String
     private var db = Firestore.firestore()
@@ -26,9 +27,17 @@ class ChatViewModel: ObservableObject{
     init(toUserID: String, chat: Chat? = nil) {
         self.toUserID = toUserID
         self.chat = chat
-        if let loggedInUser = firebaseHelper.getUserID(){
-            fetchChat(participants: [toUserID, loggedInUser])
+        
+        if let chatID = chat?.id {
+            setupMessageListener(chatID: chatID)
+        } else {
+            if let loggedInUser = firebaseHelper.getUserID(){
+                fetchChat(participants: [toUserID, loggedInUser])
+            }
         }
+
+
+
         
 //        if let chat = chat{
 //            self.chat = chat
@@ -52,6 +61,7 @@ class ChatViewModel: ObservableObject{
         saveMessageToFirebase()
         messageInput = ""
     }
+    
     
     func fetchChat(participants: [String]){
         Task{
@@ -157,6 +167,7 @@ class ChatViewModel: ObservableObject{
         }
         return nil
     }
+    
     func sort(array: [String]) -> [String]{
         return array.sorted()
     }
