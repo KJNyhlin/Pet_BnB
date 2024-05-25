@@ -17,6 +17,7 @@ class ChatViewModel: ObservableObject{
     var toUserID: String
     private var db = Firestore.firestore()
     private var listenerRegistration: ListenerRegistration?
+    var lastMessageDateString = ""
     
   //  var isChatNew = false
     
@@ -75,7 +76,7 @@ class ChatViewModel: ObservableObject{
                 sendMessage(chatID: chatID, text: messageInput, senderID: userID, reciverID: toUserID)
             } else{
                 createChat(senderID: userID){ chatID in
-                    print(chatID)
+                   // print(chatID)
                     if let chatID = chatID{
                         self.setupMessageListener(chatID: chatID)
                         self.sendMessage(chatID: chatID, text: self.messageInput, senderID: userID, reciverID: self.toUserID)
@@ -147,7 +148,7 @@ class ChatViewModel: ObservableObject{
             let querySnapshot = try await db.collection("chats").whereField("participants", isEqualTo: sortedParticipants)
             .getDocuments()
           for document in querySnapshot.documents {
-              var chat = try document.data(as: Chat.self)
+              let chat = try document.data(as: Chat.self)
              // print(chat)
               return chat
           }
@@ -161,7 +162,7 @@ class ChatViewModel: ObservableObject{
     }
     
     func fromLoggedInUser(id: String)-> Bool{
-        var userID = firebaseHelper.getUserID()
+        let userID = firebaseHelper.getUserID()
         if userID == userID{
             return userID == id
         }
@@ -174,7 +175,7 @@ class ChatViewModel: ObservableObject{
         if let userID = firebaseHelper.getUserID(){
             chatRef.updateData(["unreadMessagesCount.\(userID)": 0]) { error in
                 if let error = error{
-                    print("Error marking as read!")
+                    print("Error marking as read! \(error)")
                 }
             }
 //            let messagesRef = chatRef.collection("messages")
@@ -191,7 +192,42 @@ class ChatViewModel: ObservableObject{
         }
 
     }
+    func isSame(string1: String, String2: String) -> Bool {
+        let same = string1 == String2
+        lastMessageDateString = string1
+        
+        return same
+    }
+    func getDateString(timeStamp: Timestamp) -> String {
+        let date = timeStamp.dateValue()
+        let dateFormatter = DateFormatter()
+        let calendar = Calendar.current
+        dateFormatter.locale = Locale.current
+        
+        if calendar.isDateInToday(date){
+            //dateFormatter.dateFormat = "today"
+            return "today"
+
+        } else if calendar.isDateInYesterday(date)  {
+            return "yesterday"
+        } else if let daysAgo = calendar.dateComponents([.day], from: date, to: Date()).day, daysAgo <= 7 {
+            // if days ago is within a week print the name of the day
+            dateFormatter.dateFormat = "EEEE"
+        } else{
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+        }
+       
+        return dateFormatter.string(from: date)
+    }
     
+    func getTime(from timestamp: Timestamp) -> String{
+        let date = timestamp.dateValue()
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale.current
+        dateFormatter.dateFormat = "HH:mm"
+        return dateFormatter.string(from: date)
+        
+    }
     
 }
 

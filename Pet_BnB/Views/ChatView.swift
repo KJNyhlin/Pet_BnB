@@ -9,18 +9,22 @@ import SwiftUI
 
 struct ChatView: View {
     @StateObject var vm: ChatViewModel
+   // @EnvironmentObject var chatListVM: ChatsListViewModel
+
         
     var body: some View {
         
         VStack{
-            
             ScrollViewReader { proxy in
                 List{
+                    
                     ForEach(vm.messages){ message in
+   
                         
-                        MessageView(message: message, fromLoggedIn: vm.fromLoggedInUser(id: message.senderID))
+                        MessageView(message: message, fromLoggedIn: vm.fromLoggedInUser(id: message.senderID), dateString: vm.getDateString(timeStamp: message.timestamp),timeString:vm.getTime(from: message.timestamp), vm:vm)
                             .listRowSeparator(.hidden)
                             .id(message.id)
+                
                     }
                 }
                 .listStyle(.plain)
@@ -30,11 +34,8 @@ struct ChatView: View {
             
            }
         VStack{
-            
             MessageInputView(messageInput: $vm.messageInput, sendAction: vm.sendMessage)
-            
         }
-        
     }
         .padding()
         .onDisappear {
@@ -47,20 +48,40 @@ struct ChatView: View {
 struct MessageView: View{
     var message: Message
     var fromLoggedIn: Bool
+    var dateString: String
+    var timeString: String
+    var vm: ChatViewModel
+ //   var showDate: Bool
     
     var body: some View{
-        HStack{
-            Text(message.text)
-                .padding()
-                .background(fromLoggedIn ? .blue : AppColors.mainAccent)
-                .cornerRadius(20)
+        VStack{
+            if !vm.isSame(string1: dateString, String2: vm.lastMessageDateString){
+                Text(dateString)
+                    .font(.caption2)
+            }
+
+            HStack{
+                VStack(alignment: fromLoggedIn ? .trailing : .leading){
+                    Text(message.text)
+                        .padding(.horizontal)
+                        .padding(.vertical, 5)
+                        .background(fromLoggedIn ? AppColors.mainAccent : Color(.systemGray6))
+                        .cornerRadius(20)
+                        
+
+                    Text(timeString)
+                        .font(.caption2)
+                        
+                }
                 .padding(fromLoggedIn ? .leading : .trailing, 50)
+
+                
+                
+            }
+            .frame(maxWidth: .infinity, alignment: fromLoggedIn ? .trailing : .leading)
             
-            
+            //   .padding()
         }
-        .frame(maxWidth: .infinity, alignment: fromLoggedIn ? .trailing : .leading)
-        
-        //   .padding()
     }
 }
 
