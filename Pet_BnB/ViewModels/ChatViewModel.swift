@@ -39,6 +39,9 @@ class ChatViewModel: ObservableObject{
     }
     
     func sendMessage() -> Void {
+        if messageInput.isEmpty{
+            return
+        }
         saveMessageToFirebase()
         messageInput = ""
     }
