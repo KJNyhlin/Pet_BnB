@@ -9,39 +9,95 @@ import SwiftUI
 
 struct ChatView: View {
     @StateObject var vm: ChatViewModel
-   // @EnvironmentObject var chatListVM: ChatsListViewModel
-
-        
+    // @EnvironmentObject var chatListVM: ChatsListViewModel
+    
+    
     var body: some View {
         
         VStack{
+//            if let toUser = vm.toUser{
+//                ChatHeader(toUser: toUser)
+//            }
+            
             ScrollViewReader { proxy in
                 List{
                     
                     ForEach(vm.messages){ message in
-   
+                        
                         
                         MessageView(message: message, fromLoggedIn: vm.fromLoggedInUser(id: message.senderID), dateString: vm.getDateString(timeStamp: message.timestamp),timeString:vm.getTime(from: message.timestamp), vm:vm)
                             .listRowSeparator(.hidden)
                             .id(message.id)
-                
+                        
                     }
                 }
                 .listStyle(.plain)
                 .onChange(of: vm.messages){
                     proxy.scrollTo(vm.messages.last?.id)
                 }
-            
-           }
-        VStack{
-            MessageInputView(messageInput: $vm.messageInput, sendAction: vm.sendMessage)
+                
+            }
+            VStack{
+                MessageInputView(messageInput: $vm.messageInput, sendAction: vm.sendMessage)
+            }
         }
-    }
         .padding()
         .onDisappear {
             vm.removeListener()
         }
-    
+        .toolbar{
+            ToolbarItem(placement: .principal){
+                if let toUser = vm.toUser{
+                    ChatHeader(toUser: toUser)
+                }
+            }
+        }
+        
+        
+    }
+}
+
+struct ChatHeader: View {
+    var toUser: User
+    var body: some View {
+        HStack{
+            if let url = toUser.imageURL{
+                AsyncImage(url: URL(string: url)) { phase in
+                    let size:CGFloat = 30
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                            .frame(height: size)
+                            .frame(maxWidth: size)
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: size)
+                            .frame(maxWidth: size)
+                            .clipShape(Circle())
+                    case .failure:
+                        Image(systemName: "person.circle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: size)
+                            .frame(maxWidth: size)
+                            .background(Color.gray)
+                    @unknown default:
+                        Image(systemName: "person.circle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: size)
+                            .frame(maxWidth: size)
+                            .background(Color.gray)
+                    }
+                }
+
+            }
+            Text(toUser.firstName ?? "No name")
+                .font(.footnote)
+                .bold()
+        }
     }
 }
 
@@ -51,7 +107,7 @@ struct MessageView: View{
     var dateString: String
     var timeString: String
     var vm: ChatViewModel
- //   var showDate: Bool
+    //   var showDate: Bool
     
     var body: some View{
         VStack{
@@ -59,7 +115,7 @@ struct MessageView: View{
                 Text(dateString)
                     .font(.caption2)
             }
-
+            
             HStack{
                 VStack(alignment: fromLoggedIn ? .trailing : .leading){
                     Text(message.text)
@@ -67,14 +123,14 @@ struct MessageView: View{
                         .padding(.vertical, 5)
                         .background(fromLoggedIn ? AppColors.mainAccent : Color(.systemGray6))
                         .cornerRadius(20)
-                        
-
+                    
+                    
                     Text(timeString)
                         .font(.caption2)
-                        
+                    
                 }
                 .padding(fromLoggedIn ? .leading : .trailing, 50)
-
+                
                 
                 
             }

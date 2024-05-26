@@ -13,53 +13,49 @@ import FirebaseFirestoreSwift
 class ChatViewModel: ObservableObject{
     @Published var chat: Chat?
     @Published var messages: [Message] = []
-    
+    @Published var toUser: User?
     var firebaseHelper = FirebaseHelper()
     var toUserID: String
     private var db = Firestore.firestore()
     private var listenerRegistration: ListenerRegistration?
     var lastMessageDateString = ""
     
-  //  var isChatNew = false
-    
     @Published var messageInput: String = ""
     
-    init(toUserID: String, chat: Chat? = nil) {
+    init(toUserID: String, chat: Chat? = nil, toUser: User? = nil) {
         self.toUserID = toUserID
         self.chat = chat
-        
+        self.toUser = toUser
+
         if let chatID = chat?.id {
             setupMessageListener(chatID: chatID)
+ 
         } else {
             if let loggedInUser = firebaseHelper.getUserID(){
                 fetchChat(participants: [toUserID, loggedInUser])
+                loadToUser()
             }
         }
-
-
-
-        
-//        if let chat = chat{
-//            self.chat = chat
-//        }else{
-//            self.chat = createNewChat(toUserID: toUserID)
-//            
-//        }
     }
-    
-//    func createNewChat(toUserID: String) -> Chat?{
-////
-//        guard let loggedInUserID = firebaseHelper.getUserID() else{
-//            return nil
-//        }
-//        let chat = Chat(participants: [loggedInUserID,toUserID], unReadMessagesCount: [loggedInUserID: 0, toUserID : 0])
-//        return chat
-//            
-//    }
     
     func sendMessage() -> Void {
         saveMessageToFirebase()
         messageInput = ""
+    }
+    
+    func loadToUser(){
+        Task {
+             firebaseHelper.loadUserInfo(userID:toUserID){ user in
+                if let user = user{
+                    self.toUser = user
+
+                } else {
+                    print("no to user found")
+                }
+                
+            }
+            
+        }
     }
     
     
@@ -134,21 +130,15 @@ class ChatViewModel: ObservableObject{
         let newMessage = Message(senderID: senderID, timestamp: Timestamp(), text: text, isRead: [:])
     
         let chatRef = db.collection("chats").document(chatID)
+        // Add the message to the subcollection
         try? chatRef.collection("messages").addDocument(from: newMessage)
-        // Update the last message and timestamp
+        // Update the last message and timestamp, Update unread message count for other participants
         chatRef.updateData([
             "lastMessage": text,
             "lastMessageTimeStamp": Timestamp(),
             "unreadMessagesCount.\(reciverID)": FieldValue.increment(Int64(1))
         ])
-        
-        // Add the message to the subcollection
 
-        
-        // Update unread message count for other participants
-
-//        chatRef.updateData(["unreadMessagesCount.\(reciverID)": FieldValue.increment(Int64(1))
-//        ])
     }
     
     func getChat(participants: [String]) async -> Chat?{

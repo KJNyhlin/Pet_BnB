@@ -20,7 +20,7 @@ struct ChatsListView: View {
                     ForEach(vm.chats){ chat in
                         if let toUser = vm.getUserFrom(chat: chat),
                            let toUserID = toUser.docID{
-                            NavigationLink(destination: ChatView(vm: ChatViewModel(toUserID: toUserID, chat: chat))){
+                            NavigationLink(destination: ChatView(vm: ChatViewModel(toUserID: toUserID, chat: chat, toUser: toUser))){
                                 ChatListRow(chat: chat, user: toUser, hasUnreadMessages: vm.hasUnReadMessages(chat: chat), timeString: vm.getDateString(timeStamp: chat.lastMessageTimeStamp))
                                     
                             }
@@ -53,7 +53,7 @@ struct ChatListRow: View{
        //     Image(systemName: "person.circle")
             if let url = user?.imageURL{
                 AsyncImage(url: URL(string: url)) { phase in
-                    var size:CGFloat = 40
+                    let size:CGFloat = 40
                     switch phase {
                     case .empty:
                         ProgressView()
