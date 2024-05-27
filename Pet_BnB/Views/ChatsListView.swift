@@ -22,7 +22,7 @@ struct ChatsListView: View {
                            let toUserID = toUser.docID{
                             NavigationLink(destination: ChatView(vm: ChatViewModel(toUserID: toUserID, chat: chat, toUser: toUser))){
                                 ChatListRow(chat: chat, user: toUser, hasUnreadMessages: vm.hasUnReadMessages(chat: chat), timeString: vm.getDateString(timeStamp: chat.lastMessageTimeStamp))
-                                    
+                                
                             }
                         }
                     }
@@ -50,7 +50,7 @@ struct ChatListRow: View{
                 .font(.system(size: 8))
                 .foregroundColor(AppColors.mainAccent)
                 .opacity(hasUnreadMessages ? 100 : 0)
-       //     Image(systemName: "person.circle")
+            //     Image(systemName: "person.circle")
             if let url = user?.imageURL{
                 AsyncImage(url: URL(string: url)) { phase in
                     let size:CGFloat = 40
@@ -90,11 +90,11 @@ struct ChatListRow: View{
                     .aspectRatio(contentMode: .fill)
                     .frame(height: 40)
                     .frame(maxWidth: 40)
-                    //.background(Color.gray)
+                //.background(Color.gray)
                     .padding(.trailing, 5)
             }
-                
-                
+            
+            
             VStack(alignment: .leading){
                 //            if let name = user?.firstName{
                 
@@ -107,12 +107,12 @@ struct ChatListRow: View{
                         .foregroundColor(.secondary)
                         .font(.subheadline)
                 }
-
+                
                 Text(chat.lastMessage)
                     .font(.subheadline)
                     .lineLimit(2)
                     .foregroundColor(.secondary)
-
+                
                 
             }
         }

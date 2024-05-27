@@ -16,9 +16,9 @@ struct ChatView: View {
     var body: some View {
         
         VStack{
-//            if let toUser = vm.toUser{
-//                ChatHeader(toUser: toUser)
-//            }
+            //            if let toUser = vm.toUser{
+            //                ChatHeader(toUser: toUser)
+            //            }
             
             ScrollViewReader { proxy in
                 List{
@@ -34,7 +34,6 @@ struct ChatView: View {
                                     vm.loadMoreMessages()
                                 }
                             }
-                        
                     }
                 }
                 .listStyle(.plain)
@@ -104,7 +103,7 @@ struct ChatHeader: View {
                             .background(Color.gray)
                     }
                 }
-
+                
             }
             Text(toUser.firstName ?? "No name")
                 .font(.footnote)
@@ -119,7 +118,7 @@ struct MessageView: View{
     var dateString: String
     var timeString: String
     var vm: ChatViewModel
-
+    
     
     var body: some View{
         VStack{
@@ -135,13 +134,13 @@ struct MessageView: View{
                         .padding(.vertical, 5)
                         .background(fromLoggedIn ? AppColors.mainAccent : Color(.systemGray6))
                         .cornerRadius(20)
-          
+                    
                     Text(timeString)
                         .font(.caption2)
                     
                 }
                 .padding(fromLoggedIn ? .leading : .trailing, 50)
-   
+                
             }
             .frame(maxWidth: .infinity, alignment: fromLoggedIn ? .trailing : .leading)
         }
@@ -157,7 +156,7 @@ struct MessageInputView: View {
                 .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
                 .lineLimit(5)
                 .frame(maxWidth: .infinity)
-
+            
             
             Button(action: {
                 sendAction()
