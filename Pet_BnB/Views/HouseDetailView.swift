@@ -54,13 +54,9 @@ struct HouseDetailView: View {
                                     }
                                 }
                             }
-                            VStack(alignment: .leading, spacing: 8) {
+                            VStack(alignment: .leading, spacing: 10) {
                                 Text(house.title)
                                     .font(.title)
-                                
-                                Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
-                                    .font(.footnote)
-                                    .fontWeight(.bold)
                                 
                                 HStack {
                                     Label(
@@ -77,6 +73,10 @@ struct HouseDetailView: View {
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.vertical, 5)
+                                
+                                Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
+                                    .font(.caption)
+                                    .bold()
                                 
                                 Text(house.description)
                                     .fixedSize(horizontal: false, vertical: true)
