@@ -48,56 +48,83 @@ struct ChatListRow: View{
     var user: User?
     var hasUnreadMessages: Bool
     var timeString: String
+    
+    @State private var navigateToProfile: Bool = false
+    
     var body: some View{
         HStack{
             Image(systemName: "circle.fill")
                 .font(.system(size: 8))
                 .foregroundColor(AppColors.mainAccent)
                 .opacity(hasUnreadMessages ? 100 : 0)
-            //     Image(systemName: "person.circle")
-            if let url = user?.imageURL{
-                AsyncImage(url: URL(string: url)) { phase in
-                    let size:CGFloat = 40
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                            .frame(height: size)
-                            .frame(maxWidth: size)
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: size)
-                            .frame(maxWidth: size)
-                            .clipShape(Circle())
-                    case .failure:
-                        Image(systemName: "person.circle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: size)
-                            .frame(maxWidth: size)
-                            .background(Color.gray)
-                    @unknown default:
-                        Image(systemName: "person.circle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: size)
-                            .frame(maxWidth: size)
-                            .background(Color.gray)
-                    }
-                }
-                .padding(.trailing, 5)
-                
-            } else {
-                Image(systemName: "person.circle")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 40)
-                    .frame(maxWidth: 40)
-                //.background(Color.gray)
-                    .padding(.trailing, 5)
-            }
-            
+
+            NavigationLink(destination: HouseOwnerProfileView(user: user!), isActive: $navigateToProfile) {
+                            EmptyView()
+                        }.hidden()
+                        
+            Button(action: {
+                navigateToProfile = true
+            }) {
+                            if let url = user?.imageURL{
+                                AsyncImage(url: URL(string: url)) { phase in
+                                    let size:CGFloat = 40
+                                    switch phase {
+                                    case .empty:
+                                        ProgressView()
+                                            .frame(height: size)
+                                            .frame(maxWidth: size)
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(height: size)
+                                            .frame(maxWidth: size)
+                                            .clipShape(Circle())
+                                            .overlay(
+                                                Circle()
+                                                    .stroke(AppColors.mainAccent, lineWidth: 1)
+                                            )
+                                    case .failure:
+                                        Image(systemName: "person.circle")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(height: size)
+                                            .frame(maxWidth: size)
+                                            .background(Color.gray)
+                                            .overlay(
+                                                Circle()
+                                                    .stroke(AppColors.mainAccent, lineWidth: 1)
+                                            )
+                                    @unknown default:
+                                        Image(systemName: "person.circle")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(height: size)
+                                            .frame(maxWidth: size)
+                                            .background(Color.gray)
+                                            .overlay(
+                                                Circle()
+                                                    .stroke(AppColors.mainAccent, lineWidth: 1)
+                                            )
+                                    }
+                                }
+                                .padding(.leading, -50)
+                                
+                            } else {
+                                Image(systemName: "person.circle")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(height: 40)
+                                    .frame(maxWidth: 40)
+                                //.background(Color.gray)
+                                    .padding(.trailing, 5)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(AppColors.mainAccent, lineWidth: 1)
+                                    )
+                            }
+                        }
+                        .buttonStyle(PlainButtonStyle())
             
             VStack(alignment: .leading){
                 //            if let name = user?.firstName{
@@ -120,6 +147,7 @@ struct ChatListRow: View{
                 
             }
         }
+        .padding(.leading, -200)
     }
 }
 
