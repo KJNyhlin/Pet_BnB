@@ -100,7 +100,7 @@ struct editPersonalInfo: View {
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
-                                .stroke(AppColors.mainAccent, lineWidth: 3)
+                                .stroke(AppColors.mainAccent, lineWidth: 2)
                         )
 
                     Text("Surname:")
@@ -114,27 +114,27 @@ struct editPersonalInfo: View {
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
-                                .stroke(AppColors.mainAccent, lineWidth: 3)
+                                .stroke(AppColors.mainAccent, lineWidth: 2)
                         )
                     Text("About Me:")
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
-                        .padding(.leading, 50)
+                        .padding(.leading, -50)
                         .padding(.top, 2)
 
-                    TextField("About Me", text: $profileViewModel.editAboutMe)
-                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
-                        .frame(width: 200, height: 60, alignment: .leading)
+                    TextEditor(text: $profileViewModel.editAboutMe)
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                        .frame(width: 300, height: 160, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
-                                .stroke(AppColors.mainAccent, lineWidth: 3)
+                                .stroke(AppColors.mainAccent, lineWidth: 2)
                     )
                 }
                 .frame(maxWidth: .infinity)
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 400)
+        .frame(height: 500)
 
         HStack {
             Button(action: {
@@ -187,7 +187,7 @@ struct personalInfoView: View {
                             .padding(.leading, 20)
                     }
                     
-                    Text("First Name:")
+                    Text("First Name")
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
                         .padding(.leading, 50)
@@ -197,10 +197,10 @@ struct personalInfoView: View {
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
-                                .stroke(AppColors.mainAccent, lineWidth: 3)
+                                .stroke(AppColors.mainAccent, lineWidth: 2)
                         )
 
-                    Text("Surname:")
+                    Text("Surname")
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
                         .padding(.leading, 50)
@@ -211,27 +211,27 @@ struct personalInfoView: View {
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
-                                .stroke(AppColors.mainAccent, lineWidth: 3)
+                                .stroke(AppColors.mainAccent, lineWidth: 2)
                         )
-                    Text("About Me:")
+                    Text("About Me")
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
-                        .padding(.leading, 50)
+                        .padding(.leading, -50)
                         .padding(.top, 2)
 
-                    Text("\(profileViewModel.aboutMe)")
-                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
-                        .frame(width: 200, height: 60, alignment: .leading)
+                    TextEditor(text: .constant(profileViewModel.aboutMe))
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                        .frame(width: 300, height: 160, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
-                                .stroke(AppColors.mainAccent, lineWidth: 3)
+                                .stroke(AppColors.mainAccent, lineWidth: 2)
                     )
                 }
                 .frame(maxWidth: .infinity)
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 400)
+        .frame(height: 500)
     }
 }
 
