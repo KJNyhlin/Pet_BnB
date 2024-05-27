@@ -39,6 +39,9 @@ class ChatViewModel: ObservableObject{
             }
         }
     }
+    deinit{
+        removeListener()
+    }
     
     func sendMessage() -> Void {
         if messageInput.isEmpty{
@@ -164,6 +167,16 @@ class ChatViewModel: ObservableObject{
     func removeListener() {
         listenerRegistration?.remove()
         listenerRegistration = nil
+    }
+    
+    func startListener() {
+        if let chat = chat{
+            if let chatid = chat.id{
+                if listenerRegistration == nil{
+                    setupMessageListener(chatID: chatid)
+                }
+            }
+        }
     }
     
     

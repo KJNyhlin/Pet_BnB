@@ -53,9 +53,14 @@ struct ChatView: View {
             }
         }
         .padding()
+        .onAppear{
+            vm.startListener()
+        }
         .onDisappear {
             vm.removeListener()
         }
+
+        
         .toolbar{
             ToolbarItem(placement: .principal){
                 if let toUser = vm.toUser{
