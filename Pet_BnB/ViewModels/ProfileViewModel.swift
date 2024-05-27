@@ -9,6 +9,7 @@ import Foundation
 import PhotosUI
 import SwiftUI
 import FirebaseStorage
+import FirebaseFirestore
 
 class ProfileViewModel: ObservableObject {
     @Published var user = User()
@@ -34,9 +35,10 @@ class ProfileViewModel: ObservableObject {
             if let user = user {
                 self.firstName = user.firstName ?? ""
                 self.surName = user.surName ?? ""
+                self.aboutMe = user.aboutMe ?? ""
                 if let imageURL = user.imageURL {
                     self.loadImageFromURL(imageURL)
-                }
+                } 
             }
         }
     }
@@ -55,9 +57,10 @@ class ProfileViewModel: ObservableObject {
     func saveUserInfoToDB() {
         guard let userID = firebaseHelper.getUserID() else { return }
         if checkForChanges() {
-            firebaseHelper.savePersonalInfoToDB(firstName: self.editFirstName, surName: self.editSurName)
+            firebaseHelper.savePersonalInfoToDB(firstName: self.editFirstName, surName: self.editSurName, aboutMe: self.editAboutMe)
             self.firstName = self.editFirstName
             self.surName = self.editSurName
+            self.aboutMe = self.editAboutMe
         }
         if let image = image {
             saveImageToDB(image: image, userID: userID)
@@ -65,7 +68,7 @@ class ProfileViewModel: ObservableObject {
     }
 
     func checkForChanges() -> Bool {
-        return self.firstName != self.editFirstName || self.surName != self.editSurName
+        return self.firstName != self.editFirstName || self.surName != self.editSurName || self.aboutMe != self.editAboutMe
     }
 
     func loadImageData() {

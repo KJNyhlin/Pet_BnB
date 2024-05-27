@@ -20,6 +20,7 @@ class SignUpViewModel: ObservableObject {
     @Published var accountCreated: Bool = false
     @Published var showSpinner: Bool = false
     @Published var signIn: Bool = false
+    @Published var aboutMe: String = ""
     
     
     func signUp(name: String, password: String) {
@@ -50,7 +51,7 @@ class SignUpViewModel: ObservableObject {
     
     func savePersonalInfoToDB() {
         if accountCreated {
-            firebaseHelper.savePersonalInfoToDB(firstName: firstName, surName: surName)
+            firebaseHelper.savePersonalInfoToDB(firstName: firstName, surName: surName, aboutMe: aboutMe)
         } else {
             print("Dismiss without saving personalData")
         }
