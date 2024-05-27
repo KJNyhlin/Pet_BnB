@@ -8,8 +8,37 @@
 import SwiftUI
 
 struct MyBookingsView: View {
+    @StateObject var viewModel = BookingViewModel()
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            ForEach (viewModel.myBookings){ booking in
+                BookingCardView(viewModel: viewModel, booking: booking)
+            }
+        }
+        .onAppear {
+            viewModel.getBookings()
+        }
+    }
+}
+
+
+struct BookingCardView : View {
+    var viewModel : BookingViewModel
+    var booking: Booking
+    @State var house : House?
+    
+    
+    var body: some View {
+        VStack {
+            if let house = house {
+                Text("\(house.title)")
+            }
+        }
+        .onAppear() {
+            viewModel.firebaseHelper.fetchHouse(byId: booking.houseID) {house in
+                self.house = house
+            }
+        }
     }
 }
 

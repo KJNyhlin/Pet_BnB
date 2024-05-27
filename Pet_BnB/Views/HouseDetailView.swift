@@ -237,8 +237,8 @@ struct CalendarDayView: View {
             ZStack{
                 ForEach(bookings) {booking in
                     
-                    if Calendar.current.isDate(date, inSameDayAs: booking.fromDate) {
-                        
+//                    if Calendar.current.isDate(date, inSameDayAs: booking.fromDate) {
+                    if date.startOfDay == booking.fromDate.startOfDay {
                         viewModel.getColor(from: booking)
                                 .clipShape(
                                     .rect(
@@ -246,13 +246,14 @@ struct CalendarDayView: View {
                                         bottomLeadingRadius: 25.0
                                     ))
                                 .onTapGesture {
-                                print("!!!")
+                                    print("fromDate: \(booking.fromDate)")
+                                print("SelectedDate: \(date)")
                                     viewModel.setBookingID(booking: booking)
                                 }
                         
                             
-                    } else if Calendar.current.isDate(date, inSameDayAs: booking.toDate) {
-                        
+//                    } else if Calendar.current.isDate(date, inSameDayAs: booking.toDate) {
+                    } else if date.startOfDay == booking.toDate.startOfDay {
                         viewModel.getColor(from: booking)
                             .clipShape(
                                 .rect(
@@ -266,7 +267,7 @@ struct CalendarDayView: View {
                             
                     }
                     
-                    else if (booking.fromDate ... booking.toDate).contains(date) {
+                    else if (booking.fromDate.startOfDay ... booking.toDate).contains(date.startOfDay) {
                         viewModel.getColor(from: booking)
                             .onTapGesture {
                             print("!!!")
