@@ -77,15 +77,17 @@ struct editPersonalInfo: View {
                                 .frame(width: 150, height: 150)
                                 .clipShape(Circle())
                                 .clipped()
-                                .padding(.leading, 20)
                         } else {
                             Image(systemName: "person.crop.circle.fill.badge.plus")
-                                                            .resizable()
-                                                            .scaledToFit()
-                                                            .frame(width: 150, height: 150)
-                                                            .padding(.leading, 20)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 150, height: 150)
                         }
-                    }
+                            Circle()
+                                .stroke(AppColors.mainAccent, lineWidth: 2)
+                                .frame(width: 150, height: 150)
+                        }
+                    .padding(.leading, 20)
                     .onTapGesture {
                         profileViewModel.showImagePicker = true
                     }
@@ -169,29 +171,33 @@ struct personalInfoView: View {
         VStack {
             HStack(spacing: 0) {
                 VStack {
-                    if let image = profileViewModel.image {
-                        Image(uiImage: image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
+                    ZStack {
+                        if let image = profileViewModel.image {
+                            Image(uiImage: image)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 150, height: 150)
+                                .clipShape(Circle())
+                                .clipped()
+                        } else {
+                            Image("Logo")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 150, height: 150)
+                                .clipShape(Circle())
+                                .clipped()
+                        }
+                        Circle()
+                            .stroke(AppColors.mainAccent, lineWidth: 2)
                             .frame(width: 150, height: 150)
-                            .clipShape(Circle())
-                            .clipped()
-                            .padding(.leading, 20)
-                    } else {
-                        Image("Logo")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 150, height: 150)
-                            .clipShape(Circle())
-                            .clipped()
-                            .padding(.leading, 20)
                     }
+                    .padding(.leading, 20)
                     
                     Text("First Name")
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
                         .padding(.leading, 50)
-
+                    
                     Text("\(profileViewModel.firstName)")
                         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
                         .frame(width: 200, height: 40, alignment: .leading)
@@ -199,13 +205,13 @@ struct personalInfoView: View {
                             RoundedRectangle(cornerRadius: 25.0)
                                 .stroke(AppColors.mainAccent, lineWidth: 2)
                         )
-
+                    
                     Text("Surname")
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
                         .padding(.leading, 50)
                         .padding(.top, 2)
-
+                    
                     Text("\(profileViewModel.surName)")
                         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
                         .frame(width: 200, height: 40, alignment: .leading)
@@ -218,14 +224,14 @@ struct personalInfoView: View {
                         .frame(width: 250, alignment: .leading)
                         .padding(.leading, -50)
                         .padding(.top, 2)
-
+                    
                     TextEditor(text: .constant(profileViewModel.aboutMe))
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                         .frame(width: 300, height: 160, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
                                 .stroke(AppColors.mainAccent, lineWidth: 2)
-                    )
+                        )
                 }
                 .frame(maxWidth: .infinity)
             }
