@@ -344,10 +344,11 @@ class FirebaseHelper: ObservableObject {
     }
     
     
-    func save(booking: Booking, for house: House) {
+    func save(TimePeriod: Booking, for house: House) {
             if let houseID = house.id {
                 do {
-                    try db.collection("houses").document(houseID).collection("bookings").addDocument(from: booking)
+//                    try db.collection("houses").document(houseID).collection("bookings").addDocument(from: booking)
+                    try db.collection("bookings").addDocument(from: TimePeriod)
                 } catch {
                     print("Error writing to bookings for house")
                 }
@@ -356,30 +357,94 @@ class FirebaseHelper: ObservableObject {
     
     func getTimePeriodsFor(houseID: String, completion: @escaping ([Booking]?) -> Void) {
         var bookings = [Booking]()
-        db.collection("houses").document(houseID).collection("bookings").getDocuments() {snapshot, error in
+//        db.collection("houses").document(houseID).collection("bookings").addSnapshotListener {snapshot, error in
+            db.collection("bookings").whereField("houseID", isEqualTo: houseID).addSnapshotListener {snapshot, error in
             if let error = error {
                 print("Error loading bookings: \(error)")
                 completion(nil)
             } else {
-                if let documents = snapshot?.documents {
-                    for document in documents {
-                        print("\(document)")
+                guard let documents = snapshot?.documents else {
+                    completion(nil)
+                    return
+                }
+                bookings.removeAll()
+                for document in documents {
+                    do {
+                        let booking = try document.data(as: Booking.self)
+                        bookings.append(booking)
+                    } catch {
+                        print("Error decode booking")
+                        completion(nil)
+                    }
+                }
+                completion(bookings)
+                
+            }
+        }
+//        db.collection("houses").document(houseID).collection("bookings").getDocuments() {snapshot, error in
+//            if let error = error {
+//                print("Error loading bookings: \(error)")
+//                completion(nil)
+//            } else {
+//                if let documents = snapshot?.documents {
+//                    for document in documents {
+//                        print("\(document)")
+//                        do {
+//                            let booking = try document.data(as: Booking.self)
+//                            bookings.append(booking)
+//                        } catch {
+//                            print("Error converting document")
+//                            completion(nil)
+//                        }
+//                    }
+//                    completion(bookings)
+//                }
+//            }
+//        }
+    }
+
+    func bookPeriod(houseID: String, docID: String) {
+        if let userID = getUserID() {
+//            self.db.collection("houses").document(houseID).collection("bookings").document(docID).updateData( ["renterID": userID])
+            self.db.collection("bookings").document(docID).updateData( ["renterID": userID])
+        }
+    }
+    
+    func remove(timePeriod: Booking,for house: House) {
+        if timePeriod.renterID == nil {
+            if let docID = timePeriod.docID, let houseID = house.id {
+//                db.collection("houses").document(houseID).collection("bookings").document(docID).delete()
+                db.collection("bookings").document(docID).delete()
+            }
+        }
+    }
+    
+    func getMyBookings(completion: @escaping ([Booking]?) -> Void) {
+        guard let userID = getUserID() else {return}
+        var myBookings = [Booking]()
+        db.collection("bookings").whereField("renterID", isEqualTo: userID).getDocuments() { snapshot, error in
+            if let error = error {
+                print("Error getting my bookings: \(error)")
+                completion(nil)
+            } else {
+                if let snapshot = snapshot {
+                    for document in snapshot.documents {
                         do {
                             let booking = try document.data(as: Booking.self)
-                            bookings.append(booking)
+                            myBookings.append(booking)
                         } catch {
-                            print("Error converting document")
+                            print("Error converting booking")
                             completion(nil)
                         }
                     }
-                    completion(bookings)
+                    completion(myBookings)
+                } else {
+                    completion(nil)
                 }
             }
         }
     }
-
-    func bookPeriod(houseID: String, docID: String) {
-        self.db.collection("houses").document(houseID).collection("bookings").document(docID).updateData( ["renterID": getUserID()])
-    }
+    
+    
 }
 
