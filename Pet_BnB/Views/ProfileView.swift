@@ -92,7 +92,7 @@ struct editPersonalInfo: View {
                         profileViewModel.showImagePicker = true
                     }
                     
-                    Text("First Name:")
+                    Text("First Name")
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
                         .padding(.leading, 50)
@@ -105,7 +105,7 @@ struct editPersonalInfo: View {
                                 .stroke(AppColors.mainAccent, lineWidth: 2)
                         )
 
-                    Text("Surname:")
+                    Text("Surname")
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
                         .padding(.leading, 50)
@@ -118,7 +118,7 @@ struct editPersonalInfo: View {
                             RoundedRectangle(cornerRadius: 25.0)
                                 .stroke(AppColors.mainAccent, lineWidth: 2)
                         )
-                    Text("About Me:")
+                    Text("About Me")
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
                         .padding(.leading, -50)
