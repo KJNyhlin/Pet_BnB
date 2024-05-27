@@ -10,6 +10,7 @@ import FirebaseCore
 import FirebaseFirestore
 
 struct ContentView: View {
+    @StateObject var chatVM = ChatsListViewModel()
     
     var db = Firestore.firestore()
     var body: some View {
@@ -27,10 +28,14 @@ struct ContentView: View {
                     title: { Text("My house") },
                     icon: { Image(systemName: "house") }
                 ) }
-                MessagesView().tabItem { Label(
+                ChatsListView().tabItem { Label(
                     title: { Text("Messages") },
                     icon: { Image(systemName: "bubble") }
                 ) }
+                .badge(chatVM.unreadCount)
+                .environmentObject(chatVM)
+                
+               
                 ProfileView().tabItem { Label(
                     title: { Text("Profile") },
                     icon: { Image(systemName: "person.crop.circle") }

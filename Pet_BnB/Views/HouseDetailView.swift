@@ -97,6 +97,16 @@ struct HouseDetailView: View {
             VStack {
                 Spacer()
                 HStack {
+                    if let house = viewModel.house{
+                        NavigationLink(destination: ChatView(vm:ChatViewModel(toUserID: house.ownerID))){
+                            Image(systemName: "envelope.fill")
+                                .font(.largeTitle)
+                                .padding()
+                                .foregroundColor(AppColors.mainAccent)
+                        }
+                    }
+
+                    
                     Spacer()
                     Button(action: {
                         // Lägg till funktion för bokning
