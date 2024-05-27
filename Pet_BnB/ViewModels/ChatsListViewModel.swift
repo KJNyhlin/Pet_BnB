@@ -30,10 +30,6 @@ class ChatsListViewModel: ObservableObject{
     }
     
     private func setupChatsListener() {
-        //        if listenerRegistration != nil {
-        //            return
-        //        }
-        
         if let loggedInUserId = firebaseHelper.getUserID(){
             listenerRegistration = db.collection("chats").whereField("participants", arrayContains: loggedInUserId)
                 .order(by: "lastMessageTimeStamp", descending: true)
@@ -42,14 +38,9 @@ class ChatsListViewModel: ObservableObject{
                         print("No documents")
                         return
                     }
-                    
-                    //print(documents)
-                    
                     self.chats = documents.compactMap { queryDocumentSnapshot -> Chat? in
                         return try? queryDocumentSnapshot.data(as: Chat.self)
                     }
-                    
-                    //     self.totalUnreadMessages(chats: self.chats)            //self.totalUnreadMessages(chat: <#T##Chat#>)
                     self.fetchParticipants()
                 }
             print("listener setup")

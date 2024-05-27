@@ -17,14 +17,18 @@ struct ChatsListView: View {
             NavigationStack{
                 
                 List{
-                    ForEach(vm.chats){ chat in
-                        if let toUser = vm.getUserFrom(chat: chat),
-                           let toUserID = toUser.docID{
-                            NavigationLink(destination: ChatView(vm: ChatViewModel(toUserID: toUserID, chat: chat, toUser: toUser))){
-                                ChatListRow(chat: chat, user: toUser, hasUnreadMessages: vm.hasUnReadMessages(chat: chat), timeString: vm.getDateString(timeStamp: chat.lastMessageTimeStamp))
-                                
+                    if !vm.chats.isEmpty{
+                        ForEach(vm.chats){ chat in
+                            if let toUser = vm.getUserFrom(chat: chat),
+                               let toUserID = toUser.docID{
+                                NavigationLink(destination: ChatView(vm: ChatViewModel(toUserID: toUserID, chat: chat, toUser: toUser))){
+                                    ChatListRow(chat: chat, user: toUser, hasUnreadMessages: vm.hasUnReadMessages(chat: chat), timeString: vm.getDateString(timeStamp: chat.lastMessageTimeStamp))
+                                    
+                                }
                             }
                         }
+                    } else{
+                        Text("No messages found!")
                     }
                     
                 }
