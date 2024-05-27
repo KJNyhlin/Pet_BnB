@@ -68,8 +68,6 @@ struct ChatView: View {
                 }
             }
         }
-        
-        
     }
 }
 
