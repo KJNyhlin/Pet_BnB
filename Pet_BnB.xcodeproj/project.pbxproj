@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -28,6 +28,9 @@
 		0C38DDAA2BF4BD0D00B92497 /* MyHouseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DDA92BF4BD0D00B92497 /* MyHouseView.swift */; };
 		0C38DDAC2BF4BE6B00B92497 /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DDAB2BF4BE6B00B92497 /* AppColors.swift */; };
 		0C38DDAE2BF4D3CB00B92497 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DDAD2BF4D3CB00B92497 /* SignUpView.swift */; };
+		0CC9B8D92BFDF2BA00F0D7C8 /* DateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC9B8D82BFDF2BA00F0D7C8 /* DateManager.swift */; };
+		0CC9B8DB2BFF27FC00F0D7C8 /* TimePeriodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC9B8DA2BFF27FC00F0D7C8 /* TimePeriodView.swift */; };
+		0CC9B8DD2BFF281400F0D7C8 /* TimePeriodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC9B8DC2BFF281300F0D7C8 /* TimePeriodViewModel.swift */; };
 		0CCFC7742BF73A9000520151 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CCFC7732BF73A9000520151 /* ProfileViewModel.swift */; };
 		6D12FC9A2BFB6560005D765C /* PetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D12FC992BFB6560005D765C /* PetsView.swift */; };
 		6D12FC9E2BFB7120005D765C /* CreatePetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D12FC9D2BFB7120005D765C /* CreatePetView.swift */; };
@@ -49,6 +52,8 @@
 		FB00D0E52BF7512800C9DB59 /* HouseDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB00D0E42BF7512800C9DB59 /* HouseDetailViewModel.swift */; };
 		FB00D0E72BF7545100C9DB59 /* HouseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB00D0E62BF7545100C9DB59 /* HouseCardView.swift */; };
 		FB5E03E32BF74B6000CB4085 /* HouseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5E03E22BF74B6000CB4085 /* HouseDetailView.swift */; };
+		FBD691AD2BFE8380006A5026 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBD691AC2BFE8380006A5026 /* FilterView.swift */; };
+		FBD691B12BFF5C0C006A5026 /* SwipableImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBD691B02BFF5C0C006A5026 /* SwipableImageView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +74,9 @@
 		0C38DDA92BF4BD0D00B92497 /* MyHouseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyHouseView.swift; sourceTree = "<group>"; };
 		0C38DDAB2BF4BE6B00B92497 /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
 		0C38DDAD2BF4D3CB00B92497 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		0CC9B8D82BFDF2BA00F0D7C8 /* DateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateManager.swift; sourceTree = "<group>"; };
+		0CC9B8DA2BFF27FC00F0D7C8 /* TimePeriodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePeriodView.swift; sourceTree = "<group>"; };
+		0CC9B8DC2BFF281300F0D7C8 /* TimePeriodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePeriodViewModel.swift; sourceTree = "<group>"; };
 		0CCFC7732BF73A9000520151 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		6D12FC992BFB6560005D765C /* PetsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetsView.swift; sourceTree = "<group>"; };
 		6D12FC9D2BFB7120005D765C /* CreatePetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePetView.swift; sourceTree = "<group>"; };
@@ -91,6 +99,8 @@
 		FB00D0E42BF7512800C9DB59 /* HouseDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseDetailViewModel.swift; sourceTree = "<group>"; };
 		FB00D0E62BF7545100C9DB59 /* HouseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseCardView.swift; sourceTree = "<group>"; };
 		FB5E03E22BF74B6000CB4085 /* HouseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseDetailView.swift; sourceTree = "<group>"; };
+		FBD691AC2BFE8380006A5026 /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
+		FBD691B02BFF5C0C006A5026 /* SwipableImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipableImageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +148,9 @@
 				6D12FC9D2BFB7120005D765C /* CreatePetView.swift */,
 				6D32E97D2BFE06B000205385 /* ChatView.swift */,
 				6D32E9812BFF580700205385 /* ChatsListView.swift */,
+				FBD691AC2BFE8380006A5026 /* FilterView.swift */,
+				0CC9B8DA2BFF27FC00F0D7C8 /* TimePeriodView.swift */,
+				FBD691B02BFF5C0C006A5026 /* SwipableImageView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -147,6 +160,7 @@
 			children = (
 				0C38DD992BF4BB0C00B92497 /* SignUpViewModel.swift */,
 				0C38DD9B2BF4BB1D00B92497 /* MyHouseViewModel.swift */,
+				0CC9B8DC2BFF281300F0D7C8 /* TimePeriodViewModel.swift */,
 				0CCFC7732BF73A9000520151 /* ProfileViewModel.swift */,
 				0C38DD9D2BF4BB3000B92497 /* PetViewModel.swift */,
 				0C38DD9F2BF4BB4300B92497 /* BookingViewModel.swift */,
@@ -163,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				0C38DD972BF4B8C200B92497 /* FirebaseHelper.swift */,
+				0CC9B8D82BFDF2BA00F0D7C8 /* DateManager.swift */,
 				0C38DDAB2BF4BE6B00B92497 /* AppColors.swift */,
 			);
 			path = Helpers;
@@ -259,7 +274,7 @@
 				};
 			};
 			buildConfigurationList = 6D523BE72BF380E60007CCE5 /* Build configuration list for PBXProject "Pet_BnB" */;
-			compatibilityVersion = "Xcode 14.0";
+			compatibilityVersion = "Xcode 15.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -317,20 +332,25 @@
 				0C38DDA82BF4BBE500B92497 /* ProfileView.swift in Sources */,
 				0C38DDA42BF4BBD400B92497 /* MyBookingsView.swift in Sources */,
 				FB00D0E72BF7545100C9DB59 /* HouseCardView.swift in Sources */,
+				FBD691B12BFF5C0C006A5026 /* SwipableImageView.swift in Sources */,
 				0C38DD9E2BF4BB3000B92497 /* PetViewModel.swift in Sources */,
 				6D523BF02BF380E60007CCE5 /* Pet_BnBApp.swift in Sources */,
 				6D32E97C2BFDFF2700205385 /* Message.swift in Sources */,
 				0C38DD912BF4B5BF00B92497 /* House.swift in Sources */,
 				0C38DDAC2BF4BE6B00B92497 /* AppColors.swift in Sources */,
+				0CC9B8D92BFDF2BA00F0D7C8 /* DateManager.swift in Sources */,
 				0C38DD8F2BF4B4CA00B92497 /* User.swift in Sources */,
 				6D12FC9A2BFB6560005D765C /* PetsView.swift in Sources */,
 				6D12FCA02BFB7341005D765C /* PetsViewModel.swift in Sources */,
 				0CCFC7742BF73A9000520151 /* ProfileViewModel.swift in Sources */,
 				6D32E9822BFF580700205385 /* ChatsListView.swift in Sources */,
 				0C38DDA22BF4BBB900B92497 /* ExploreView.swift in Sources */,
+				0CC9B8DB2BFF27FC00F0D7C8 /* TimePeriodView.swift in Sources */,
 				6D12FC9E2BFB7120005D765C /* CreatePetView.swift in Sources */,
 				0C38DDAE2BF4D3CB00B92497 /* SignUpView.swift in Sources */,
 				6D32E9802BFE08F600205385 /* ChatViewModel.swift in Sources */,
+				FBD691AD2BFE8380006A5026 /* FilterView.swift in Sources */,
+				0CC9B8DD2BFF281400F0D7C8 /* TimePeriodViewModel.swift in Sources */,
 				0C38DDA02BF4BB4300B92497 /* BookingViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -465,6 +485,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Pet_BnB/Preview Content\"";
+				DEVELOPMENT_TEAM = 83U7D225Z5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -494,6 +515,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Pet_BnB/Preview Content\"";
+				DEVELOPMENT_TEAM = 83U7D225Z5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

@@ -7,8 +7,10 @@
 
 import Foundation
 import SwiftUI
+import PhotosUI
+import FirebaseStorage
 
-class PetsViewModel: ObservableObject{
+class PetsViewModel: ObservableObject {
     @Published var house: House
     @Published var pet: Pet? {
         didSet {
@@ -17,11 +19,15 @@ class PetsViewModel: ObservableObject{
                 self.selectedSpices = pet.species
                 self.description = pet.description ?? ""
                 self.informationArray = pet.information
+                if let imageURL = pet.imageURL {
+                    loadImageFromURL(imageURL)
+                }
             } else {
                 self.name = ""
                 self.selectedSpices = "Dog"
                 self.description = ""
                 self.informationArray = []
+                self.image = nil
             }
         }
     }
@@ -29,93 +35,126 @@ class PetsViewModel: ObservableObject{
     @Published var informationArray: [String] = []
     let speciesOptions = ["Dog", "Cat", "Rabbit"]
     let firebaseHelper = FirebaseHelper()
-    
+    @Published var image: UIImage?
+    @Published var showImagePicker: Bool = false
+    @Published var imageSelection: PhotosPickerItem? = nil {
+        didSet {
+            loadImageData()
+        }
+    }
+
     @Published var name: String = ""
     @Published var species: String = ""
     @Published var description: String = ""
-    
+    @Published var imageURL: String?
+
     init(pet: Pet?, house: House) {
         self.pet = pet
         self.house = house
-
+        if let pet = pet {
+            self.name = pet.name
+            self.selectedSpices = pet.species
+            self.description = pet.description ?? ""
+            self.informationArray = pet.information
+            if let imageURL = pet.imageURL {
+                loadImageFromURL(imageURL)
+            }
+        }
     }
-    func savePet(completion: @escaping (Bool) -> Void){
-        if !isValuesSet(){
+
+    func savePet(completion: @escaping (Bool) -> Void) {
+        if !isValuesSet() {
             return
         }
-        if house.pets == nil{
+        if house.pets == nil {
             house.pets = []
         }
-        if let pet = pet{
-            print("This is the edit pet save and replace")
-            if let index = house.pets?.firstIndex(where: { $0.id == pet.id }){
+        if let pet = pet {
+            if let index = house.pets?.firstIndex(where: { $0.id == pet.id }) {
                 house.pets?[index].name = name
                 house.pets?[index].species = selectedSpices
                 house.pets?[index].information = informationArray
                 house.pets?[index].description = description
+                house.pets?[index].imageURL = imageURL
             }
         } else {
-            
-            house.pets?.append(Pet(name: name, species: selectedSpices, information: informationArray, description: description))
-            
+            let newPet = Pet(name: name, species: selectedSpices, imageURL: imageURL, information: informationArray, description: description)
+            house.pets?.append(newPet)
+            self.pet = newPet // Uppdatera pet till den nyss skapade
         }
-        if let houseID = house.id,
-           let pets = house.pets {
-            firebaseHelper.save(pets: pets, toHouseId: houseID){ success in
+        if let houseID = house.id, let pets = house.pets {
+            firebaseHelper.save(pets: pets, toHouseId: houseID) { success in
                 completion(success)
             }
-        }
-        else{
+        } else {
             completion(false)
         }
     }
-    
-    func savePetsToFirebase( completion: @escaping (Bool) -> Void){
-        do {
-            let petsData = try house.pets?.map { try JSONEncoder().encode($0) } ?? []
-            let petsDict = try petsData.map { try JSONSerialization.jsonObject(with: $0) }
-            if let houseID = house.id{
-                print(house)
-                firebaseHelper.update(houseId: houseID, with: ["pets": petsDict]){ success in
-                    completion(success)
-                }
-            }
-        } catch {
-            print("Error encoding pets: \(error)")
-            completion(false)
-        }
-        
+
+    func isValuesSet() -> Bool {
+        return !name.isEmpty
     }
-    
-    func save(pets: [Pet], toHouseId houseID: String, completion: @escaping (Bool) -> Void){
-        do {
-            let petsData = try pets.map { try JSONEncoder().encode($0) }
-            let petsDict = try petsData.map { try JSONSerialization.jsonObject(with: $0) }
-            firebaseHelper.update(houseId: houseID, with: ["pets": petsDict]){ success in
-                completion(success)
-            }
-        } catch {
-            print("Error encoding pets: \(error)")
-            completion(false)
-        }
-        
-    }
-    
-    func isValuesSet() -> Bool{
-        if !name.isEmpty{
-            return true
-        }
-        return false
-    }
-    
+
     func deletePet(at offsets: IndexSet) {
         house.pets?.remove(atOffsets: offsets)
-        if let houseID = house.id,
-           let pets = house.pets{
-            
-            firebaseHelper.save(pets: pets, toHouseId: houseID){ success in
+        if let houseID = house.id, let pets = house.pets {
+            firebaseHelper.save(pets: pets, toHouseId: houseID) { success in
                 
             }
         }
     }
+
+    func loadImageData() {
+        Task {
+            do {
+                guard let selectedPhoto = imageSelection else {
+                    print("No photo selected")
+                    return
+                }
+                let imageData = try await selectedPhoto.loadTransferable(type: Data.self)
+                DispatchQueue.main.async {
+                    if let imageData = imageData {
+                        self.image = UIImage(data: imageData)
+                    }
+                }
+            } catch {
+                print("Error loading image data: \(error)")
+            }
+        }
+    }
+
+    func loadImageFromURL(_ imageURL: String) {
+        firebaseHelper.downloadImage(from: imageURL) { [weak self] image in
+            DispatchQueue.main.async {
+                self?.image = image
+            }
+        }
+    }
+
+    func uploadPetImage(_ image: UIImage, completion: @escaping (String?) -> Void) {
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            completion(nil)
+            return
+        }
+
+        let storageRef = Storage.storage().reference().child("pet_images/\(UUID().uuidString).jpg")
+        storageRef.putData(imageData, metadata: nil) { metadata, error in
+            if let error = error {
+                print("Error uploading image: \(error)")
+                completion(nil)
+                return
+            }
+            storageRef.downloadURL { url, error in
+                if let error = error {
+                    print("Error getting download URL: \(error)")
+                    completion(nil)
+                } else {
+                    completion(url?.absoluteString)
+                }
+            }
+        }
+    }
 }
+
+
+

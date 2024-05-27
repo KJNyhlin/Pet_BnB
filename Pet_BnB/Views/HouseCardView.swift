@@ -14,40 +14,28 @@ struct HouseCardView: View {
     var body: some View {
         NavigationLink(destination: HouseDetailView(houseId: house.id ?? "", firebaseHelper: firebaseHelper)) {
             VStack(alignment: .leading, spacing: 0) {
-                if let imageURL = house.imageURL, let url = URL(string: imageURL) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .empty:
-                            ProgressView()
-                                .frame(height: 200)
-                                .frame(maxWidth: .infinity)
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: 200)
-                                .frame(maxWidth: .infinity)
-                                .clipped()
-                        case .failure:
-                            Image(systemName: "photo")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: 200)
-                                .frame(maxWidth: .infinity)
-                                .background(Color.gray)
-                        @unknown default:
-                            Image(systemName: "photo")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: 200)
-                                .frame(maxWidth: .infinity)
-                                .background(Color.gray)
-                        }
-                    }
-                } 
+                SwipableImageView(
+                    houseImageURL: house.imageURL,
+                    petImageURL: house.pets?.first?.imageURL
+                )
                 VStack(alignment: .leading, spacing: 8) {
                     Text(house.title)
                         .font(.headline)
+                    HStack {
+                        Label(
+                            title: { Text("\(house.beds) st") },
+                                icon: { Image(systemName: "bed.double") }
+                            )
+                            .padding(.trailing, 10)
+                                        
+                        Label(
+                            title: { Text("\(house.size) m²") },
+                                icon: { Image(systemName: "house.fill") }
+                            )
+                    }
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                                        
                     Text(house.description)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
