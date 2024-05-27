@@ -24,16 +24,12 @@ class ChatsListViewModel: ObservableObject{
     init(chats: [Chat] = [], firebaseHelper: FirebaseHelper = FirebaseHelper(), listenerRegistration: ListenerRegistration? = nil) {
         self.chats = chats
         self.firebaseHelper = firebaseHelper
-       // self.listenerRegistration = listenerRegistration
-      
+        // self.listenerRegistration = listenerRegistration
+        
         setupChatsListener()
     }
     
     private func setupChatsListener() {
-//        if listenerRegistration != nil {
-//            return
-//        }
-        
         if let loggedInUserId = firebaseHelper.getUserID(){
             listenerRegistration = db.collection("chats").whereField("participants", arrayContains: loggedInUserId)
                 .order(by: "lastMessageTimeStamp", descending: true)
@@ -42,19 +38,14 @@ class ChatsListViewModel: ObservableObject{
                         print("No documents")
                         return
                     }
-                   
-                    //print(documents)
-             
                     self.chats = documents.compactMap { queryDocumentSnapshot -> Chat? in
                         return try? queryDocumentSnapshot.data(as: Chat.self)
                     }
-                    
-               //     self.totalUnreadMessages(chats: self.chats)            //self.totalUnreadMessages(chat: <#T##Chat#>)
                     self.fetchParticipants()
                 }
             print("listener setup")
         }
-
+        
     }
     
     // Make use of function in firebasehelper
@@ -105,7 +96,7 @@ class ChatsListViewModel: ObservableObject{
         if let userID = firebaseHelper.getUserID(){
             for chat in chats{
                 if let unread = chat.unreadMessagesCount[userID]{
-                   count += unread
+                    count += unread
                 }
             }
         }
@@ -121,7 +112,7 @@ class ChatsListViewModel: ObservableObject{
         
         if calendar.isDateInToday(date){
             dateFormatter.dateFormat = "HH:mm"
-
+            
         } else if calendar.isDateInYesterday(date)  {
             return "yesterday"
         } else if let daysAgo = calendar.dateComponents([.day], from: date, to: Date()).day, daysAgo <= 7 {
@@ -130,7 +121,7 @@ class ChatsListViewModel: ObservableObject{
         } else{
             dateFormatter.dateFormat = "yyyy-MM-dd"
         }
-       
+        
         return dateFormatter.string(from: date)
     }
 }

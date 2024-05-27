@@ -19,6 +19,8 @@ class ChatViewModel: ObservableObject{
     private var db = Firestore.firestore()
     private var listenerRegistration: ListenerRegistration?
     var lastMessageDateString = ""
+    private var lastDocument: DocumentSnapshot?
+    @Published var isFirstLoad = true
     
     @Published var messageInput: String = ""
     
@@ -26,10 +28,10 @@ class ChatViewModel: ObservableObject{
         self.toUserID = toUserID
         self.chat = chat
         self.toUser = toUser
-
+        
         if let chatID = chat?.id {
             setupMessageListener(chatID: chatID)
- 
+            
         } else {
             if let loggedInUser = firebaseHelper.getUserID(){
                 fetchChat(participants: [toUserID, loggedInUser])
@@ -48,10 +50,10 @@ class ChatViewModel: ObservableObject{
     
     func loadToUser(){
         Task {
-             firebaseHelper.loadUserInfo(userID:toUserID){ user in
+            firebaseHelper.loadUserInfo(userID:toUserID){ user in
                 if let user = user{
                     self.toUser = user
-
+                    
                 } else {
                     print("no to user found")
                 }
@@ -68,7 +70,7 @@ class ChatViewModel: ObservableObject{
             if let fetchedChat = await getChat(participants: participants){
                 DispatchQueue.main.async {
                     self.chat = fetchedChat
-        //            print(self.chat)
+                    //            print(self.chat)
                     if let chatID = self.chat?.id {
                         self.setupMessageListener(chatID: chatID)
                     }
@@ -85,12 +87,12 @@ class ChatViewModel: ObservableObject{
                 sendMessage(chatID: chatID, text: messageInput, senderID: userID, reciverID: toUserID)
             } else{
                 createChat(senderID: userID){ chatID in
-                   // print(chatID)
+                    // print(chatID)
                     if let chatID = chatID{
                         self.setupMessageListener(chatID: chatID)
                         self.sendMessage(chatID: chatID, text: self.messageInput, senderID: userID, reciverID: self.toUserID)
                     }
-               
+                    
                 }
             }
         }
@@ -109,17 +111,54 @@ class ChatViewModel: ObservableObject{
     
     func setupMessageListener(chatID: String) {
         listenerRegistration = db.collection("chats").document(chatID).collection("messages")
-            .order(by: "timestamp", descending: false)
+            .order(by: "timestamp", descending: true)
+            .limit(to: 10)
             .addSnapshotListener { (querySnapshot, error) in
                 guard let documents = querySnapshot?.documents else {
                     print("No documents")
                     return
                 }
+                self.lastDocument = documents.last
                 self.markMessageAsRead(chatID: chatID)
-                self.messages = documents.compactMap { queryDocumentSnapshot -> Message? in
+                let messages = documents.compactMap { queryDocumentSnapshot -> Message? in
                     return try? queryDocumentSnapshot.data(as: Message.self)
                 }
+                self.messages = messages.reversed()
+                print("First messages setup!")
             }
+    }
+    
+    func loadMoreMessages(){
+        if let chatID = chat?.id{
+            isFirstLoad = false
+            var query = db.collection("chats").document(chatID).collection("messages")
+                .order(by: "timestamp", descending: true)
+                .limit(to: 10)
+            if let lastDocument = lastDocument{
+                query = query.start(afterDocument: lastDocument)
+            }
+            query.getDocuments { snapshot, error in
+                guard let documents = snapshot?.documents else{
+                    print("No documents")
+                    return
+                }
+                if let lastDoc = documents.last {
+                    self.lastDocument = lastDoc
+                }
+                let fetchedMessages = documents.compactMap{ documentSnapshot -> Message? in
+                    return try? documentSnapshot.data(as: Message.self)
+                    
+                }
+                let reversedfetchedMessages = fetchedMessages.reversed()
+                DispatchQueue.main.async{
+                    self.messages.insert(contentsOf: reversedfetchedMessages, at: 0)
+                    print("More messages fetched!")
+                }
+                
+            }
+        }
+        
+        
     }
     
     func removeListener() {
@@ -131,7 +170,7 @@ class ChatViewModel: ObservableObject{
     func sendMessage(chatID: String, text: String, senderID: String, reciverID: String) {
         print("InSendMessage")
         let newMessage = Message(senderID: senderID, timestamp: Timestamp(), text: text, isRead: [:])
-    
+        
         let chatRef = db.collection("chats").document(chatID)
         // Add the message to the subcollection
         try? chatRef.collection("messages").addDocument(from: newMessage)
@@ -141,7 +180,7 @@ class ChatViewModel: ObservableObject{
             "lastMessageTimeStamp": Timestamp(),
             "unreadMessagesCount.\(reciverID)": FieldValue.increment(Int64(1))
         ])
-
+        
     }
     
     func getChat(participants: [String]) async -> Chat?{
@@ -149,14 +188,14 @@ class ChatViewModel: ObservableObject{
         
         do {
             let querySnapshot = try await db.collection("chats").whereField("participants", isEqualTo: sortedParticipants)
-            .getDocuments()
-          for document in querySnapshot.documents {
-              let chat = try document.data(as: Chat.self)
-             // print(chat)
-              return chat
-          }
+                .getDocuments()
+            for document in querySnapshot.documents {
+                let chat = try document.data(as: Chat.self)
+                // print(chat)
+                return chat
+            }
         } catch {
-          print("Error getting documents: \(error)")
+            print("Error getting documents: \(error)")
         }
         return nil
     }
@@ -179,26 +218,26 @@ class ChatViewModel: ObservableObject{
         if let userID = firebaseHelper.getUserID(){
             chatRef.updateData(["unreadMessagesCount.\(userID)": 0]) { error in
                 if let error = error{
-                    print("Error marking as read! \(error)")
+                    print("Error marking read! \(error)")
                 }
             }
-//            let messagesRef = chatRef.collection("messages")
-//            messagesRef.whereField("isRead.\(userID)", isEqualTo: false).getDocuments { snapshot, error in
-//                if let snapshot = snapshot {
-//                    for document in snapshot.documents {
-//                        let messageRef = messagesRef.document(document.documentID)
-//                        messageRef.updateData([
-//                            "isRead.\(userID)": true
-//                        ])
-//                    }
-//                }
-//            }
+            //            let messagesRef = chatRef.collection("messages")
+            //            messagesRef.whereField("isRead.\(userID)", isEqualTo: false).getDocuments { snapshot, error in
+            //                if let snapshot = snapshot {
+            //                    for document in snapshot.documents {
+            //                        let messageRef = messagesRef.document(document.documentID)
+            //                        messageRef.updateData([
+            //                            "isRead.\(userID)": true
+            //                        ])
+            //                    }
+            //                }
+            //            }
         }
-
+        
     }
-    func isSame(string1: String, String2: String) -> Bool {
-        let same = string1 == String2
-        lastMessageDateString = string1
+    func sameAsLastString(string: String) -> Bool {
+        let same = string == lastMessageDateString
+        lastMessageDateString = string
         
         return same
     }
@@ -211,7 +250,7 @@ class ChatViewModel: ObservableObject{
         if calendar.isDateInToday(date){
             //dateFormatter.dateFormat = "today"
             return "today"
-
+            
         } else if calendar.isDateInYesterday(date)  {
             return "yesterday"
         } else if let daysAgo = calendar.dateComponents([.day], from: date, to: Date()).day, daysAgo <= 7 {
@@ -220,7 +259,7 @@ class ChatViewModel: ObservableObject{
         } else{
             dateFormatter.dateFormat = "yyyy-MM-dd"
         }
-       
+        
         return dateFormatter.string(from: date)
     }
     
