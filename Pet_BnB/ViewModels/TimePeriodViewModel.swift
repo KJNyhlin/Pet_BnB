@@ -34,7 +34,7 @@ class TimePeriodViewModel: ObservableObject {
            let startDate = self.startDate?.formattedForBooking,
            let endDate = self.endDate?.formattedForBooking {
             let newBooking = Booking(houseID: houseID, fromDate: startDate, toDate: endDate)
-            firebaseHelper.save(booking: newBooking, for: house)
+            firebaseHelper.save(TimePeriod: newBooking, for: house)
             self.startDate = nil
             self.endDate = nil
         }

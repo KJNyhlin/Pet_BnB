@@ -67,10 +67,20 @@ struct addTimePeriod : View {
 
 struct BookingList : View {
     @ObservedObject var vm : TimePeriodViewModel
+    
     var body: some View {
         ScrollView {
             ForEach(vm.myTimePeriods) {timePeriod in
-                Text("\(timePeriod.fromDate)")
+                HStack {
+                    Text("\(timePeriod.fromDate.formatted(date: .numeric, time: .omitted)) - \(timePeriod.toDate.formatted(date: .numeric, time: .omitted))")
+                    if timePeriod.renterID == nil {
+                        Button(action: {
+                            vm.firebaseHelper.remove(timePeriod: timePeriod, for: vm.house)
+                        }, label: {
+                            Image(systemName: "trash")
+                        })
+                    }
+                }
                 
             }
             
@@ -206,8 +216,8 @@ struct TimePeriodsCalendarDayView: View {
                     .font(.caption)
                     .bold()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .border(Color.black)
-                    .foregroundColor(date.startOfDay == Date.now.startOfDay ? .blue : .green)
+//                    .border(Color.black)
+                    .foregroundColor(date.startOfDay == Date.now.startOfDay ? .blue : .black)
                     .onTapGesture {
                         
                         viewModel.setDates(date: date)
