@@ -10,6 +10,7 @@ import SwiftUI
 struct ChatView: View {
     @StateObject var vm: ChatViewModel
     // @EnvironmentObject var chatListVM: ChatsListViewModel
+    @State private var scrollTarget: String?
     
     
     var body: some View {
@@ -28,12 +29,23 @@ struct ChatView: View {
                         MessageView(message: message, fromLoggedIn: vm.fromLoggedInUser(id: message.senderID), dateString: vm.getDateString(timeStamp: message.timestamp),timeString:vm.getTime(from: message.timestamp), vm:vm)
                             .listRowSeparator(.hidden)
                             .id(message.id)
+                            .onAppear{
+                                if message == vm.messages.first{
+                                    vm.loadMoreMessages()
+                                }
+                            }
                         
                     }
                 }
                 .listStyle(.plain)
                 .onChange(of: vm.messages){
-                    proxy.scrollTo(vm.messages.last?.id)
+                    if vm.isFirstLoad{
+                        proxy.scrollTo(vm.messages.last?.id)
+                        scrollTarget = vm.messages.first?.id
+                    } else {
+                        proxy.scrollTo(scrollTarget, anchor: .top)
+                        scrollTarget = vm.messages.first?.id
+                    }
                 }
                 
             }
@@ -107,11 +119,11 @@ struct MessageView: View{
     var dateString: String
     var timeString: String
     var vm: ChatViewModel
-    //   var showDate: Bool
+
     
     var body: some View{
         VStack{
-            if !vm.isSame(string1: dateString, String2: vm.lastMessageDateString){
+            if !vm.sameAsLastString(string: dateString){
                 Text(dateString)
                     .font(.caption2)
             }
@@ -123,20 +135,15 @@ struct MessageView: View{
                         .padding(.vertical, 5)
                         .background(fromLoggedIn ? AppColors.mainAccent : Color(.systemGray6))
                         .cornerRadius(20)
-                    
-                    
+          
                     Text(timeString)
                         .font(.caption2)
                     
                 }
                 .padding(fromLoggedIn ? .leading : .trailing, 50)
-                
-                
-                
+   
             }
             .frame(maxWidth: .infinity, alignment: fromLoggedIn ? .trailing : .leading)
-            
-            //   .padding()
         }
     }
 }
@@ -146,34 +153,26 @@ struct MessageInputView: View {
     var sendAction: () -> Void
     var body: some View {
         HStack(){
-            //       EntryFields(placeHolder: "Message", promt: "", field: $messageInput)
             TextField("Message", text: $messageInput, axis: .vertical)
-                .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-            
+                .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
                 .lineLimit(5)
                 .frame(maxWidth: .infinity)
-                .padding(10)
-            //    .background(.regularMaterial)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 25.0)
-                        .stroke(AppColors.mainAccent, lineWidth: 3)
-                )
+
             
             Button(action: {
                 sendAction()
                 
             }, label: {
-                Text("Send")
-                    .padding()
-                    .background()
-                    .cornerRadius(10)
-                
+                Image(systemName: messageInput.isEmpty ? "stop.circle.fill" : "arrow.up.circle.fill")
+                    .font(.title)
+                    .contentTransition(.symbolEffect(.replace))
             })
-            
         }
-        //.background()
-        //.background(.regularMaterial)
-        //.padding(.horizontal)
+        .padding(10)
+        .overlay(
+            RoundedRectangle(cornerRadius: 25.0)
+                .stroke(AppColors.mainAccent, lineWidth: 3)
+        )
     }
 }
 

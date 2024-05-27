@@ -19,6 +19,8 @@ class ChatViewModel: ObservableObject{
     private var db = Firestore.firestore()
     private var listenerRegistration: ListenerRegistration?
     var lastMessageDateString = ""
+    private var lastDocument: DocumentSnapshot?
+    @Published var isFirstLoad = true
     
     @Published var messageInput: String = ""
     
@@ -109,17 +111,54 @@ class ChatViewModel: ObservableObject{
     
     func setupMessageListener(chatID: String) {
         listenerRegistration = db.collection("chats").document(chatID).collection("messages")
-            .order(by: "timestamp", descending: false)
+            .order(by: "timestamp", descending: true)
+            .limit(to: 10)
             .addSnapshotListener { (querySnapshot, error) in
                 guard let documents = querySnapshot?.documents else {
                     print("No documents")
                     return
                 }
+                self.lastDocument = documents.last
                 self.markMessageAsRead(chatID: chatID)
-                self.messages = documents.compactMap { queryDocumentSnapshot -> Message? in
+                let messages = documents.compactMap { queryDocumentSnapshot -> Message? in
                     return try? queryDocumentSnapshot.data(as: Message.self)
                 }
+                self.messages = messages.reversed()
+                print("First messages setup!")
             }
+    }
+    
+    func loadMoreMessages(){
+        if let chatID = chat?.id{
+            isFirstLoad = false
+            var query = db.collection("chats").document(chatID).collection("messages")
+                .order(by: "timestamp", descending: true)
+                .limit(to: 10)
+            if let lastDocument = lastDocument{
+                query = query.start(afterDocument: lastDocument)
+            }
+            query.getDocuments { snapshot, error in
+                guard let documents = snapshot?.documents else{
+                    print("No documents")
+                    return
+                }
+                if let lastDoc = documents.last {
+                    self.lastDocument = lastDoc
+                }
+                let fetchedMessages = documents.compactMap{ documentSnapshot -> Message? in
+                    return try? documentSnapshot.data(as: Message.self)
+                    
+                }
+                let reversedfetchedMessages = fetchedMessages.reversed()
+                DispatchQueue.main.async{
+                    self.messages.insert(contentsOf: reversedfetchedMessages, at: 0)
+                    print("More messages fetched!")
+                }
+                
+            }
+        }
+        
+        
     }
     
     func removeListener() {
@@ -179,7 +218,7 @@ class ChatViewModel: ObservableObject{
         if let userID = firebaseHelper.getUserID(){
             chatRef.updateData(["unreadMessagesCount.\(userID)": 0]) { error in
                 if let error = error{
-                    print("Error marking as read! \(error)")
+                    print("Error marking read! \(error)")
                 }
             }
 //            let messagesRef = chatRef.collection("messages")
@@ -196,9 +235,9 @@ class ChatViewModel: ObservableObject{
         }
 
     }
-    func isSame(string1: String, String2: String) -> Bool {
-        let same = string1 == String2
-        lastMessageDateString = string1
+    func sameAsLastString(string: String) -> Bool {
+        let same = string == lastMessageDateString
+        lastMessageDateString = string
         
         return same
     }
