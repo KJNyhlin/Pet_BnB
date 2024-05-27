@@ -136,7 +136,7 @@ struct editPersonalInfo: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 500)
+        .frame(height: 600)
 
         HStack {
             Button(action: {
@@ -237,7 +237,7 @@ struct personalInfoView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 500)
+        .frame(height: 600)
     }
 }
 
