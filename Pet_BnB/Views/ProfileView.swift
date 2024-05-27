@@ -237,7 +237,7 @@ struct personalInfoView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 600)
+        .frame(height: 610)
     }
 }
 
