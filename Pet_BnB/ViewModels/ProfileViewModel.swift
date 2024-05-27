@@ -25,6 +25,8 @@ class ProfileViewModel: ObservableObject {
             loadImageData()
         }
     }
+    @Published var aboutMe: String = ""
+    @Published var editAboutMe: String = ""
 
     func getUserDetails() {
         guard let userID = firebaseHelper.getUserID() else { return }
