@@ -8,8 +8,11 @@
 import Foundation
 import FirebaseFirestore
 
-struct Pet: Decodable, Encodable {
-    @DocumentID var docID: String?
+struct Pet: Decodable, Encodable, Identifiable {
+    var id = UUID().uuidString
     var name: String
     var species: String
+    var imageURL: String?
+    var information: [String] = []
+    var description: String?
 }

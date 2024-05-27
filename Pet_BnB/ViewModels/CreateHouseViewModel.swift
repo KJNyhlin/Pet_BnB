@@ -23,6 +23,7 @@ class CreateHouseViewModel: ObservableObject{
     let firebaseHelper = FirebaseHelper()
 
     @Published var image: UIImage?
+    @Published var savingInProgress = false
 
     @Published var imageSelection: PhotosPickerItem? = nil {
           didSet {
@@ -55,6 +56,7 @@ class CreateHouseViewModel: ObservableObject{
     }
     
     func saveHouse(completion: @escaping(Bool) -> Void) {
+        saveing(inProgress: true)
         guard checkAllInfoSet(),
               let image = image,
               let bedsInt = Int(beds),
@@ -108,6 +110,11 @@ class CreateHouseViewModel: ObservableObject{
                 }
             }
         }
+    }
+    
+    func saveing(inProgress: Bool){
+        savingInProgress = inProgress
+        
     }
     
     func checkAllInfoSet() -> Bool{

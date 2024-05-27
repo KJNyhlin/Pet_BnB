@@ -13,6 +13,6 @@ struct User : Decodable, Encodable {
     var firstName: String?
     var surName: String?
     var pet: Pet?
+    var imageURL: String?
     
-   
 }

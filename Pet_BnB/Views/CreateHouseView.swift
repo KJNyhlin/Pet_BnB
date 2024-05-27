@@ -53,9 +53,12 @@ struct CreateHouseView: View {
                         Button(action: {
                             vm.saveHouse(){ success in
                                 if success{
+                                    
                                     DispatchQueue.main.async {
                                         self.presentationMode.wrappedValue.dismiss()
                                     }
+                                } else{
+                                    vm.saveing(inProgress: false)
                                 }
                             }
                         }, label: {
@@ -64,10 +67,9 @@ struct CreateHouseView: View {
                                 .padding(.horizontal, 30)
                                
                         })
+                        .disabled(vm.savingInProgress)
                     }
-
                 }
-
             }
             .navigationTitle(vm.house == nil ? "Create House": "Edit House")
         }
