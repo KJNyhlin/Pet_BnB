@@ -87,7 +87,7 @@ struct editPersonalInfo: View {
                                 .stroke(AppColors.mainAccent, lineWidth: 2)
                                 .frame(width: 150, height: 150)
                         }
-                    .padding(.leading, 20)
+                    .padding(.leading)
                     .onTapGesture {
                         profileViewModel.showImagePicker = true
                     }
@@ -98,7 +98,7 @@ struct editPersonalInfo: View {
                         .padding(.leading, 50)
 
                     TextField("First Name", text: $profileViewModel.editFirstName)
-                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+                        .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
@@ -112,7 +112,7 @@ struct editPersonalInfo: View {
                         .padding(.top, 2)
 
                     TextField("Surname", text: $profileViewModel.editSurName)
-                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+                        .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
@@ -191,7 +191,7 @@ struct personalInfoView: View {
                             .stroke(AppColors.mainAccent, lineWidth: 2)
                             .frame(width: 150, height: 150)
                     }
-                    .padding(.leading, 20)
+                    .padding(.leading)
                     
                     Text("First Name")
                         .font(.caption)
@@ -199,7 +199,7 @@ struct personalInfoView: View {
                         .padding(.leading, 50)
                     
                     Text("\(profileViewModel.firstName)")
-                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+                        .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
@@ -213,7 +213,7 @@ struct personalInfoView: View {
                         .padding(.top, 2)
                     
                     Text("\(profileViewModel.surName)")
-                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+                        .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)

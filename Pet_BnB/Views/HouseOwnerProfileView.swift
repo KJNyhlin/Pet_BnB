@@ -60,7 +60,7 @@ struct HouseOwnerProfileView: View {
                                         )
                                 }
                             }
-                            .padding(.leading, 20)
+                            .padding(.leading)
                         }
                     }
                     
@@ -70,7 +70,7 @@ struct HouseOwnerProfileView: View {
                         .padding(.leading, 50)
                     
                     Text(user.firstName ?? "No name")
-                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+                        .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
@@ -84,7 +84,7 @@ struct HouseOwnerProfileView: View {
                         .padding(.top, 2)
                     
                     Text(user.surName ?? "No surname")
-                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+                        .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
@@ -94,7 +94,7 @@ struct HouseOwnerProfileView: View {
                     Text("About Me")
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
-                        .padding(.leading, 50)
+                        .padding(.leading, -50)
                         .padding(.top, 2)
                     
                     TextEditor(text: .constant(user.aboutMe ?? "No information available"))
@@ -111,7 +111,7 @@ struct HouseOwnerProfileView: View {
         .navigationTitle("Owner Profile")
         .navigationBarTitleDisplayMode(.inline)
         .frame(maxWidth: .infinity)
-        .frame(height: 400)
+        .padding(.top, -60)
     }
 }
 
