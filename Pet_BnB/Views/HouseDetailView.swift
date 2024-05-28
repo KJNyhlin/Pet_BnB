@@ -86,6 +86,11 @@ struct HouseDetailView: View {
                             .padding(.horizontal, 5)
                             .padding(.top, -10)
                             
+                            Rectangle()
+                                .fill(Color.gray)
+                                .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.5)
+                                .padding(.vertical, 5)
+                                .padding(.horizontal)
                             
                             if let owner = viewModel.houseOwner {
                                 VStack {
