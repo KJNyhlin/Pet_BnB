@@ -87,7 +87,7 @@ struct HouseDetailView: View {
                             .padding(.top, -10)
                             
                             Rectangle()
-                                .fill(Color.gray)
+                                .fill(AppColors.mainAccent)
                                 .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.5)
                                 .padding(.vertical, 5)
                                 .padding(.horizontal)
@@ -153,15 +153,40 @@ struct HouseDetailView: View {
                                                     .padding(.horizontal)
                                         }
                                         .padding()
+                                
+                                        Rectangle()
+                                            .fill(AppColors.mainAccent)
+                                            .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+                                            .padding(.vertical)
+                                            .padding(.horizontal)
+                                
+                                
                                 }
                         }
+                        
                     } else {
                         ProgressView()
                             .onAppear {
                                 viewModel.fetchHouse(byId: houseId)
                             }
                     }
+                VStack(alignment: .center){
+                                            Text("Cancellation policy")
+                                                .font(.headline)
+                                                .padding(.bottom, 7)
+                                                .padding(.leading, -173)
+
+                                            Text("This reservation is non-refundable. Once a booking has been confirmed, it is binding and no refunds or changes will be made. We thank you for your understanding and look forward to welcoming you.")
+                                                .font(.footnote)
+                                                .foregroundColor(.gray)
+                                                .multilineTextAlignment(.leading)
+                                                .padding(.bottom, 60)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+                .padding(.horizontal, 5)
+                .padding(.top, -10)
+            }
 
             VStack {
                 Spacer()
