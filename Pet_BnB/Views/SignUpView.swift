@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SignUpView: View {
     @EnvironmentObject var signUpViewModel :SignUpViewModel
+    @EnvironmentObject var chaListViewModel: ChatsListViewModel
    
     
     var body: some View {
