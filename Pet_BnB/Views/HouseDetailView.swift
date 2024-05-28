@@ -85,6 +85,70 @@ struct HouseDetailView: View {
                             .padding()
                             .padding(.horizontal, 5)
                             .padding(.top, -10)
+                            
+                            
+                            if let owner = viewModel.houseOwner {
+                                VStack {
+                                    Text("Meet your host")
+                                        .font(.title2)
+                                        .padding(.bottom, 10)
+                                                        
+                                    if let url = owner.imageURL {
+                                        AsyncImage(url: URL(string: url)) { phase in
+                                            let size: CGFloat = 100
+                                                switch phase {
+                                                    case .empty:
+                                                        ProgressView()
+                                                            .frame(width: size, height: size)
+                                                    case .success(let image):
+                                                        image
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fill)
+                                                            .frame(width: size, height: size)
+                                                            .clipShape(Circle())
+                                                            .overlay(
+                                                                Circle()
+                                                                    .stroke(AppColors.mainAccent, lineWidth: 2)
+                                                            )
+                                                    case .failure:
+                                                        Image(systemName: "person.circle")
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fill)
+                                                            .frame(width: size, height: size)
+                                                            .background(Color.gray)
+                                                            .clipShape(Circle())
+                                                            .overlay(
+                                                                Circle()
+                                                                    .stroke(AppColors.mainAccent, lineWidth: 2)
+                                                            )
+                                                    @unknown default:
+                                                        Image(systemName: "person.circle")
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fill)
+                                                            .frame(width: size, height: size)
+                                                            .background(Color.gray)
+                                                            .clipShape(Circle())
+                                                            .overlay(
+                                                                Circle()
+                                                                    .stroke(AppColors.mainAccent, lineWidth: 2)
+                                                            )
+                                                    }
+                                                }
+                                                .padding(.bottom, 10)
+                                            }
+
+                                                Text("\(owner.firstName ?? "First Name") \(owner.surName ?? "Last Name")")
+                                                    .font(.title3)
+                                                    .bold()
+                                                    .padding(.bottom, 5)
+                                                        
+                                                Text(owner.aboutMe ?? "No description available")
+                                                    .font(.body)
+                                                    .multilineTextAlignment(.center)
+                                                    .padding(.horizontal)
+                                        }
+                                        .padding()
+                                }
                         }
                     } else {
                         ProgressView()
