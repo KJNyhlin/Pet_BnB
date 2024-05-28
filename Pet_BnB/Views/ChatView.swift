@@ -71,43 +71,45 @@ struct ChatView: View {
 struct ChatHeader: View {
     var toUser: User
     var body: some View {
-        HStack{
-            if let url = toUser.imageURL{
-                AsyncImage(url: URL(string: url)) { phase in
-                    let size:CGFloat = 30
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                            .frame(height: size)
-                            .frame(maxWidth: size)
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: size)
-                            .frame(maxWidth: size)
-                            .clipShape(Circle())
-                    case .failure:
-                        Image(systemName: "person.circle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: size)
-                            .frame(maxWidth: size)
-                            .background(Color.gray)
-                    @unknown default:
-                        Image(systemName: "person.circle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: size)
-                            .frame(maxWidth: size)
-                            .background(Color.gray)
+        NavigationLink(destination: HouseOwnerProfileView(user: toUser)) {
+            HStack{
+                if let url = toUser.imageURL{
+                    AsyncImage(url: URL(string: url)) { phase in
+                        let size:CGFloat = 30
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                                .frame(height: size)
+                                .frame(maxWidth: size)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(height: size)
+                                .frame(maxWidth: size)
+                                .clipShape(Circle())
+                        case .failure:
+                            Image(systemName: "person.circle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(height: size)
+                                .frame(maxWidth: size)
+                                .background(Color.gray)
+                        @unknown default:
+                            Image(systemName: "person.circle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(height: size)
+                                .frame(maxWidth: size)
+                                .background(Color.gray)
+                        }
                     }
+                    
                 }
-                
+                Text(toUser.firstName ?? "No name")
+                    .font(.footnote)
+                    .bold()
             }
-            Text(toUser.firstName ?? "No name")
-                .font(.footnote)
-                .bold()
         }
     }
 }

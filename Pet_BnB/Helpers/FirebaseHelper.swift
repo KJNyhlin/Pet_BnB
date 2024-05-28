@@ -76,9 +76,9 @@ class FirebaseHelper: ObservableObject {
         }
     }
     
-    func savePersonalInfoToDB(firstName: String, surName: String) {
+    func savePersonalInfoToDB(firstName: String, surName: String, aboutMe: String) {
         guard let userID = auth.currentUser?.uid else { return }
-        let userInfo = User(firstName: firstName, surName: surName)
+        let userInfo = User(firstName: firstName, surName: surName, aboutMe: aboutMe)
         
         do {
             try db.collection("users").document(userID).setData(from: userInfo) { error in }
