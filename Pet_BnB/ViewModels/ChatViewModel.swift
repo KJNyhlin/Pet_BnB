@@ -179,6 +179,13 @@ class ChatViewModel: ObservableObject{
         }
     }
     
+    func isLoggedIn() -> Bool{
+        if firebaseHelper.getUserID() != nil {
+            return true
+        }
+        return false
+    }
+    
     
     func sendMessage(chatID: String, text: String, senderID: String, reciverID: String) {
         print("InSendMessage")

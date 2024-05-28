@@ -11,6 +11,7 @@ struct ChatView: View {
     @StateObject var vm: ChatViewModel
     // @EnvironmentObject var chatListVM: ChatsListViewModel
     @State private var scrollTarget: String?
+    @Environment(\.dismiss) var dismiss
     
     
     var body: some View {
@@ -54,7 +55,12 @@ struct ChatView: View {
         }
         .padding()
         .onAppear{
-            vm.startListener()
+            if vm.isLoggedIn(){
+                vm.startListener()
+            } else{
+                dismiss()
+            }
+            
         }
         .onDisappear {
             vm.removeListener()
