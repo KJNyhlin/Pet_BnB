@@ -108,7 +108,7 @@ struct HouseOwnerProfileView: View {
                 .frame(maxWidth: .infinity)
             }
         }
-        .navigationTitle("Owner Profile")
+        .navigationTitle("Host")
         .navigationBarTitleDisplayMode(.inline)
         .frame(maxWidth: .infinity)
         .padding(.top, -60)
