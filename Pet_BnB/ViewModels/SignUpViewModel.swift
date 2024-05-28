@@ -40,8 +40,10 @@ class SignUpViewModel: ObservableObject {
         }
     }
     
-    func signIn(email: String, password: String) {
-        firebaseHelper.signIn(email: email, password: password)
+    func signIn(email: String, password: String , completion: @escaping (Bool) -> Void) {
+        firebaseHelper.signIn(email: email, password: password){ success in
+            completion(success)
+        }
     }
     
     func getUserDetails(userID: String) {

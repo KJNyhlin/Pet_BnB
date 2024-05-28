@@ -206,6 +206,7 @@ struct EnterPersonalInfo : View {
 struct SignIn : View {
     @EnvironmentObject var signInViewModel : SignUpViewModel
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var chatListViewModel: ChatsListViewModel
     
     var body: some View {
         
@@ -225,8 +226,16 @@ struct SignIn : View {
                 EntryFields(placeHolder: "Email", promt: "", field: $signInViewModel.email)
                 EntryFields(placeHolder: "Password", promt: "", field: $signInViewModel.password, isSecure: true)
                 Button(action: {
-                    signInViewModel.signIn(email: signInViewModel.email, password: signInViewModel.password)
-                    dismiss()
+                    signInViewModel.signIn(email: signInViewModel.email, password: signInViewModel.password){ success in
+                        if success {
+                            chatListViewModel.setupChatsListener()
+                            dismiss()
+                        }else{
+                            // Something is wrong tell the user
+                        }
+                        
+                    }
+                   
                 }, label: {
                     FilledButtonLabel(text: "Sign In")
                         .frame(width: 100)
