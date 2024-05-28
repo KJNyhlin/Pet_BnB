@@ -95,7 +95,7 @@ struct HouseDetailView: View {
                             if let owner = viewModel.houseOwner {
                                 VStack {
                                     Text("Meet your Host")
-                                        .font(.title2)
+                                        .font(.headline)
                                         .padding(.bottom, 8)
                                         .padding(.top, -4)
                                     
@@ -164,7 +164,7 @@ struct HouseDetailView: View {
                             if let pets = house.pets {
                                 VStack {
                                     Text("Meet the Pet")
-                                        .font(.title2)
+                                        .font(.headline)
                                     
                                     ForEach(pets) { pet in
                                         VStack {
@@ -247,16 +247,52 @@ struct HouseDetailView: View {
                             }
                     }
                 VStack(alignment: .center){
-                                            Text("Cancellation policy")
-                                                .font(.headline)
-                                                .padding(.bottom, 7)
-                                                .padding(.leading, -173)
+                    Text("Booking instructions")
+                        .font(.headline)
+                        .padding(.bottom, 5)
+                        .padding(.leading, -173)
 
-                                            Text("This reservation is non-refundable. Once a booking has been confirmed, it is binding and no refunds or changes will be made. We thank you for your understanding and look forward to welcoming you.")
-                                                .font(.footnote)
-                                                .foregroundColor(.gray)
-                                                .multilineTextAlignment(.leading)
-                                                .padding(.bottom, 60)
+                    Text("To book a stay at this house, follow these steps:")
+                        .font(.footnote)
+                        .padding(.bottom, 5)
+                        .padding(.leading, -50)
+                        .foregroundColor(.gray)
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("1. Browse through the house details and pictures to make sure it meets your requirements.")
+                        Text("2. Click on the 'Book' button at the bottom of the screen to book.")
+                        Text("3. Check the availability calendar to find suitable dates for your stay.")
+                        Text("4. Choose a period.")
+                        Text("5. Click on the 'Book' button to confirm.")
+                        Text("If you have any questions or need further assistance, feel free to contact the host.")
+                    }
+                    .font(.body)
+                    .padding()
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(8)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+                .padding(.horizontal, 5)
+                .padding(.top, -10)
+                
+                Rectangle()
+                    .fill(AppColors.mainAccent)
+                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+                    .padding(.vertical, 10)
+                    .padding(.horizontal)
+                
+                VStack(alignment: .center){
+                    Text("Cancellation policy")
+                    .font(.headline)
+                    .padding(.bottom, 7)
+                    .padding(.leading, -173)
+
+                Text("This reservation is non-refundable. Once a booking has been confirmed, it is binding and no refunds or changes will be made. We thank you for your understanding and look forward to welcoming you.")
+                    .font(.footnote)
+                    .foregroundColor(.gray)
+                    .multilineTextAlignment(.leading)
+                    .padding(.bottom, 60)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
