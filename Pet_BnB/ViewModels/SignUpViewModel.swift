@@ -22,7 +22,7 @@ class SignUpViewModel: ObservableObject {
     @Published var signIn: Bool = false
     
     
-    func signUp(name: String, password: String) {
+    func signUp(name: String, password: String, completion: @escaping(Bool) -> Void)  {
         if signUpAllFieldsComplete(){
             self.showSpinner = true
             firebaseHelper.createAccount(name: name, password: password) {userID in
@@ -30,10 +30,12 @@ class SignUpViewModel: ObservableObject {
                     print("User created")
                     self.accountCreated = true
                     self.showSpinner = false
+                    completion(true)
                 } else {
                     print("error creating user")
                     self.accountCreated = false
                     self.showSpinner = false
+                    completion(false)
                 }
                 
             }

@@ -100,6 +100,7 @@ struct ShowSpinner: View {
 
 struct SignUp: View {
     @EnvironmentObject var signUpViewModel : SignUpViewModel
+
     
     var body: some View {
         EntryFields(placeHolder: "Enter email", promt: "", field: $signUpViewModel.email)
@@ -114,10 +115,16 @@ struct SignUp: View {
 
 struct SignUpButtons: View {
     @EnvironmentObject var signUpViewModel : SignUpViewModel
-
+    @EnvironmentObject var chatListViewModel: ChatsListViewModel
     var body: some View {
         Button(action: { withAnimation() {
-            signUpViewModel.signUp(name: signUpViewModel.email, password: signUpViewModel.password)
+            signUpViewModel.signUp(name: signUpViewModel.email, password: signUpViewModel.password){ success in
+                if success{
+                    chatListViewModel.setupChatsListener()
+                } else{
+                    // Not signed up tell user!
+                }
+            }
         }
         }, label: {
           FilledButtonLabel(text: "Sign up")
