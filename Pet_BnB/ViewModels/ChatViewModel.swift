@@ -134,6 +134,7 @@ class ChatViewModel: ObservableObject{
     func loadMoreMessages(){
         if let chatID = chat?.id{
             isFirstLoad = false
+            lastMessageDateString = ""
             var query = db.collection("chats").document(chatID).collection("messages")
                 .order(by: "timestamp", descending: true)
                 .limit(to: 10)
