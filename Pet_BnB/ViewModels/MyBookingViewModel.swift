@@ -7,16 +7,26 @@
 
 import Foundation
 
-class BookingViewModel : ObservableObject {
+class MyBookingViewModel : ObservableObject {
     
     @Published var myBookings: [Booking] = []
+    @Published var myBookingHistory: [Booking] = []
     @Published var house : House?
     var firebaseHelper = FirebaseHelper()
     
     func getBookings() {
+        self.myBookings.removeAll()
+        self.myBookingHistory.removeAll()
         firebaseHelper.getMyBookings() { myBookings in
             if let myBookings = myBookings {
-                self.myBookings = myBookings
+                for booking in myBookings {
+                    if booking.toDate >= Date.now {
+                        self.myBookings.append(booking)
+                    } else {
+                        self.myBookingHistory.append(booking)
+                    }
+                }
+                
             }
             
         }
@@ -25,7 +35,6 @@ class BookingViewModel : ObservableObject {
     func getHouseDetails(for booking: Booking, completion: @escaping (House?) -> Void) {
         firebaseHelper.fetchHouse(byId: booking.houseID) { house in
             if let house = house {
-                print("\(house.title)")
                 completion(house)
             }
         }

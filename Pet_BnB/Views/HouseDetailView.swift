@@ -12,10 +12,12 @@ struct HouseDetailView: View {
     @StateObject private var viewModel: HouseDetailViewModel
     var houseId: String
     @State var showBookings: Bool = false
+    @State var booked: Bool
     
-    init(houseId: String, firebaseHelper: FirebaseHelper) {
+    init(houseId: String, firebaseHelper: FirebaseHelper, booked: Bool) {
         _viewModel = StateObject(wrappedValue: HouseDetailViewModel(firebaseHelper: firebaseHelper))
         self.houseId = houseId
+        self.booked = booked
     }
     
     var body: some View {
@@ -108,21 +110,23 @@ struct HouseDetailView: View {
 
                     
                     Spacer()
-                    Button(action: {
-                        // Lägg till funktion för bokning
-                        showBookings.toggle()
-                    })
-                    {
-                        FilledButtonLabel(text: "Book")
-                            .frame(maxWidth: 80)
+                    if !booked {
+                        Button(action: {
+                            // Lägg till funktion för bokning
+                            showBookings.toggle()
+                        })
+                        {
+                            FilledButtonLabel(text: "Book")
+                                .frame(maxWidth: 80)
                             //.fontWeight(.bold)
-                    }
-                    .padding([.bottom, .trailing], 30)
-                    .sheet(isPresented: $showBookings, content: {
-                        if let house = viewModel.house {
-                            BookingsList(viewModel: viewModel, house: house)
                         }
-                    })
+                        .padding([.bottom, .trailing], 30)
+                        .sheet(isPresented: $showBookings, content: {
+                            if let house = viewModel.house {
+                                BookingsList(viewModel: viewModel, house: house)
+                            }
+                        })
+                    } 
                 }
             }
         }
@@ -133,7 +137,7 @@ struct HouseDetailView: View {
 
 
 #Preview {
-    HouseDetailView(houseId: "1", firebaseHelper: FirebaseHelper())
+    HouseDetailView(houseId: "1", firebaseHelper: FirebaseHelper(),booked: false)
 }
 
 struct BookingsList: View {

@@ -446,5 +446,10 @@ class FirebaseHelper: ObservableObject {
     }
     
     
+    func unbook(booking: Booking) {
+        if let docID = booking.docID {
+            db.collection("bookings").document(docID).updateData(["renterID" : nil])
+        }
+    }
 }
 

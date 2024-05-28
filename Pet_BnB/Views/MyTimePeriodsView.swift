@@ -1,57 +1,57 @@
 //
-//  MyBookingsView.swift
+//  MyTimePeriodsView.swift
 //  Pet_BnB
 //
-//  Created by Jonas Bondesson on 2024-05-15.
+//  Created by Jonas Bondesson on 2024-05-28.
 //
 
 import SwiftUI
 
-struct MyBookingsView: View {
-    @StateObject var viewModel = MyBookingViewModel()
+struct MyTimePeriodsView: View {
+    @StateObject var viewModel : TimePeriodViewModel
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0){
                     
-                    Section(header: Text("My bookings")
+                    Section(header: Text("My Time Periods")
                         .font(.title)
                         .fontWeight(.bold)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding()) {
                             
                             
-                            ForEach (viewModel.myBookings){ booking in
-                                BookingCardView(viewModel: viewModel, booking: booking)
+                            ForEach (viewModel.myTimePeriods){ booking in
+//                                BookingCardView(viewModel: viewModel, booking: booking)
+                                MyTimePeriodCardView(viewModel: viewModel, booking: booking)
                             }
                         }
-                    Section(header: Text("My history")
+                    Section(header: Text("My Past Time Periods")
                         .font(.title)
                         .fontWeight(.bold)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding()) {
                             
                             
-                            ForEach (viewModel.myBookingHistory){ booking in
-                                
-                                    BookingCardView(viewModel: viewModel, booking: booking)
+                            ForEach (viewModel.myPastTimePeriods){ booking in
+                                MyTimePeriodCardView(viewModel: viewModel, booking: booking)
+//                                    BookingCardView(viewModel: viewModel, booking: booking)
                             
                             }
                         }
                     Spacer()
                 }
                 .onAppear {
-                    viewModel.getBookings()
+                    viewModel.getTimePeriods()
                 }
             }
         }
     }
 }
 
-
-
-struct BookingCardView : View {
-    @ObservedObject var viewModel : MyBookingViewModel
+struct MyTimePeriodCardView : View {
+    @ObservedObject var viewModel : TimePeriodViewModel
     var booking : Booking
     @State var house : House?
     
@@ -102,9 +102,12 @@ struct BookingCardView : View {
             .buttonStyle(PlainButtonStyle())
             
             .onAppear() {
-                viewModel.getHouseDetails(for: booking) { house in
+                viewModel.firebaseHelper.fetchHouse(byId: booking.houseID) {house in
                     self.house = house
                 }
+//                viewModel.getHouseDetails(for: booking) { house in
+//                    self.house = house
+//                }
             }
         }
         
@@ -114,6 +117,6 @@ struct BookingCardView : View {
         
 }
 
-#Preview {
-    MyBookingsView()
-}
+//#Preview {
+//    MyTimePeriodsView()
+//}

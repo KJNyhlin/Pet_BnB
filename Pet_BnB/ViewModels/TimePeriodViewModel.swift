@@ -12,7 +12,8 @@ import SwiftUI
 class TimePeriodViewModel: ObservableObject {
     @Published var startDate : Date? = nil
     @Published var endDate : Date? = nil
-    @Published var myTimePeriods = [Booking]()
+    @Published var myTimePeriods : [Booking] = []
+    @Published var myPastTimePeriods : [Booking] = []
     @Published var house : House
     let firebaseHelper = FirebaseHelper()
     @Published var date: Date
@@ -44,9 +45,19 @@ class TimePeriodViewModel: ObservableObject {
     func getTimePeriods() {
         if let houseID = house.id {
             self.firebaseHelper.getTimePeriodsFor(houseID: houseID) {bookings in
+                
                 if let bookings = bookings {
+//                    self.myTimePeriods.removeAll()
+//                    self.myTimePeriods.append(contentsOf: bookings)
                     self.myTimePeriods.removeAll()
-                    self.myTimePeriods.append(contentsOf: bookings)
+                    self.myPastTimePeriods.removeAll()
+                    for booking in bookings {
+                        if booking.toDate < Date.now {
+                            self.myPastTimePeriods.append(booking)
+                        } else {
+                            self.myTimePeriods.append(booking)
+                        }
+                    }
                 }
             }
         }
