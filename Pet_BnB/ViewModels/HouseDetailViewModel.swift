@@ -12,6 +12,7 @@ import SwiftUI
 class HouseDetailViewModel: ObservableObject {
     @Published var house: House?
     @Published var houseOwner: User?
+    @Published var housePet: Pet?
     private var firebaseHelper: FirebaseHelper
     private var cancellables = Set<AnyCancellable>()
     @Published var bookings = [Booking]()
@@ -127,4 +128,16 @@ class HouseDetailViewModel: ObservableObject {
 //        for day in 0..< Calendar.current.range(of: .day, in: .month, for: monthStart)!.count
 //    }
     
+    private func fetchHousePet(byId id: String) {
+            firebaseHelper.fetchPet(byId: id) { [weak self] result in
+                switch result {
+                case .success(let pet):
+                    DispatchQueue.main.async {
+                        self?.housePet = pet
+                    }
+                case .failure(let error):
+                    print("Error fetching house pet: \(error.localizedDescription)")
+                }
+            }
+        }
 }

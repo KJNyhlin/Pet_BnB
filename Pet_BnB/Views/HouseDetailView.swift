@@ -64,7 +64,7 @@ struct HouseDetailView: View {
                                         icon: { Image(systemName: "bed.double") }
                                     )
                                     .padding(.trailing, 10)
-
+                                    
                                     Label(
                                         title: { Text("\(house.size) m²") },
                                         icon: { Image(systemName: "house.fill") }
@@ -80,7 +80,7 @@ struct HouseDetailView: View {
                                 
                                 Text(house.description)
                                     .fixedSize(horizontal: false, vertical: true)
-                             
+                                
                             }
                             .padding()
                             .padding(.horizontal, 5)
@@ -94,14 +94,84 @@ struct HouseDetailView: View {
                             
                             if let owner = viewModel.houseOwner {
                                 VStack {
-                                    Text("Meet your host")
+                                    Text("Meet your Host")
                                         .font(.title2)
-                                        .padding(.bottom, 10)
-                                                        
+                                        .padding(.bottom, 8)
+                                        .padding(.top, -4)
+                                    
                                     if let url = owner.imageURL {
                                         AsyncImage(url: URL(string: url)) { phase in
                                             let size: CGFloat = 100
-                                                switch phase {
+                                            switch phase {
+                                            case .empty:
+                                                ProgressView()
+                                                    .frame(width: size, height: size)
+                                            case .success(let image):
+                                                image
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .frame(width: size, height: size)
+                                                    .clipShape(Circle())
+                                                    .overlay(
+                                                        Circle()
+                                                            .stroke(AppColors.mainAccent, lineWidth: 2)
+                                                    )
+                                            case .failure:
+                                                Image(systemName: "person.circle")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .frame(width: size, height: size)
+                                                    .background(Color.gray)
+                                                    .clipShape(Circle())
+                                                    .overlay(
+                                                        Circle()
+                                                            .stroke(AppColors.mainAccent, lineWidth: 2)
+                                                    )
+                                            @unknown default:
+                                                Image(systemName: "person.circle")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .frame(width: size, height: size)
+                                                    .background(Color.gray)
+                                                    .clipShape(Circle())
+                                                    .overlay(
+                                                        Circle()
+                                                            .stroke(AppColors.mainAccent, lineWidth: 2)
+                                                    )
+                                            }
+                                        }
+                                        .padding(.bottom, 10)
+                                    }
+                                    
+                                    Text("\(owner.firstName ?? "First Name") \(owner.surName ?? "Last Name")")
+                                        .font(.title3)
+                                        .bold()
+                                        .padding(.bottom, 5)
+                                    
+                                    Text(owner.aboutMe ?? "No description available")
+                                        .font(.body)
+                                        .multilineTextAlignment(.center)
+                                        .padding(.horizontal)
+                                }
+                                .padding()
+                                
+                                Rectangle()
+                                    .fill(AppColors.mainAccent)
+                                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+                                    .padding(.vertical)
+                                    .padding(.horizontal)
+                            }
+                            if let pets = house.pets {
+                                VStack {
+                                    Text("Meet the Pet")
+                                        .font(.title2)
+                                    
+                                    ForEach(pets) { pet in
+                                        VStack {
+                                            if let petImageURL = pet.imageURL, let petURL = URL(string: petImageURL) {
+                                                AsyncImage(url: petURL) { phase in
+                                                    let size: CGFloat = 100
+                                                    switch phase {
                                                     case .empty:
                                                         ProgressView()
                                                             .frame(width: size, height: size)
@@ -116,7 +186,7 @@ struct HouseDetailView: View {
                                                                     .stroke(AppColors.mainAccent, lineWidth: 2)
                                                             )
                                                     case .failure:
-                                                        Image(systemName: "person.circle")
+                                                        Image(systemName: "pawprint.circle")
                                                             .resizable()
                                                             .aspectRatio(contentMode: .fill)
                                                             .frame(width: size, height: size)
@@ -127,7 +197,7 @@ struct HouseDetailView: View {
                                                                     .stroke(AppColors.mainAccent, lineWidth: 2)
                                                             )
                                                     @unknown default:
-                                                        Image(systemName: "person.circle")
+                                                        Image(systemName: "pawprint.circle")
                                                             .resizable()
                                                             .aspectRatio(contentMode: .fill)
                                                             .frame(width: size, height: size)
@@ -140,28 +210,34 @@ struct HouseDetailView: View {
                                                     }
                                                 }
                                                 .padding(.bottom, 10)
+                                                .padding(.top, -10)
                                             }
-
-                                                Text("\(owner.firstName ?? "First Name") \(owner.surName ?? "Last Name")")
-                                                    .font(.title3)
-                                                    .bold()
-                                                    .padding(.bottom, 5)
-                                                        
-                                                Text(owner.aboutMe ?? "No description available")
-                                                    .font(.body)
-                                                    .multilineTextAlignment(.center)
-                                                    .padding(.horizontal)
+                                            
+                                            Text(pet.name)
+                                                .font(.title3)
+                                                .bold()
+                                                .padding(.bottom, 5)
+                                            
+                                            Text(pet.species)
+                                                .font(.subheadline)
+                                                .padding(.bottom, 5)
+                                            
+                                            Text(pet.description ?? "No description available")
+                                                .font(.body)
+                                                .multilineTextAlignment(.center)
+                                                .padding(.horizontal)
                                         }
                                         .padding()
-                                
+                                        .padding(.top,-5)
+                                        
                                         Rectangle()
                                             .fill(AppColors.mainAccent)
                                             .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-                                            .padding(.vertical)
+                                            .padding(.vertical, 10)
                                             .padding(.horizontal)
-                                
-                                
+                                    }
                                 }
+                            }
                         }
                         
                     } else {
