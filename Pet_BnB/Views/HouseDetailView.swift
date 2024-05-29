@@ -7,11 +7,14 @@
 
 
 import SwiftUI
+import MapKit
+import CoreLocation
 
 struct HouseDetailView: View {
     @StateObject private var viewModel: HouseDetailViewModel
     var houseId: String
     @State var showBookings: Bool = false
+    @State private var region = MKCoordinateRegion()
     
     init(houseId: String, firebaseHelper: FirebaseHelper) {
         _viewModel = StateObject(wrappedValue: HouseDetailViewModel(firebaseHelper: firebaseHelper))
@@ -85,6 +88,13 @@ struct HouseDetailView: View {
                             .padding()
                             .padding(.horizontal, 5)
                             .padding(.top, -10)
+                            
+                            if let latitude = house.latitude, let longitude = house.longitude {
+                                MapView(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+                                    .frame(height: 300)
+                                    .cornerRadius(10)
+                                    .padding()
+                            }
                             
                             Rectangle()
                                 .fill(AppColors.mainAccent)
@@ -544,3 +554,22 @@ struct CalendarHeader: View {
     }
 }
 
+struct MapView: UIViewRepresentable {
+    var coordinate: CLLocationCoordinate2D
+
+    func makeUIView(context: Context) -> MKMapView {
+        MKMapView(frame: .zero)
+    }
+
+    func updateUIView(_ uiView: MKMapView, context: Context) {
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate
+        uiView.addAnnotation(annotation)
+
+        let region = MKCoordinateRegion(
+            center: coordinate,
+            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        )
+        uiView.setRegion(region, animated: true)
+    }
+}
