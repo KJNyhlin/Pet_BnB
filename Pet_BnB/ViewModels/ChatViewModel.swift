@@ -39,6 +39,9 @@ class ChatViewModel: ObservableObject{
             }
         }
     }
+    deinit{
+        removeListener()
+    }
     
     func sendMessage() -> Void {
         if messageInput.isEmpty{
@@ -131,6 +134,7 @@ class ChatViewModel: ObservableObject{
     func loadMoreMessages(){
         if let chatID = chat?.id{
             isFirstLoad = false
+            lastMessageDateString = ""
             var query = db.collection("chats").document(chatID).collection("messages")
                 .order(by: "timestamp", descending: true)
                 .limit(to: 10)
@@ -164,6 +168,23 @@ class ChatViewModel: ObservableObject{
     func removeListener() {
         listenerRegistration?.remove()
         listenerRegistration = nil
+    }
+    
+    func startListener() {
+        if let chat = chat{
+            if let chatid = chat.id{
+                if listenerRegistration == nil{
+                    setupMessageListener(chatID: chatid)
+                }
+            }
+        }
+    }
+    
+    func isLoggedIn() -> Bool{
+        if firebaseHelper.getUserID() != nil {
+            return true
+        }
+        return false
     }
     
     

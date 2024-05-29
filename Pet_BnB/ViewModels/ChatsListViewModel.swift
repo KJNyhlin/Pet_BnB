@@ -29,7 +29,7 @@ class ChatsListViewModel: ObservableObject{
         setupChatsListener()
     }
     
-    private func setupChatsListener() {
+    func setupChatsListener() {
         if let loggedInUserId = firebaseHelper.getUserID(){
             listenerRegistration = db.collection("chats").whereField("participants", arrayContains: loggedInUserId)
                 .order(by: "lastMessageTimeStamp", descending: true)
@@ -47,6 +47,13 @@ class ChatsListViewModel: ObservableObject{
         }
         
     }
+    
+    func removeListener() {
+        listenerRegistration?.remove()
+        listenerRegistration = nil
+        chats.removeAll()
+    }
+
     
     // Make use of function in firebasehelper
     

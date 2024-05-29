@@ -11,6 +11,7 @@ struct ChatView: View {
     @StateObject var vm: ChatViewModel
     // @EnvironmentObject var chatListVM: ChatsListViewModel
     @State private var scrollTarget: String?
+    @Environment(\.dismiss) var dismiss
     
     
     var body: some View {
@@ -53,9 +54,19 @@ struct ChatView: View {
             }
         }
         .padding()
+        .onAppear{
+            if vm.isLoggedIn(){
+                vm.startListener()
+            } else{
+                dismiss()
+            }
+            
+        }
         .onDisappear {
             vm.removeListener()
         }
+
+        
         .toolbar{
             ToolbarItem(placement: .principal){
                 if let toUser = vm.toUser{
@@ -63,8 +74,6 @@ struct ChatView: View {
                 }
             }
         }
-        
-        
     }
 }
 

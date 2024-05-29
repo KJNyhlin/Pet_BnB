@@ -38,13 +38,18 @@ class FirebaseHelper: ObservableObject {
         }
     }
     
-    func signIn(email: String, password: String) {
+    func signIn(email: String, password: String, completion: @escaping (Bool) -> Void)  {
         auth.signIn(withEmail: email, password: password) { result, error in
             if let error = error {
                 print("Error signing in: \(error)")
+                completion(false)
             } else {
-                guard let userID = result?.user.uid else { return }
+                guard let userID = result?.user.uid else {
+                    completion(false)
+                    return
+                }
                 self.loadUserInfo(userID: userID) { user in
+                    completion(true)
                     print("\(user)")
                 }
             }

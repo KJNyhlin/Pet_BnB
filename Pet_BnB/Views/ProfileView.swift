@@ -12,6 +12,7 @@ struct ProfileView: View {
     @State var showSheet = false
     @EnvironmentObject var signUpViewModel: SignUpViewModel
     @EnvironmentObject var profileViewModel: ProfileViewModel
+    @EnvironmentObject var chatListViewModel: ChatsListViewModel
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -39,6 +40,8 @@ struct ProfileView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
                         profileViewModel.signOut()
+                        chatListViewModel.removeListener()
+                        
                     }, label: {
                         Image(systemName: "rectangle.portrait.and.arrow.right")
                     })
