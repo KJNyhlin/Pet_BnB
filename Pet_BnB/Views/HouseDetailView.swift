@@ -99,48 +99,50 @@ struct HouseDetailView: View {
                                         .padding(.bottom, 8)
                                         .padding(.top, -4)
                                     
-                                    if let url = owner.imageURL {
-                                        AsyncImage(url: URL(string: url)) { phase in
-                                            let size: CGFloat = 100
-                                            switch phase {
-                                            case .empty:
-                                                ProgressView()
-                                                    .frame(width: size, height: size)
-                                            case .success(let image):
-                                                image
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fill)
-                                                    .frame(width: size, height: size)
-                                                    .clipShape(Circle())
-                                                    .overlay(
-                                                        Circle()
-                                                            .stroke(AppColors.mainAccent, lineWidth: 2)
-                                                    )
-                                            case .failure:
-                                                Image(systemName: "person.circle")
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fill)
-                                                    .frame(width: size, height: size)
-                                                    .background(Color.gray)
-                                                    .clipShape(Circle())
-                                                    .overlay(
-                                                        Circle()
-                                                            .stroke(AppColors.mainAccent, lineWidth: 2)
-                                                    )
-                                            @unknown default:
-                                                Image(systemName: "person.circle")
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fill)
-                                                    .frame(width: size, height: size)
-                                                    .background(Color.gray)
-                                                    .clipShape(Circle())
-                                                    .overlay(
-                                                        Circle()
-                                                            .stroke(AppColors.mainAccent, lineWidth: 2)
-                                                    )
+                                    NavigationLink(destination: HouseOwnerProfileView(user: owner)) {
+                                        if let url = owner.imageURL {
+                                            AsyncImage(url: URL(string: url)) { phase in
+                                                let size: CGFloat = 100
+                                                switch phase {
+                                                case .empty:
+                                                    ProgressView()
+                                                        .frame(width: size, height: size)
+                                                case .success(let image):
+                                                    image
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .frame(width: size, height: size)
+                                                        .clipShape(Circle())
+                                                        .overlay(
+                                                            Circle()
+                                                                .stroke(AppColors.mainAccent, lineWidth: 2)
+                                                        )
+                                                case .failure:
+                                                    Image(systemName: "person.circle")
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .frame(width: size, height: size)
+                                                        .background(Color.gray)
+                                                        .clipShape(Circle())
+                                                        .overlay(
+                                                            Circle()
+                                                                .stroke(AppColors.mainAccent, lineWidth: 2)
+                                                        )
+                                                @unknown default:
+                                                    Image(systemName: "person.circle")
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .frame(width: size, height: size)
+                                                        .background(Color.gray)
+                                                        .clipShape(Circle())
+                                                        .overlay(
+                                                            Circle()
+                                                                .stroke(AppColors.mainAccent, lineWidth: 2)
+                                                        )
+                                                }
                                             }
+                                            .padding(.bottom, 10)
                                         }
-                                        .padding(.bottom, 10)
                                     }
                                     
                                     Text("\(owner.firstName ?? "First Name") \(owner.surName ?? "Last Name")")
