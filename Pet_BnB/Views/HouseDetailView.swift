@@ -126,7 +126,9 @@ struct HouseDetailView: View {
                                 BookingsList(viewModel: viewModel, house: house)
                             }
                         })
-                    } 
+                    } else {
+                        Text("")
+                    }
                 }
             }
         }

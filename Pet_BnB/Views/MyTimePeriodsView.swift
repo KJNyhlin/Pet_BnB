@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MyTimePeriodsView: View {
     @StateObject var viewModel : TimePeriodViewModel
+    @State var showTimePeriodSheet: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -35,16 +36,25 @@ struct MyTimePeriodsView: View {
                             
                             
                             ForEach (viewModel.myPastTimePeriods){ booking in
-                                MyTimePeriodCardView(viewModel: viewModel, booking: booking)
+                                MyPastTimePeriodCardView(viewModel: viewModel, booking: booking)
 //                                    BookingCardView(viewModel: viewModel, booking: booking)
                             
                             }
                         }
+                    Button(action: {
+                        showTimePeriodSheet.toggle()
+                    }, label: {
+                        Text("Add time period")
+                    })
+                
                     Spacer()
                 }
                 .onAppear {
                     viewModel.getTimePeriods()
                 }
+                .sheet(isPresented: $showTimePeriodSheet, content: {
+                    TimePeriodView(vm: viewModel)
+                })
             }
         }
     }
@@ -52,8 +62,10 @@ struct MyTimePeriodsView: View {
 
 struct MyTimePeriodCardView : View {
     @ObservedObject var viewModel : TimePeriodViewModel
+    var firebaseHelper = FirebaseHelper()
     var booking : Booking
     @State var house : House?
+    @State var shadowColor: Color = .secondary
     
     var body: some View {
         NavigationLink(destination: BookingView(house: house, booking: booking)) {
@@ -68,25 +80,115 @@ struct MyTimePeriodCardView : View {
                     )
                     
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(house?.title ?? "")
+                        Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
                             .font(.headline)
                         HStack {
-                            Label(
-                                title: { Text("\(house?.beds ?? 0) st") },
-                                icon: { Image(systemName: "bed.double") }
-                            )
-                            .padding(.trailing, 10)
-                            
-                            Label(
-                                title: { Text("\(house?.size ?? 0) m²") },
-                                icon: { Image(systemName: "house.fill") }
-                            )
+                            if let confirmed = booking.confirmed {
+                                if !confirmed {
+                                    Button(action: {
+                                        firebaseHelper.confirm(Booking: booking, docID: booking.docID)
+                                    }, label: {
+                                        Text("Confirm")
+                                            .foregroundColor(.green)
+                                    })
+                                    .buttonStyle(PlainButtonStyle())
+                                }
+                                Button(action: {
+                                    viewModel.firebaseHelper.deny(Booking: booking, docID: booking.docID)
+                                }, label: {
+                                    Text("Deny")
+                                        .foregroundColor(.red)
+                                })
+                            }
+                            Button(action: {}, label: {
+                                Text("Remove")
+                            })
+                            .frame(alignment: .trailing)
+                            .buttonStyle(PlainButtonStyle())
+//                            if let confirmed = booking.confirmed {
+//                                if confirmed {
+//                                    Image(systemName: "checkmark")
+//                                        .foregroundColor(.green)
+//                                } else if !confirmed {
+//                                    Image(systemName: "swift")
+//                                        .foregroundColor(.orange)
+//                                }
+//                            }
                         }
                         .font(.subheadline)
+                        
                         .foregroundColor(.secondary)
                         
+        
+                        //                        .foregroundColor(.secondary)
+                    }
+                    .padding()
+                }
+            }
+            .background(Color.white)
+            .cornerRadius(20)
+            .shadow(color: viewModel.getShadowColor(from: booking),radius: 5)
+            .padding(.vertical, 8)
+            .frame(maxWidth: 335, maxHeight: 150)
+            //        .frame(height: 150)
+            //        }
+            .buttonStyle(PlainButtonStyle())
+            
+            .onAppear() {
+                viewModel.firebaseHelper.fetchHouse(byId: booking.houseID) {house in
+                    self.house = house
+                }
+//                self.shadowColor = viewModel.getShadowColor(from: booking)
+//                viewModel.getHouseDetails(for: booking) { house in
+//                    self.house = house
+//                }
+            }
+        }
+        
+        .buttonStyle(PlainButtonStyle())
+      
+    }
+        
+}
+
+struct MyPastTimePeriodCardView : View {
+    @ObservedObject var viewModel : TimePeriodViewModel
+    var booking : Booking
+    @State var house : House?
+    @State var shadowColor: Color = .secondary
+    
+    var body: some View {
+        NavigationLink(destination: BookingView(house: house, booking: booking)) {
+            VStack(alignment: .leading, spacing: 0) {
+                
+                HStack {
+                    SwipableImageView2(
+                        houseImageURL: house?.imageURL ?? "",
+                        petImageURL: house?.pets?.first?.imageURL ?? "",
+                        height: 100,
+                        width: 100
+                    )
+                    
+                    VStack(alignment: .leading, spacing: 8) {
                         Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
-                            .font(.subheadline)
+                            .font(.headline)
+                        HStack {
+                            
+//                            if let confirmed = booking.confirmed {
+//                                if confirmed {
+//                                    Image(systemName: "checkmark")
+//                                        .foregroundColor(.green)
+//                                } else if !confirmed {
+//                                    Image(systemName: "swift")
+//                                        .foregroundColor(.orange)
+//                                }
+//                            }
+                        }
+                        .font(.subheadline)
+                        
+                        .foregroundColor(.secondary)
+                        
+        
                         //                        .foregroundColor(.secondary)
                     }
                     .padding()
@@ -105,6 +207,7 @@ struct MyTimePeriodCardView : View {
                 viewModel.firebaseHelper.fetchHouse(byId: booking.houseID) {house in
                     self.house = house
                 }
+                
 //                viewModel.getHouseDetails(for: booking) { house in
 //                    self.house = house
 //                }

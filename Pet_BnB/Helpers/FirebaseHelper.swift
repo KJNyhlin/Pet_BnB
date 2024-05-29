@@ -403,12 +403,31 @@ class FirebaseHelper: ObservableObject {
 //        }
     }
 
-    func bookPeriod(houseID: String, docID: String) {
-        if let userID = getUserID() {
+//    func reservPeriod(houseID: String, docID: String) {
+//        if let userID = getUserID() {
+//            self.db.collection("bookings").document(docID).updateData( ["reservedID": userID])
+//        }
+//    }
+    
+    func bookPeriod(houseID: String, docID: String?) {
+        if let userID = getUserID(), let docID = docID {
 //            self.db.collection("houses").document(houseID).collection("bookings").document(docID).updateData( ["renterID": userID])
-            self.db.collection("bookings").document(docID).updateData( ["renterID": userID])
+            self.db.collection("bookings").document(docID).updateData( ["renterID": userID, "confirmed": false])
         }
     }
+    
+    func confirm(Booking: Booking, docID: String?) {
+        if let userID = getUserID(), let docID = docID  {
+            self.db.collection("bookings").document(docID).updateData(["confirmed": true])
+        }
+    }
+    
+    func deny(Booking: Booking, docID: String?) {
+        if let userID = getUserID(), let docID = docID  {
+            self.db.collection("bookings").document(docID).updateData(["renterID" : nil, "confirmed": nil])
+        }
+    }
+    
     
     func remove(timePeriod: Booking,for house: House) {
         if timePeriod.renterID == nil {
@@ -422,7 +441,7 @@ class FirebaseHelper: ObservableObject {
     func getMyBookings(completion: @escaping ([Booking]?) -> Void) {
         guard let userID = getUserID() else {return}
         var myBookings = [Booking]()
-        db.collection("bookings").whereField("renterID", isEqualTo: userID).getDocuments() { snapshot, error in
+        db.collection("bookings").whereField("reservedID", isEqualTo: userID).getDocuments() { snapshot, error in
             if let error = error {
                 print("Error getting my bookings: \(error)")
                 completion(nil)
@@ -443,12 +462,13 @@ class FirebaseHelper: ObservableObject {
                 }
             }
         }
+        
     }
     
     
     func unbook(booking: Booking) {
         if let docID = booking.docID {
-            db.collection("bookings").document(docID).updateData(["renterID" : nil])
+            db.collection("bookings").document(docID).updateData(["renterID" : nil, "reservedID": nil])
         }
     }
 }

@@ -48,7 +48,7 @@ class HouseDetailViewModel: ObservableObject {
                 self?.house = house
                 if let houseID = house?.id {
                     self?.firebaseHelper.getTimePeriodsFor(houseID: houseID) {bookings in
-                        
+                        print("we get new bookings")
                         if let bookings = bookings {
                             self?.bookings.removeAll()
                             for booking in bookings {

@@ -110,6 +110,18 @@ class TimePeriodViewModel: ObservableObject {
         }
     }
     
+    func getShadowColor(from: Booking) -> Color {
+        if let confirmed = from.confirmed {
+            if confirmed {
+                return AppColors.freeBookingColor
+            } else {
+                return AppColors.mainAccent
+            }
+        } else {
+            return .secondary
+        }
+    }
+    
     func setBookingID(booking: Booking) {
         if booking.renterID == nil {
             if let docID = booking.docID {
