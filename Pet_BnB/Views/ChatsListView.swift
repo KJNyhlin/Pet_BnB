@@ -25,16 +25,19 @@ struct ChatsListView: View {
                                     ChatListRow(chat: chat, user: toUser, hasUnreadMessages: vm.hasUnReadMessages(chat: chat), timeString: vm.getDateString(timeStamp: chat.lastMessageTimeStamp))
                                     
                                 }
+                                .listRowInsets(EdgeInsets(top: 10, leading: 5, bottom: 10, trailing: 10))
                             }
                         }
-                    } else{
+                    }
+                    
+                    else{
                         Text("No messages found!")
                     }
                     
                 }
                 .navigationTitle("Messages")
                 .navigationBarTitleDisplayMode(.inline)
-                
+                //.listStyle(.plain)
             }
             
             
@@ -57,10 +60,10 @@ struct ChatListRow: View{
                 .font(.system(size: 8))
                 .foregroundColor(AppColors.mainAccent)
                 .opacity(hasUnreadMessages ? 100 : 0)
-
-            NavigationLink(destination: HouseOwnerProfileView(user: user!), isActive: $navigateToProfile) {
-                            EmptyView()
-                        }.hidden()
+                
+            NavigationLink("", destination: HouseOwnerProfileView(user: user!), isActive: $navigateToProfile)
+                .frame(width: 0, height: 0)
+                        .hidden()
                         
             Button(action: {
                 navigateToProfile = true
@@ -108,20 +111,20 @@ struct ChatListRow: View{
                                             )
                                     }
                                 }
-                                .padding(.leading, -50)
+                          //      .padding(.leading, -50)
                                 
                             } else {
                                 Image(systemName: "person.circle")
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
                                     .frame(height: 40)
-                                    .frame(maxWidth: 40)
+                                    .frame(width: 40)
                                 //.background(Color.gray)
-                                    .padding(.trailing, 5)
-                                    .overlay(
-                                        Circle()
-                                            .stroke(AppColors.mainAccent, lineWidth: 1)
-                                    )
+                                 //   .padding(.trailing, 5)
+//                                    .overlay(
+//                                        Circle()
+//                                            .stroke(AppColors.mainAccent, lineWidth: 1)
+//                                    )
                             }
                         }
                         .buttonStyle(PlainButtonStyle())
@@ -147,7 +150,7 @@ struct ChatListRow: View{
                 
             }
         }
-        .padding(.leading, -200)
+     //   .padding(.leading, -200)
     }
 }
 

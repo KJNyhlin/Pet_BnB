@@ -31,23 +31,25 @@ struct ChatView: View {
                             .listRowSeparator(.hidden)
                             .id(message.id)
                             .onAppear{
-                                if message == vm.messages.first{
+                                if message == vm.messages.last{
                                     vm.loadMoreMessages()
                                 }
                             }
+                            .flippedUpsideDown()
                     }
                 }
                 .listStyle(.plain)
-                .onChange(of: vm.messages){
-                    if vm.isFirstLoad{
-                        proxy.scrollTo(vm.messages.last?.id)
-                        scrollTarget = vm.messages.first?.id
-                    } else {
-                        proxy.scrollTo(scrollTarget, anchor: .top)
-                        scrollTarget = vm.messages.first?.id
-                    }
-                }
-                
+                .flippedUpsideDown()
+//                .onChange(of: vm.messages){
+//                    if vm.isFirstLoad{
+//                        proxy.scrollTo(vm.messages.last?.id)
+//                        scrollTarget = vm.messages.first?.id
+//                    } else {
+//                        proxy.scrollTo(scrollTarget, anchor: .top)
+//                        scrollTarget = vm.messages.first?.id
+//                    }
+//                }
+//                
             }
             VStack{
                 MessageInputView(messageInput: $vm.messageInput, sendAction: vm.sendMessage)
@@ -133,7 +135,8 @@ struct MessageView: View{
     
     var body: some View{
         VStack{
-            if !vm.sameAsLastString(string: dateString){
+            //if !vm.sameAsLastString(string: dateString){
+            if vm.dateStringChanged(string: dateString){
                 Text(dateString)
                     .font(.caption2)
             }
@@ -184,6 +187,19 @@ struct MessageInputView: View {
                 .stroke(AppColors.mainAccent, lineWidth: 3)
         )
     }
+}
+
+struct FlippedUpsideDown: ViewModifier {
+   func body(content: Content) -> some View {
+    content
+      .rotationEffect(.degrees(180))
+      .scaleEffect(x: -1, y: 1, anchor: .center)
+   }
+}
+extension View{
+   func flippedUpsideDown() -> some View{
+     self.modifier(FlippedUpsideDown())
+   }
 }
 
 //#Preview {
