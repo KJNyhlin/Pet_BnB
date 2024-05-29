@@ -123,10 +123,25 @@ class ChatViewModel: ObservableObject{
                 }
                 self.lastDocument = documents.last
                 self.markMessageAsRead(chatID: chatID)
-                let messages = documents.compactMap { queryDocumentSnapshot -> Message? in
+                let newMessages = documents.compactMap { queryDocumentSnapshot -> Message? in
                     return try? queryDocumentSnapshot.data(as: Message.self)
                 }
-                self.messages = messages.reversed()
+                if !self.messages.isEmpty{
+                    var messagesToInsert: [Message] = []
+                    for message in newMessages{
+                        if !self.messages.contains(message){
+                            messagesToInsert.append(message)
+                        } else{
+                            break
+                        }
+                    }
+                    self.messages.insert(contentsOf: messagesToInsert, at: 0)
+                } else {
+                    self.messages = newMessages
+                }
+                
+                //self.messages = messages.reversed()
+
                 print("First messages setup!")
             }
     }
@@ -153,9 +168,10 @@ class ChatViewModel: ObservableObject{
                     return try? documentSnapshot.data(as: Message.self)
                     
                 }
-                let reversedfetchedMessages = fetchedMessages.reversed()
+                //let reversedfetchedMessages = fetchedMessages.reversed()
                 DispatchQueue.main.async{
-                    self.messages.insert(contentsOf: reversedfetchedMessages, at: 0)
+                    //self.messages.insert(contentsOf: reversedfetchedMessages, at: 0)
+                    self.messages += fetchedMessages
                     print("More messages fetched!")
                 }
                 
@@ -262,6 +278,14 @@ class ChatViewModel: ObservableObject{
         
         return same
     }
+    
+    func dateStringChanged(string: String) -> Bool {
+        let changed = string != lastMessageDateString
+        lastMessageDateString = string
+        
+        return changed
+    }
+    
     func getDateString(timeStamp: Timestamp) -> String {
         let date = timeStamp.dateValue()
         let dateFormatter = DateFormatter()
