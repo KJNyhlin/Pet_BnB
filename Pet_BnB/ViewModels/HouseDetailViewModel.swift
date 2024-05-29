@@ -11,6 +11,8 @@ import SwiftUI
 
 class HouseDetailViewModel: ObservableObject {
     @Published var house: House?
+    @Published var houseOwner: User?
+    @Published var housePet: Pet?
     private var firebaseHelper: FirebaseHelper
     private var cancellables = Set<AnyCancellable>()
     @Published var bookings = [Booking]()
@@ -46,6 +48,9 @@ class HouseDetailViewModel: ObservableObject {
         firebaseHelper.fetchHouse(byId: id) { [weak self] house in
             DispatchQueue.main.async {
                 self?.house = house
+                if let ownerId = house?.ownerID {
+                    self?.fetchHouseOwner(byId: ownerId)
+                }
                 if let houseID = house?.id {
                     self?.firebaseHelper.getTimePeriodsFor(houseID: houseID) {bookings in
                         
@@ -107,6 +112,14 @@ class HouseDetailViewModel: ObservableObject {
         return date.isDateInMonth(date: booking.fromDate, selectedMonth: date) || date.isDateInMonth(date: booking.toDate, selectedMonth: date) 
     }
     
+    func fetchHouseOwner(byId ownerId: String) {
+            firebaseHelper.fetchUser(byId: ownerId) { [weak self] user in
+                DispatchQueue.main.async {
+                    self?.houseOwner = user
+                }
+            }
+        }
+    
     
 //    func daysInMonth(for date: Date) -> [Date] {
 //        guard let monthInterval = Calendar.current.dateInterval(of: .month, for: date),
@@ -115,4 +128,16 @@ class HouseDetailViewModel: ObservableObject {
 //        for day in 0..< Calendar.current.range(of: .day, in: .month, for: monthStart)!.count
 //    }
     
+    private func fetchHousePet(byId id: String) {
+            firebaseHelper.fetchPet(byId: id) { [weak self] result in
+                switch result {
+                case .success(let pet):
+                    DispatchQueue.main.async {
+                        self?.housePet = pet
+                    }
+                case .failure(let error):
+                    print("Error fetching house pet: \(error.localizedDescription)")
+                }
+            }
+        }
 }

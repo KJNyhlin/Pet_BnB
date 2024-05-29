@@ -64,7 +64,7 @@ struct HouseDetailView: View {
                                         icon: { Image(systemName: "bed.double") }
                                     )
                                     .padding(.trailing, 10)
-
+                                    
                                     Label(
                                         title: { Text("\(house.size) m²") },
                                         icon: { Image(systemName: "house.fill") }
@@ -80,19 +80,227 @@ struct HouseDetailView: View {
                                 
                                 Text(house.description)
                                     .fixedSize(horizontal: false, vertical: true)
-                             
+                                
                             }
                             .padding()
                             .padding(.horizontal, 5)
                             .padding(.top, -10)
+                            
+                            Rectangle()
+                                .fill(AppColors.mainAccent)
+                                .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.5)
+                                .padding(.vertical, 5)
+                                .padding(.horizontal)
+                            
+                            if let owner = viewModel.houseOwner {
+                                VStack {
+                                    Text("Meet your Host")
+                                        .font(.title2)
+                                        .padding(.bottom, 8)
+                                        .padding(.top, -4)
+                                    
+                                    NavigationLink(destination: HouseOwnerProfileView(user: owner)) {
+                                        if let url = owner.imageURL {
+                                            AsyncImage(url: URL(string: url)) { phase in
+                                                let size: CGFloat = 100
+                                                switch phase {
+                                                case .empty:
+                                                    ProgressView()
+                                                        .frame(width: size, height: size)
+                                                case .success(let image):
+                                                    image
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .frame(width: size, height: size)
+                                                        .clipShape(Circle())
+                                                        .overlay(
+                                                            Circle()
+                                                                .stroke(AppColors.mainAccent, lineWidth: 2)
+                                                        )
+                                                case .failure:
+                                                    Image(systemName: "person.circle")
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .frame(width: size, height: size)
+                                                        .background(Color.gray)
+                                                        .clipShape(Circle())
+                                                        .overlay(
+                                                            Circle()
+                                                                .stroke(AppColors.mainAccent, lineWidth: 2)
+                                                        )
+                                                @unknown default:
+                                                    Image(systemName: "person.circle")
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .frame(width: size, height: size)
+                                                        .background(Color.gray)
+                                                        .clipShape(Circle())
+                                                        .overlay(
+                                                            Circle()
+                                                                .stroke(AppColors.mainAccent, lineWidth: 2)
+                                                        )
+                                                }
+                                            }
+                                            .padding(.bottom, 10)
+                                        }
+                                    }
+                                    
+                                    Text("\(owner.firstName ?? "First Name") \(owner.surName ?? "Last Name")")
+                                        .font(.title3)
+                                        .bold()
+                                        .padding(.bottom, 5)
+                                    
+                                    Text(owner.aboutMe ?? "No description available")
+                                        .font(.body)
+                                        .multilineTextAlignment(.center)
+                                        .padding(.horizontal)
+                                }
+                                .padding()
+                                
+                                Rectangle()
+                                    .fill(AppColors.mainAccent)
+                                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+                                    .padding(.vertical)
+                                    .padding(.horizontal)
+                            }
+                            if let pets = house.pets {
+                                VStack {
+                                    Text("Meet the Pet")
+                                        .font(.title2)
+                                    
+                                    ForEach(pets) { pet in
+                                        VStack {
+                                            if let petImageURL = pet.imageURL, let petURL = URL(string: petImageURL) {
+                                                AsyncImage(url: petURL) { phase in
+                                                    let size: CGFloat = 100
+                                                    switch phase {
+                                                    case .empty:
+                                                        ProgressView()
+                                                            .frame(width: size, height: size)
+                                                    case .success(let image):
+                                                        image
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fill)
+                                                            .frame(width: size, height: size)
+                                                            .clipShape(Circle())
+                                                            .overlay(
+                                                                Circle()
+                                                                    .stroke(AppColors.mainAccent, lineWidth: 2)
+                                                            )
+                                                    case .failure:
+                                                        Image(systemName: "pawprint.circle")
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fill)
+                                                            .frame(width: size, height: size)
+                                                            .background(Color.gray)
+                                                            .clipShape(Circle())
+                                                            .overlay(
+                                                                Circle()
+                                                                    .stroke(AppColors.mainAccent, lineWidth: 2)
+                                                            )
+                                                    @unknown default:
+                                                        Image(systemName: "pawprint.circle")
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fill)
+                                                            .frame(width: size, height: size)
+                                                            .background(Color.gray)
+                                                            .clipShape(Circle())
+                                                            .overlay(
+                                                                Circle()
+                                                                    .stroke(AppColors.mainAccent, lineWidth: 2)
+                                                            )
+                                                    }
+                                                }
+                                                .padding(.bottom, 10)
+                                                .padding(.top, -10)
+                                            }
+                                            
+                                            Text(pet.name)
+                                                .font(.title3)
+                                                .bold()
+                                                .padding(.bottom, 5)
+                                            
+                                            Text(pet.species)
+                                                .font(.subheadline)
+                                                .padding(.bottom, 5)
+                                            
+                                            Text(pet.description ?? "No description available")
+                                                .font(.body)
+                                                .multilineTextAlignment(.center)
+                                                .padding(.horizontal)
+                                        }
+                                        .padding()
+                                        .padding(.top,-5)
+                                        
+                                        Rectangle()
+                                            .fill(AppColors.mainAccent)
+                                            .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+                                            .padding(.vertical, 10)
+                                            .padding(.horizontal)
+                                    }
+                                }
+                            }
                         }
+                        
                     } else {
                         ProgressView()
                             .onAppear {
                                 viewModel.fetchHouse(byId: houseId)
                             }
                     }
+                VStack(alignment: .center){
+                    Text("Booking instructions")
+                        .font(.headline)
+                        .padding(.bottom, 5)
+                        .padding(.leading, -173)
+
+                    Text("To book a stay at this house, follow these steps:")
+                        .font(.footnote)
+                        .padding(.bottom, 5)
+                        .padding(.leading, -50)
+                        .foregroundColor(.gray)
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("1. Browse through the house details and pictures to make sure it meets your requirements.")
+                        Text("2. Click on the 'Book' button at the bottom of the screen to book.")
+                        Text("3. Check the availability calendar to find suitable dates for your stay.")
+                        Text("4. Choose a period.")
+                        Text("5. Click on the 'Book' button to confirm.")
+                        Text("If you have any questions or need further assistance, feel free to contact the host.")
+                    }
+                    .font(.body)
+                    .padding()
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(8)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+                .padding(.horizontal, 5)
+                .padding(.top, -10)
+                
+                Rectangle()
+                    .fill(AppColors.mainAccent)
+                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+                    .padding(.vertical, 10)
+                    .padding(.horizontal)
+                
+                VStack(alignment: .center){
+                    Text("Cancellation policy")
+                    .font(.headline)
+                    .padding(.bottom, 7)
+                    .padding(.leading, -173)
+
+                Text("This reservation is non-refundable. Once a booking has been confirmed, it is binding and no refunds or changes will be made. We thank you for your understanding and look forward to welcoming you.")
+                    .font(.footnote)
+                    .foregroundColor(.gray)
+                    .multilineTextAlignment(.leading)
+                    .padding(.bottom, 60)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+                .padding(.horizontal, 5)
+                .padding(.top, -10)
+            }
 
             VStack {
                 Spacer()
