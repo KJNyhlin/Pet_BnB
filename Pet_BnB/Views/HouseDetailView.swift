@@ -95,7 +95,7 @@ struct HouseDetailView: View {
                             if let owner = viewModel.houseOwner {
                                 VStack {
                                     Text("Meet your Host")
-                                        .font(.headline)
+                                        .font(.title2)
                                         .padding(.bottom, 8)
                                         .padding(.top, -4)
                                     
@@ -166,7 +166,7 @@ struct HouseDetailView: View {
                             if let pets = house.pets {
                                 VStack {
                                     Text("Meet the Pet")
-                                        .font(.headline)
+                                        .font(.title2)
                                     
                                     ForEach(pets) { pet in
                                         VStack {
