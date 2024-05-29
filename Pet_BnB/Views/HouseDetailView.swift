@@ -89,6 +89,18 @@ struct HouseDetailView: View {
                             .padding(.horizontal, 5)
                             .padding(.top, -10)
                             
+                            Rectangle()
+                                .fill(AppColors.mainAccent)
+                                .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+                                .padding(.vertical, 5)
+                                .padding(.horizontal)
+                            
+                            Text("Location")
+                                .font(.headline)
+                                .padding(.bottom, -10)
+                                .padding(.leading, -173)
+                                .padding(.top, 7)
+                    
                             if let latitude = house.latitude, let longitude = house.longitude {
                                 MapView(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
                                     .frame(height: 300)
