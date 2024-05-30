@@ -10,9 +10,100 @@ import SwiftUI
 struct MyHouseView: View {
     //var myHouse: House?
     @StateObject var vm = MyHouseViewModel()
+    
+    
+    var body: some View {
+        VStack(){
+            NavigationStack{
+                TabBarView(selectedTab: $vm.selectedTab)
+                //                .border(Color.black)
+                
+                TabView(selection: $vm.selectedTab) {
+                    
+                    if let house = vm.house {
+                        HouseView(vm: vm).tag(0)
+                        //                    TimePeriodView(vm: TimePeriodViewModel(house: house)).tag(1)
+                        MyTimePeriodsView(viewModel: TimePeriodViewModel(house: house)).tag(1)
+                        //                    PetsView(vm:PetsViewModel(pet: nil, house: house)).tag(2)
+                        PetsView(vm: PetsViewModel(pet: nil, house: house)).tag(2)
+                        //                    SignUpView().tag(2)
+                    }
+                    
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                
+                Spacer()
+                
+            }
+        }
+        .onAppear{
+            vm.downloadHouse()
+            
+        }
+//        .border(Color.black)
+    }
+}
+
+struct TabBarView: View {
+    @Binding var selectedTab: Int
+    var tabBarNames = ["House", "Time periods", "Pets"]
+    var body: some View {
+        GeometryReader { geometry in
+//            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .center) {
+                    ForEach(Array(zip(self.tabBarNames.indices, self.tabBarNames)), id: \.0) { index, name in
+                        TabBarItem(selectedTab: self.$selectedTab, tabBarItemName: name, tab: index)
+                            .frame(width: geometry.size.width / CGFloat(self.tabBarNames.count))
+//                            .border(Color.blue)
+                    }
+                    
+                    
+//                }
+//                .frame(maxWidth: .infinity)
+//                .border(Color.orange)
+            }
+            
+            .frame(maxWidth: .infinity)
+        }
+        .frame(height: 40)
+    }
+}
+
+struct TabBarItem : View {
+    @Binding var selectedTab: Int
+    var tabBarItemName: String
+    var tab: Int
+    var body: some View {
+        Button(action: {
+            self.selectedTab = tab
+        }, label: {
+            VStack {
+                Spacer()
+                Text(tabBarItemName)
+                    .frame(maxWidth: .infinity)
+                if selectedTab == tab {
+                    AppColors.mainAccent
+                        .frame(height: 2)
+                } else {
+                    Color.clear
+                        .frame(height: 2)
+                }
+                
+            }
+            .frame(maxWidth: .infinity)
+            
+        })
+//        Text(tabBarItemName)
+        .buttonStyle(PlainButtonStyle())
+        
+        
+    }
+}
+
+struct HouseView : View {
+    @ObservedObject var vm : MyHouseViewModel
     @State private var showingDeleteAlert = false
     @State private var showAddPeriodSheet = false
-    
     var body: some View {
         NavigationStack{
             VStack{
@@ -61,9 +152,9 @@ struct MyHouseView: View {
                                         Label("Edit", systemImage: "pencil")
                                     }
 
-                                    NavigationLink(destination:PetsView(vm:PetsViewModel(pet: nil, house: house))){
-                                        Label("Pets", systemImage: "pawprint.fill")
-                                    }
+//                                    NavigationLink(destination:PetsView(vm:PetsViewModel(pet: nil, house: house))){
+//                                        Label("Pets", systemImage: "pawprint.fill")
+//                                    }
                                 }
                                 if let house = vm.house {
                                     NavigationLink(destination: TimePeriodView(vm: TimePeriodViewModel(house: house))) {
@@ -89,7 +180,7 @@ struct MyHouseView: View {
 //                            .sheet(isPresented: $showAddPeriodSheet, content: {
 //                                AddPeriodSheet(vm: vm, showAddPeriodSheet: $showAddPeriodSheet)
 //                            })
-//                            
+//
                         }
                         .padding()
                         
@@ -99,12 +190,13 @@ struct MyHouseView: View {
                 }
                 
             }
-            .onAppear{
-                vm.downloadHouse()
-            }
+            
+            
         }
     }
 }
+
+
 
 struct AdressView:View {
     var street: String
@@ -148,45 +240,8 @@ struct InformationRow: View{
         .padding(.vertical, 5)
     }
 }
+////
 //
-//struct  TimePeriodList : View {
-//    @StateObject var vm : MyHouseViewModel
-//    var body: some View {
-//        List(vm.myTimePeriods) {
-//            Text("\($0.fromDate.formatted(date: .numeric, time: .omitted)) - \($0.toDate.formatted(date: .numeric, time: .omitted))")
-//        }
-//    }
-//}
-
-//struct AddPeriodSheet: View {
-//    @StateObject var vm : MyHouseViewModel
-//    @State var startDate = Date.now
-//    @State var endDate = Date.now
-//    @Binding var showAddPeriodSheet : Bool
-//    
-//    var body: some View {
-//        VStack {
-//            Text("Select a time period for others to book")
-//            DatePicker(selection: $startDate, in: Date.now..., displayedComponents: .date) {
-//                    Text("Select a date")
-//                }
-//            
-//            
-//            DatePicker(selection: $endDate, in: Date.now..., displayedComponents: .date) {
-//                    Text("Select a date")
-//                }
-//            Button(action: {
-//                vm.saveTimePeriod(startDate: startDate, endDate: endDate)
-//                showAddPeriodSheet.toggle()
-//                
-//            }, label: {
-//                Text("Save")
-//            })
-//            
-//        }
-//    }
-//}
-
 //#Preview {
 //    AdressView(street: "Gatan", streetNR: 3, city: "Uppsala")
 //}

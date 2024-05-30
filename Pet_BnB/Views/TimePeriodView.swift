@@ -24,12 +24,15 @@ struct TimePeriodView: View {
                 
             }
             .tabViewStyle(.page(indexDisplayMode: .always))
-            BookingList(vm: vm)
+//            BookingList(vm: vm)
             Button(action: {
                 vm.saveTimePeriod()
             }, label: {
                 FilledButtonLabel(text: "Create Time Period")
+                    .frame(width: 200)
             })
+            .disabled(vm.selectedBookingID.isEmpty)
+            
         }
         .onAppear {
             vm.getTimePeriods()
@@ -70,19 +73,24 @@ struct BookingList : View {
     
     var body: some View {
         ScrollView {
-            ForEach(vm.myTimePeriods) {timePeriod in
-                HStack {
-                    Text("\(timePeriod.fromDate.formatted(date: .numeric, time: .omitted)) - \(timePeriod.toDate.formatted(date: .numeric, time: .omitted))")
-                    if timePeriod.renterID == nil {
-                        Button(action: {
-                            vm.firebaseHelper.remove(timePeriod: timePeriod, for: vm.house)
-                        }, label: {
-                            Image(systemName: "trash")
-                        })
-                    }
-                }
+            ForEach(vm.allMyTimePeriods) {timePeriod in
+                AddTimePeriodCard(vm: vm, timePeriod: timePeriod)
+//                Text("timePeriod.houseID")
                 
             }
+//            ForEach(vm.myPastTimePeriods) {timePeriod in
+//                HStack {
+//                    Text("\(timePeriod.fromDate.formatted(date: .numeric, time: .omitted)) - \(timePeriod.toDate.formatted(date: .numeric, time: .omitted))")
+//                    if timePeriod.renterID == nil {
+//                        Button(action: {
+//                            vm.firebaseHelper.remove(timePeriod: timePeriod, for: vm.house)
+//                        }, label: {
+//                            Image(systemName: "trash")
+//                        })
+//                    }
+//                }
+//                
+//            }
             
         }
     }
@@ -131,7 +139,7 @@ struct TimePeriodsCalendarBodyView: View{
             }
             ForEach(days, id: \.self) { day in
                 let dayNumber = Calendar.current.component(.day, from: day)
-                TimePeriodsCalendarDayView(dayNumber: dayNumber, bookings: viewModel.myTimePeriods, date: day.formattedForBooking, viewModel: viewModel)
+                TimePeriodsCalendarDayView(dayNumber: dayNumber, bookings: viewModel.allMyTimePeriods, date: day.formattedForBooking, viewModel: viewModel)
                     
             }
         }
@@ -158,11 +166,13 @@ struct TimePeriodsCalendarDayView: View {
                                     topLeadingRadius: 25.0,
                                     bottomLeadingRadius: 25.0
                                 ))
+                            
                             .onTapGesture {
                                 print("!")
                                 //                                    viewModel.setBookingID(booking: booking)
-                                
-                                viewModel.setDates(date: date)
+                                if date > Date.now.startOfDay {
+                                    viewModel.setDates(date: date)
+                                }
                             }
                     
                             
@@ -218,6 +228,7 @@ struct TimePeriodsCalendarDayView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
 //                    .border(Color.black)
                     .foregroundColor(date.startOfDay == Date.now.startOfDay ? .blue : .black)
+                    .background(date.startOfDay <= Date.now.startOfDay ? AppColors.pastDays : Color.clear)
                     .onTapGesture {
                         
                         viewModel.setDates(date: date)
@@ -258,6 +269,36 @@ struct TimePeriodsCalendarHeader: View {
             })
             .padding()
         }
+    }
+}
+
+struct AddTimePeriodCard : View {
+    @ObservedObject var vm : TimePeriodViewModel
+    var timePeriod : Booking
+    var body: some View {
+        HStack {
+            Text("\(timePeriod.fromDate.formatted(date: .numeric, time: .omitted)) - \(timePeriod.toDate.formatted(date: .numeric, time: .omitted))")
+            if timePeriod.renterID == nil {
+                Button(action: {
+                    vm.firebaseHelper.remove(timePeriod: timePeriod)
+                }, label: {
+                    Image(systemName: "trash")
+                })
+            }
+        }
+        .frame(width: 300, height: 80)
+        .background(Color.white)
+        
+        .cornerRadius(20)
+        .shadow(radius: 5)
+        
+        .padding(.vertical, 8)
+        
+
+        
+        //        .frame(height: 150)
+        //        }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 

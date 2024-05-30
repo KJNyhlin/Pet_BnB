@@ -11,6 +11,7 @@ import SwiftUI
 class MyHouseViewModel: ObservableObject{
     @Published var house: House? = nil
     let firebaseHelper = FirebaseHelper()
+    @Published var selectedTab: Int = 0
 //    @Published var startDate = Date.now
 //    @Published var endDate = Date.now
 //    @Published var myTimePeriods = [Booking]()

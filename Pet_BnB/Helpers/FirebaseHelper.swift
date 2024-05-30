@@ -386,16 +386,35 @@ class FirebaseHelper: ObservableObject {
 //        }
     }
 
-    func bookPeriod(houseID: String, docID: String) {
-        if let userID = getUserID() {
+//    func reservPeriod(houseID: String, docID: String) {
+//        if let userID = getUserID() {
+//            self.db.collection("bookings").document(docID).updateData( ["reservedID": userID])
+//        }
+//    }
+    
+    func bookPeriod(houseID: String, docID: String?) {
+        if let userID = getUserID(), let docID = docID {
 //            self.db.collection("houses").document(houseID).collection("bookings").document(docID).updateData( ["renterID": userID])
-            self.db.collection("bookings").document(docID).updateData( ["renterID": userID])
+            self.db.collection("bookings").document(docID).updateData( ["renterID": userID, "confirmed": false])
         }
     }
     
-    func remove(timePeriod: Booking,for house: House) {
+    func confirm(Booking: Booking, docID: String?) {
+        if let userID = getUserID(), let docID = docID  {
+            self.db.collection("bookings").document(docID).updateData(["confirmed": true])
+        }
+    }
+    
+    func deny(Booking: Booking, docID: String?) {
+        if let userID = getUserID(), let docID = docID  {
+            self.db.collection("bookings").document(docID).updateData(["renterID" : nil, "confirmed": nil])
+        }
+    }
+    
+    
+    func remove(timePeriod: Booking) {
         if timePeriod.renterID == nil {
-            if let docID = timePeriod.docID, let houseID = house.id {
+            if let docID = timePeriod.docID{
 //                db.collection("houses").document(houseID).collection("bookings").document(docID).delete()
                 db.collection("bookings").document(docID).delete()
             }
@@ -426,9 +445,35 @@ class FirebaseHelper: ObservableObject {
                 }
             }
         }
+        
     }
     
     
+
+    func unbook(booking: Booking) {
+        if let docID = booking.docID {
+            db.collection("bookings").document(docID).updateData(["renterID" : nil, "reservedID": nil])
+        }
+    }
+    
+    func getRenterInfo(renterID: String, completion : @escaping (User?) -> Void) {
+        db.collection("users").document(renterID).getDocument() { document, error in
+            if let error = error {
+                print("Error getting renterInfo: \(error)")
+                completion(nil)
+            } else {
+                do {
+                    let renter = try document?.data(as: User.self)
+                    completion(renter)
+                } catch {
+                    print("Error setting document")
+                    completion(nil)
+                }
+            }
+        }
+    }
+              
+
     func fetchUser(byId userId: String, completion: @escaping (User?) -> Void) {
             db.collection("users").document(userId).getDocument { snapshot, error in
                 guard let snapshot = snapshot, snapshot.exists else {
@@ -446,24 +491,25 @@ class FirebaseHelper: ObservableObject {
                 }
             }
         }
+    }
+
     
     func fetchPet(byId id: String, completion: @escaping (Result<Pet, Error>) -> Void) {
-            let db = Firestore.firestore()
-            db.collection("pets").document(id).getDocument { (document, error) in
-                if let document = document, document.exists {
-                    do {
-                        let pet = try document.data(as: Pet.self)
-                        completion(.success(pet))
-                    } catch {
-                        completion(.failure(error))
-                    }
-                } else if let error = error {
-                    completion(.failure(error))
-                } else {
-                    completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Pet not found"])))
-                }
-            }
-        }
-    
+          let db = Firestore.firestore()
+          db.collection("pets").document(id).getDocument { (document, error) in
+              if let document = document, document.exists {
+                  do {
+                      let pet = try document.data(as: Pet.self)
+                      completion(.success(pet))
+                  } catch {
+                      completion(.failure(error))
+                  }
+              } else if let error = error {
+                  completion(.failure(error))
+              } else {
+                  completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Pet not found"])))
+              }
+          }
+      }
 }
 
