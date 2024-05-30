@@ -75,6 +75,7 @@ struct FilterView: View {
                             }
                         }
                             .pickerStyle(WheelPickerStyle())
+                            .frame(height: 120)
                     }
                 }
                 .background(Color(UIColor.systemGray6))
