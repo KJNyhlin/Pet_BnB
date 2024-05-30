@@ -331,19 +331,20 @@ struct HouseDetailView: View {
                         })
                     } else {
                         Text("")
-                    })
-                    .toolbar{
-                        if let house = viewModel.house,
-                           let houseId = house.id{
-                            NavigationLink(destination: ChatView(vm:ChatViewModel(toUserID: house.ownerID))){
-                                Image(systemName: "envelope.fill")
-                                    //.font(.largeTitle)
-                                    .padding()
-                                    .foregroundColor(AppColors.mainAccent)
-                            }
-                        }
-
                     }
+                    
+                }
+                .toolbar{
+                    if let house = viewModel.house,
+                       let houseId = house.id{
+                        NavigationLink(destination: ChatView(vm:ChatViewModel(toUserID: house.ownerID))){
+                            Image(systemName: "envelope.fill")
+                                //.font(.largeTitle)
+                                .padding()
+                                .foregroundColor(AppColors.mainAccent)
+                        }
+                    }
+
                 }
             }
         }

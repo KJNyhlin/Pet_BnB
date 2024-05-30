@@ -491,7 +491,7 @@ class FirebaseHelper: ObservableObject {
                 }
             }
         }
-    }
+    
 
     
     func fetchPet(byId id: String, completion: @escaping (Result<Pet, Error>) -> Void) {
