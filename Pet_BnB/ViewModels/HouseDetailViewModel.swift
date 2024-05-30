@@ -21,6 +21,7 @@ class HouseDetailViewModel: ObservableObject {
     var dateManager = DateManager()
     @Published var bookingColor : Color = Color.blue
     @Published var selectedBookingID: String = ""
+    @Published var selectedBooking: Booking?
     
     
     init(firebaseHelper: FirebaseHelper, date: Date = Date()) {
@@ -53,7 +54,7 @@ class HouseDetailViewModel: ObservableObject {
                 }
                 if let houseID = house?.id {
                     self?.firebaseHelper.getTimePeriodsFor(houseID: houseID) {bookings in
-                        
+                        print("we get new bookings")
                         if let bookings = bookings {
                             self?.bookings.removeAll()
                             for booking in bookings {
@@ -90,11 +91,14 @@ class HouseDetailViewModel: ObservableObject {
     
     func setBookingID(booking: Booking) {
         if booking.renterID == nil {
+            
             if let docID = booking.docID {
                 if self.selectedBookingID == docID {
                     self.selectedBookingID = ""
+                    selectedBooking = nil
                 } else {
                     self.selectedBookingID = docID
+                    selectedBooking = booking
                 }
             }
         }

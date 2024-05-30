@@ -68,7 +68,7 @@ class ChatsListViewModel: ObservableObject{
                             if let user = try? document.data(as: User.self) {
                                 DispatchQueue.main.async {
                                     self.chatParticipants[participant] = user
-                                    print(self.chatParticipants)
+//                                    print(self.chatParticipants)
                                 }
                             }
                         }

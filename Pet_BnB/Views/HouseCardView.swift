@@ -12,7 +12,7 @@ struct HouseCardView: View {
     @EnvironmentObject var firebaseHelper: FirebaseHelper
     
     var body: some View {
-        NavigationLink(destination: HouseDetailView(houseId: house.id ?? "", firebaseHelper: firebaseHelper)) {
+        NavigationLink(destination: HouseDetailView(houseId: house.id ?? "", firebaseHelper: firebaseHelper, booked: false)) {
             VStack(alignment: .leading, spacing: 0) {
                 SwipableImageView(
                     houseImageURL: house.imageURL,
@@ -48,6 +48,6 @@ struct HouseCardView: View {
             .padding(.vertical, 8)
             .frame(maxWidth: 335)
         }
-        .buttonStyle(PlainButtonStyle())
+//        .buttonStyle(PlainButtonStyle())
     }
 }

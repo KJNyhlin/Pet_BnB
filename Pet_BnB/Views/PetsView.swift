@@ -17,6 +17,7 @@ struct PetsView: View {
                     ForEach(pets) { pet in
                         NavigationLink(destination: CreatePetView(vm: vm, pet: pet)) {
                             PetRowView(pet: pet)
+                                
                         }
                     }
                     .onDelete(perform: vm.deletePet)
