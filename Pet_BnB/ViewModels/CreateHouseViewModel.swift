@@ -19,6 +19,8 @@ class CreateHouseViewModel: ObservableObject{
     @Published var streetNR = ""
     @Published var city = ""
     @Published var zipCode = ""
+    @Published var latitude = ""
+    @Published var longitude = ""
     var house: House? = nil
     let firebaseHelper = FirebaseHelper()
 
