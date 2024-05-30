@@ -17,10 +17,10 @@ struct ExploreView: View {
     @State private var maxSize: Int = 1000
     @State private var selectedAnimalType: String = "All"
     
-    let animalTypes = ["All", "Dog", "Cat", "Bird", "Other"]
+    let animalTypes = ["All", "Bird", "Cat", "Dog", "Fish", "Rabbit", "Reptile", "Other"]
     
     var isFilterActive: Bool {
-            return minBeds > 1 || maxBeds < 150 || minSize > 10 || maxSize < 1000
+            return minBeds > 1 || maxBeds < 150 || minSize > 10 || maxSize < 1000 || selectedAnimalType != "All"
     }
     
     var filteredHouses: [House] {
