@@ -57,6 +57,7 @@
 		FB5E03E32BF74B6000CB4085 /* HouseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5E03E22BF74B6000CB4085 /* HouseDetailView.swift */; };
 		FBD691AD2BFE8380006A5026 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBD691AC2BFE8380006A5026 /* FilterView.swift */; };
 		FBD691B12BFF5C0C006A5026 /* SwipableImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBD691B02BFF5C0C006A5026 /* SwipableImageView.swift */; };
+		FBD691B32C051CBE006A5026 /* HouseOwnerProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBD691B22C051CBE006A5026 /* HouseOwnerProfileView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -107,6 +108,7 @@
 		FB5E03E22BF74B6000CB4085 /* HouseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseDetailView.swift; sourceTree = "<group>"; };
 		FBD691AC2BFE8380006A5026 /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
 		FBD691B02BFF5C0C006A5026 /* SwipableImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipableImageView.swift; sourceTree = "<group>"; };
+		FBD691B22C051CBE006A5026 /* HouseOwnerProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseOwnerProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +161,7 @@
 				FBD691AC2BFE8380006A5026 /* FilterView.swift */,
 				0CC9B8DA2BFF27FC00F0D7C8 /* TimePeriodView.swift */,
 				FBD691B02BFF5C0C006A5026 /* SwipableImageView.swift */,
+				FBD691B22C051CBE006A5026 /* HouseOwnerProfileView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -343,6 +346,7 @@
 				0C2FA3AD2C04A7E100A033AC /* BookingView.swift in Sources */,
 				0C2FA3AF2C04AC5E00A033AC /* BookingsViewModel.swift in Sources */,
 				FB00D0E72BF7545100C9DB59 /* HouseCardView.swift in Sources */,
+				FBD691B32C051CBE006A5026 /* HouseOwnerProfileView.swift in Sources */,
 				FBD691B12BFF5C0C006A5026 /* SwipableImageView.swift in Sources */,
 				0C38DD9E2BF4BB3000B92497 /* PetViewModel.swift in Sources */,
 				6D523BF02BF380E60007CCE5 /* Pet_BnBApp.swift in Sources */,

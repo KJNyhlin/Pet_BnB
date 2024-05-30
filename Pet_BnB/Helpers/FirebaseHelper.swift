@@ -38,13 +38,18 @@ class FirebaseHelper: ObservableObject {
         }
     }
     
-    func signIn(email: String, password: String) {
+    func signIn(email: String, password: String, completion: @escaping (Bool) -> Void)  {
         auth.signIn(withEmail: email, password: password) { result, error in
             if let error = error {
                 print("Error signing in: \(error)")
+                completion(false)
             } else {
-                guard let userID = result?.user.uid else { return }
+                guard let userID = result?.user.uid else {
+                    completion(false)
+                    return
+                }
                 self.loadUserInfo(userID: userID) { user in
+                    completion(true)
                     print("\(user)")
                 }
             }
@@ -76,9 +81,9 @@ class FirebaseHelper: ObservableObject {
         }
     }
     
-    func savePersonalInfoToDB(firstName: String, surName: String) {
+    func savePersonalInfoToDB(firstName: String, surName: String, aboutMe: String) {
         guard let userID = auth.currentUser?.uid else { return }
-        let userInfo = User(firstName: firstName, surName: surName)
+        let userInfo = User(firstName: firstName, surName: surName, aboutMe: aboutMe)
         
         do {
             try db.collection("users").document(userID).setData(from: userInfo) { error in }
@@ -205,28 +210,6 @@ class FirebaseHelper: ObservableObject {
             completion(image)
         }
     }
-  
-  /*
-  func fetchHouses() {
-            db.collection("houses").addSnapshotListener { (querySnapshot, error) in
-                if let error = error {
-                    print("Error getting documents: \(error)")
-                    return
-                }
-                
-                guard let documents = querySnapshot?.documents else {
-                    print("No documents")
-                    return
-                }
-                
-                self.houses = documents.compactMap { queryDocumentSnapshot -> House? in
-                    let result = try? queryDocumentSnapshot.data(as: House.self)
-                    print("House: \(String(describing: result))")
-                    return result
-                }
-            }
-        }
-   */
 
         
     func fetchHouse(byId id: String, completion: @escaping (House?) -> Void) {
@@ -466,6 +449,7 @@ class FirebaseHelper: ObservableObject {
     }
     
     
+
     func unbook(booking: Booking) {
         if let docID = booking.docID {
             db.collection("bookings").document(docID).updateData(["renterID" : nil, "reservedID": nil])
@@ -487,8 +471,45 @@ class FirebaseHelper: ObservableObject {
                 }
             }
         }
-        
     }
+              
+
+    func fetchUser(byId userId: String, completion: @escaping (User?) -> Void) {
+            db.collection("users").document(userId).getDocument { snapshot, error in
+                guard let snapshot = snapshot, snapshot.exists else {
+                    print("Error fetching user: \(error?.localizedDescription ?? "Unknown error")")
+                    completion(nil)
+                    return
+                }
+                
+                do {
+                    let user = try snapshot.data(as: User.self)
+                    completion(user)
+                } catch {
+                    print("Error decoding user: \(error.localizedDescription)")
+                    completion(nil)
+                }
+            }
+        }
+    }
+
     
+    func fetchPet(byId id: String, completion: @escaping (Result<Pet, Error>) -> Void) {
+          let db = Firestore.firestore()
+          db.collection("pets").document(id).getDocument { (document, error) in
+              if let document = document, document.exists {
+                  do {
+                      let pet = try document.data(as: Pet.self)
+                      completion(.success(pet))
+                  } catch {
+                      completion(.failure(error))
+                  }
+              } else if let error = error {
+                  completion(.failure(error))
+              } else {
+                  completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Pet not found"])))
+              }
+          }
+      }
 }
 

@@ -41,6 +41,7 @@ struct ContentView: View {
                     title: { Text("Profile") },
                     icon: { Image(systemName: "person.crop.circle") }
                 ) }
+                .environmentObject(chatVM)
             }
             .tint(AppColors.mainAccent)
             

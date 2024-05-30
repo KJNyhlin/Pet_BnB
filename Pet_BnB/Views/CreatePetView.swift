@@ -20,6 +20,7 @@ struct CreatePetView: View {
     @State private var lastImagePosition = CGSize.zero
     @State private var imageScale: CGFloat = 1.0
     @State private var lastImageScale: CGFloat = 1.0
+    @State private var isImageLoading = true
 
     @FocusState private var isNameFocused: Bool
     @FocusState private var isDescriptionFocused: Bool
@@ -28,7 +29,7 @@ struct CreatePetView: View {
         VStack {
             VStack {
                 ZStack {
-                    if let image = vm.image {
+                    if let image = vm.image, !isImageLoading {
                         GeometryReader { geometry in
                             Image(uiImage: image)
                                 .resizable()
@@ -59,6 +60,9 @@ struct CreatePetView: View {
                                 .padding(.leading, 20)
                         }
                         .frame(width: 150, height: 150)
+                    } else if isImageLoading {
+                        ProgressView() // Visa en laddningsindikator medan bilden laddas
+                            .frame(width: 150, height: 150)
                     } else {
                         Image(systemName: "pawprint.fill")
                             .resizable()
@@ -70,7 +74,7 @@ struct CreatePetView: View {
                 .onTapGesture {
                     isImagePickerPresented = true
                 }
-                .padding(.top, 20) // Lägger till toppmarginal för att undvika statusfältet
+                .padding(.top, 20)
 
                 EntryFields(placeHolder: "Name", promt: "", field: $vm.name)
                     .focused($isNameFocused) // Sätt fokus på namnfältet
@@ -101,7 +105,7 @@ struct CreatePetView: View {
                 Spacer()
 
                 Button(action: {
-                    hideKeyboard() // Lägg till för att minimera tangentbordet innan sparandet
+                    hideKeyboard()
                     isSaving = true
                     Task {
                         if let selectedImage = vm.image {
@@ -130,7 +134,7 @@ struct CreatePetView: View {
                     }
                 }, label: {
                     if isSaving {
-                        ProgressView() // Visa en laddningsindikator under sparprocessen
+                        ProgressView() // Visar en laddningsindikator under sparprocessen
                     } else {
                         FilledButtonLabel(text: "Save")
                     }
@@ -145,11 +149,13 @@ struct CreatePetView: View {
                     vm.selectedSpices = pet.species
                     vm.description = pet.description ?? ""
                     vm.imageURL = pet.imageURL
-                    vm.loadImageFromURL(pet.imageURL ?? "")
-                    vm.pet = pet // Tilldela pet för att redigera
+                    vm.loadImageFromURL(pet.imageURL ?? "") {
+                        self.isImageLoading = false
+                    }
+                    vm.pet = pet
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.isNameFocused = true // Sätt fokus på namnfältet efter en kort fördröjning
+                    self.isNameFocused = true
                 }
             }
             .photosPicker(isPresented: $isImagePickerPresented, selection: $vm.imageSelection, matching: .images, photoLibrary: .shared())
@@ -240,59 +246,29 @@ extension PetsViewModel {
                (image != nil && imageURL != pet.imageURL) ||
                imagePosition != .zero || imageScale != 1.0
     }
-}
 
-//
-//struct InformationSheet: View {
-//    @ObservedObject var vm: CreatePetViewModel
-//    //@Binding var informationArray: [String]
-//    @Binding var isPresented: Bool
-//    @State private var inputText: String = ""
-//    var body: some View {
-//        VStack{
-//            
-//            HStack(){
-//                EntryFields(placeHolder: "Information", promt: "", field: $inputText )
-//                    .multilineTextAlignment(.leading)
-//                
-//                Button("Add"){
-//                    if inputText.isEmpty{
-//                        return
-//                    }else{
-//                        vm.addInformation(information: inputText)
-//                        inputText = ""
-//                    }
-//                    
-//                }
-//                
-//            }
-//            .padding(.top, 40)
-//            List{
-//                ForEach(Array(vm.informationArray.enumerated()), id: \.element) { index, information in
-//                    PetInformationRow(vm: vm, arrayID: index, information: information)
-//                }
-//                .onDelete(perform: vm.deleteInformation)
-//                
-//                
-//            }
-//        }
-//    }
-//}
-//
-//struct PetInformationRow: View {
-//    @ObservedObject var vm: CreatePetViewModel
-//    var arrayID: Int
-//    var information: String
-//    
-//    var body: some View {
-//        HStack{
-//            Image(systemName: "circle.fill")
-//                .foregroundColor(AppColors.mainAccent)
-//            Text(information)
-//        }
-//        
-//    }
-//}
+    func loadImageFromURL(_ url: String, completion: @escaping () -> Void) {
+        guard !url.isEmpty, let imageUrl = URL(string: url) else {
+            completion()
+            return
+        }
+
+        let task = URLSession.shared.dataTask(with: imageUrl) { data, response, error in
+            guard let data = data, error == nil, let uiImage = UIImage(data: data) else {
+                DispatchQueue.main.async {
+                    completion()
+                }
+                return
+            }
+
+            DispatchQueue.main.async {
+                self.image = uiImage
+                completion()
+            }
+        }
+        task.resume()
+    }
+}
 
 //#Preview {
 //    CreatePetView(vm: CreatePetViewModel(pet: Pet(name: "Rufus", species: "Dog"), house: House(title: "", description: "", beds: 1, size: 1, streetName: "", streetNR: 1, city: "", zipCode: 1, ownerID: "")))

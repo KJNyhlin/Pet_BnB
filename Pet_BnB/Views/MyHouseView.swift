@@ -130,7 +130,7 @@ struct HouseView : View {
          
                             Text(house.description)
 
-                                .bold()
+                                //.bold()
                          
 
 //                            TimePeriodList(vm: vm)

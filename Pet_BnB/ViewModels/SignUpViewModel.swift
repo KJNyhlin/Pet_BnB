@@ -20,9 +20,10 @@ class SignUpViewModel: ObservableObject {
     @Published var accountCreated: Bool = false
     @Published var showSpinner: Bool = false
     @Published var signIn: Bool = false
+    @Published var aboutMe: String = ""
     
     
-    func signUp(name: String, password: String) {
+    func signUp(name: String, password: String, completion: @escaping(Bool) -> Void)  {
         if signUpAllFieldsComplete(){
             self.showSpinner = true
             firebaseHelper.createAccount(name: name, password: password) {userID in
@@ -30,18 +31,22 @@ class SignUpViewModel: ObservableObject {
                     print("User created")
                     self.accountCreated = true
                     self.showSpinner = false
+                    completion(true)
                 } else {
                     print("error creating user")
                     self.accountCreated = false
                     self.showSpinner = false
+                    completion(false)
                 }
                 
             }
         }
     }
     
-    func signIn(email: String, password: String) {
-        firebaseHelper.signIn(email: email, password: password)
+    func signIn(email: String, password: String , completion: @escaping (Bool) -> Void) {
+        firebaseHelper.signIn(email: email, password: password){ success in
+            completion(success)
+        }
     }
     
     func getUserDetails(userID: String) {
@@ -50,7 +55,7 @@ class SignUpViewModel: ObservableObject {
     
     func savePersonalInfoToDB() {
         if accountCreated {
-            firebaseHelper.savePersonalInfoToDB(firstName: firstName, surName: surName)
+            firebaseHelper.savePersonalInfoToDB(firstName: firstName, surName: surName, aboutMe: aboutMe)
         } else {
             print("Dismiss without saving personalData")
         }

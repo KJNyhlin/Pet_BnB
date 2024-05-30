@@ -12,6 +12,7 @@ struct ProfileView: View {
     @State var showSheet = false
     @EnvironmentObject var signUpViewModel: SignUpViewModel
     @EnvironmentObject var profileViewModel: ProfileViewModel
+    @EnvironmentObject var chatListViewModel: ChatsListViewModel
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -39,6 +40,8 @@ struct ProfileView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
                         profileViewModel.signOut()
+                        chatListViewModel.removeListener()
+                        
                     }, label: {
                         Image(systemName: "rectangle.portrait.and.arrow.right")
                     })
@@ -77,51 +80,66 @@ struct editPersonalInfo: View {
                                 .frame(width: 150, height: 150)
                                 .clipShape(Circle())
                                 .clipped()
-                                .padding(.leading, 20)
                         } else {
                             Image(systemName: "person.crop.circle.fill.badge.plus")
-                                                            .resizable()
-                                                            .scaledToFit()
-                                                            .frame(width: 150, height: 150)
-                                                            .padding(.leading, 20)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 150, height: 150)
                         }
-                    }
+                            Circle()
+                                .stroke(AppColors.mainAccent, lineWidth: 2)
+                                .frame(width: 150, height: 150)
+                        }
+                    .padding(.leading)
                     .onTapGesture {
                         profileViewModel.showImagePicker = true
                     }
                     
-                    Text("First Name:")
+                    Text("First Name")
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
                         .padding(.leading, 50)
 
                     TextField("First Name", text: $profileViewModel.editFirstName)
-                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+                        .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
-                                .stroke(AppColors.mainAccent, lineWidth: 3)
+                                .stroke(AppColors.mainAccent, lineWidth: 2)
                         )
 
-                    Text("Surname:")
+                    Text("Surname")
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
                         .padding(.leading, 50)
                         .padding(.top, 2)
 
                     TextField("Surname", text: $profileViewModel.editSurName)
-                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+                        .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
-                                .stroke(AppColors.mainAccent, lineWidth: 3)
+                                .stroke(AppColors.mainAccent, lineWidth: 2)
                         )
+                    Text("About Me")
+                        .font(.caption)
+                        .frame(width: 250, alignment: .leading)
+                        .padding(.leading, -50)
+                        .padding(.top, 2)
+
+                    TextEditor(text: $profileViewModel.editAboutMe)
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                        .frame(width: 300, height: 160, alignment: .leading)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 25.0)
+                                .stroke(AppColors.mainAccent, lineWidth: 2)
+                    )
                 }
                 .frame(maxWidth: .infinity)
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 300)
+        .frame(height: 600)
 
         HStack {
             Button(action: {
@@ -141,6 +159,7 @@ struct editPersonalInfo: View {
         .onAppear {
             profileViewModel.editFirstName = profileViewModel.firstName
             profileViewModel.editSurName = profileViewModel.surName
+            profileViewModel.editAboutMe = profileViewModel.aboutMe
         }
         .photosPicker(isPresented: $profileViewModel.showImagePicker, selection: $profileViewModel.imageSelection, matching: .images, photoLibrary: .shared())
     }
@@ -155,56 +174,73 @@ struct personalInfoView: View {
         VStack {
             HStack(spacing: 0) {
                 VStack {
-                    if let image = profileViewModel.image {
-                        Image(uiImage: image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
+                    ZStack {
+                        if let image = profileViewModel.image {
+                            Image(uiImage: image)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 150, height: 150)
+                                .clipShape(Circle())
+                                .clipped()
+                        } else {
+                            Image("Logo")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 150, height: 150)
+                                .clipShape(Circle())
+                                .clipped()
+                        }
+                        Circle()
+                            .stroke(AppColors.mainAccent, lineWidth: 2)
                             .frame(width: 150, height: 150)
-                            .clipShape(Circle())
-                            .clipped()
-                            .padding(.leading, 20)
-                    } else {
-                        Image("Logo")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 150, height: 150)
-                            .clipShape(Circle())
-                            .clipped()
-                            .padding(.leading, 20)
                     }
+                    .padding(.leading)
                     
-                    Text("First Name:")
+                    Text("First Name")
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
                         .padding(.leading, 50)
-
+                    
                     Text("\(profileViewModel.firstName)")
-                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+                        .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
-                                .stroke(AppColors.mainAccent, lineWidth: 3)
+                                .stroke(AppColors.mainAccent, lineWidth: 2)
                         )
-
-                    Text("Surname:")
+                    
+                    Text("Surname")
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
                         .padding(.leading, 50)
                         .padding(.top, 2)
-
+                    
                     Text("\(profileViewModel.surName)")
-                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 0))
+                        .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
-                                .stroke(AppColors.mainAccent, lineWidth: 3)
+                                .stroke(AppColors.mainAccent, lineWidth: 2)
+                        )
+                    Text("About Me")
+                        .font(.caption)
+                        .frame(width: 250, alignment: .leading)
+                        .padding(.leading, -50)
+                        .padding(.top, 2)
+                    
+                    TextEditor(text: .constant(profileViewModel.aboutMe))
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                        .frame(width: 300, height: 160, alignment: .leading)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 25.0)
+                                .stroke(AppColors.mainAccent, lineWidth: 2)
                         )
                 }
                 .frame(maxWidth: .infinity)
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 300)
+        .frame(height: 610)
     }
 }
 
