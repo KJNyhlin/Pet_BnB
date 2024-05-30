@@ -21,6 +21,7 @@ struct HouseCardView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(house.title)
                         .font(.headline)
+                    
                     HStack {
                         Label(
                             title: { Text("\(house.beds) st") },

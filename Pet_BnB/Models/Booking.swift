@@ -17,6 +17,7 @@ struct Booking: Identifiable, Decodable, Encodable {
     var toDate: Date
     var pet: Pet?
     var confirmed: Bool?
+    var rated: Bool = false
     
     
 }

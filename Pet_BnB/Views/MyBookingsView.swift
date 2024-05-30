@@ -54,6 +54,7 @@ struct BookingCardView : View {
     @ObservedObject var viewModel : MyBookingViewModel
     var booking : Booking
     @State var house : House?
+    @State var showAddRating: Bool = false
     
     var body: some View {
         NavigationLink(destination: BookingView(house: house, booking: booking)) {
@@ -111,6 +112,14 @@ struct BookingCardView : View {
                                 //                        .foregroundColor(.secondary)
                             }
                             .padding()
+                            if booking.fromDate < Date.now && !booking.rated {
+                                Button(action: {
+                                    showAddRating.toggle()
+                                    
+                                }, label: {
+                                    Text("Add review")
+                                })
+                            }
                         }
 //                        if let confirmed = booking.confirmed {
 //                            if !confirmed && booking.toDate > Date.now {
@@ -140,6 +149,14 @@ struct BookingCardView : View {
                     self.house = house
                 }
             }
+            .sheet(isPresented: $showAddRating, content: {
+                if let house = house {
+                    if let docID = booking.docID {
+                        AddReview(viewModel: viewModel, house: house, bookingID: docID)
+                            .presentationDetents([.medium])
+                    }
+                }
+            })
         }
         
         .buttonStyle(PlainButtonStyle())
@@ -148,6 +165,73 @@ struct BookingCardView : View {
         
 }
 
+struct AddReview : View {
+    @ObservedObject var viewModel: MyBookingViewModel
+    var house: House
+    var bookingID: String
+    @State var rating = 0
+    @State var title: String = ""
+    @State var text: String = ""
+    var body: some View {
+        VStack {
+            Rating(rating: $rating)
+            TextField("Title", text: $title)
+            TextField("Review", text: $text)
+            HStack {
+                Button(action: {
+                    if let userID = viewModel.firebaseHelper.getUserID() {
+                        let review = Review(bookingID: bookingID, userID: userID, rating: rating, title: title, text: text)
+                        viewModel.firebaseHelper.save(rating: review, for: house)
+                    }
+                }, label: {
+                    FilledButtonLabel(text: "Save")
+                        .frame(width: 150)
+                })
+                Button(action: {}, label: {
+                    FilledButtonLabel(text: "Cancel")
+                        .frame(width: 150)
+                })
+            }
+        }
+    }
+}
+
+struct Rating : View {
+    @Binding var rating: Int
+
+    var label = ""
+    var maximumRating = 5
+
+    var offImage: Image?
+    var onImage = Image(systemName: "star.fill")
+
+    var offColor = Color.gray
+    var onColor = Color.yellow
+    
+    var body: some View {
+        HStack {
+            ForEach(1..<maximumRating + 1, id: \.self) { number in
+                Button {
+                    rating = number
+                } label: {
+                    image(for: number)
+                        .foregroundStyle(number > rating ? offColor : onColor)
+                }
+            }
+        }
+    }
+    
+    func image(for number: Int) -> Image {
+        if number > rating {
+            offImage ?? onImage
+        } else {
+            onImage
+        }
+    }
+}
+
+
 #Preview {
-    MyBookingsView()
+//    MyBookingsView()
+    Rating(rating: .constant(4))
 }

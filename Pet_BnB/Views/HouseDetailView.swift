@@ -62,7 +62,18 @@ struct HouseDetailView: View {
                             VStack(alignment: .leading, spacing: 10) {
                                 Text(house.title)
                                     .font(.title)
-                                
+                                HStack {
+                                    Image(systemName: "star.fill")
+                                        .foregroundColor(AppColors.mainAccent)
+                                    if let rating = viewModel.rating {
+                                        Text("\(rating, specifier: "%.1f")")
+                                            .foregroundColor(AppColors.mainAccent)
+                                    } else {
+                                        Text("No ratings yet")
+                                            .foregroundColor(AppColors.mainAccent)
+                                    }
+                                }
+                                    .font(.caption)
                                 HStack {
                                     Label(
                                         title: { Text("\(house.beds) st") },
@@ -277,6 +288,7 @@ struct HouseDetailView: View {
                         ProgressView()
                             .onAppear {
                                 viewModel.fetchHouse(byId: houseId)
+                                viewModel.getRating(houseId: houseId)
                             }
                     }
                 VStack(alignment: .center){

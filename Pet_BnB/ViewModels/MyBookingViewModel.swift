@@ -16,10 +16,11 @@ class MyBookingViewModel : ObservableObject {
     var firebaseHelper = FirebaseHelper()
     
     func getBookings() {
-        self.myBookings.removeAll()
-        self.myBookingHistory.removeAll()
+        
         firebaseHelper.getMyBookings() { myBookings in
             if let myBookings = myBookings {
+                self.myBookings.removeAll()
+                self.myBookingHistory.removeAll()
                 for booking in myBookings {
                     if booking.toDate >= Date.now {
                         self.myBookings.append(booking)

@@ -22,6 +22,7 @@ class HouseDetailViewModel: ObservableObject {
     @Published var bookingColor : Color = Color.blue
     @Published var selectedBookingID: String = ""
     @Published var selectedBooking: Booking?
+    @Published var rating: Double?
     
     
     init(firebaseHelper: FirebaseHelper, date: Date = Date()) {
@@ -144,4 +145,10 @@ class HouseDetailViewModel: ObservableObject {
                 }
             }
         }
+    
+    func getRating(houseId: String) {
+        firebaseHelper.calculateRating(houseID: houseId){rating in
+            self.rating = rating
+        }
+    }
 }
