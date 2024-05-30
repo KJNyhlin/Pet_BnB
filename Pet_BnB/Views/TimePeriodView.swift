@@ -31,7 +31,7 @@ struct TimePeriodView: View {
                 FilledButtonLabel(text: "Create Time Period")
                     .frame(width: 200)
             })
-            .disabled(vm.selectedBookingID.isEmpty)
+            .disabled(vm.startDate == nil)
             
         }
         .onAppear {

@@ -159,10 +159,20 @@ struct MyTimePeriodCardView : View {
                     }
                     
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
-//                            .border(Color.black)
+                        HStack {
+                            Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                            //                            .border(Color.black)
+                            if let renterID = booking.renterID, booking.toDate > Date.now {
+                                NavigationLink(destination: ChatView(vm:ChatViewModel(toUserID: renterID))){
+                                    Image(systemName: "envelope.fill")
+                                    //.font(.largeTitle)
+                                        .padding()
+                                        .foregroundColor(AppColors.mainAccent)
+                                }
+                            }
+                        }
                         HStack {
                             if booking.fromDate > Date.now {
                                 if let confirmed = booking.confirmed {

@@ -169,8 +169,10 @@ class TimePeriodViewModel: ObservableObject {
             if let docID = booking.docID {
                 if self.selectedBookingID == docID {
                     self.selectedBookingID = ""
+                    print("SelectedID: \(selectedBookingID)")
                 } else {
                     self.selectedBookingID = docID
+                    print("SelectedID: \(selectedBookingID)")
                 }
             }
         }
@@ -213,35 +215,5 @@ class TimePeriodViewModel: ObservableObject {
         }
     }
     
-//    func getRenterDetails(booking: Booking) {
-//        if let renterID = booking.renterID {
-//            firebaseHelper.loadUserInfo(userID: renterID) {user in
-//                self.renterInfo = user
-//            }
-//        }
-//    }
-    
-    
-    
-        
-//        func checkEndDate(date: Date) -> Bool {
-//            for myTimePeriod in myTimePeriods {
-//                print(myTimePeriod)
-//                print(date)
-//                let fromDate = Calendar.current.startOfDay(for: myTimePeriod.fromDate)
-//                guard let correctDate = Calendar.current.date(byAdding: .day, value: 1, to: myTimePeriod.toDate) else { return false }
-//                let toDate = Calendar.current.startOfDay(for: correctDate)
-//                
-//                print(correctDate)
-//                if (fromDate ... myTimePeriod.toDate).contains(date) {
-//                    
-//                    return false
-//                }
-//                
-//            }
-//            return true
-//            
-//            
-//        }
-    }
+}
 
