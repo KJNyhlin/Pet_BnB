@@ -118,6 +118,21 @@ struct HouseDetailView: View {
                                             .cornerRadius(10)
                                             .padding()
                                     }
+                                    
+                                    if let latitude = viewModel.house?.latitude, let longitude = viewModel.house?.longitude {
+                                        Button("Get directions") {
+                                            openMapsForDirections(latitude: latitude, longitude: longitude)
+                                        }
+                                            .font(.footnote)
+                                            .frame(maxWidth: 110)
+                                            .foregroundColor(.white)
+                                            .padding(.vertical, 7)
+                                            .background(AppColors.mainAccent)
+                                            .cornerRadius(20)
+                                            .fontWeight(.bold)
+                                            .padding(.leading, -179)
+                                            .padding(.top, -10)
+                                    }
                             
                                     Rectangle()
                                         .fill(AppColors.mainAccent)
@@ -382,6 +397,14 @@ struct HouseDetailView: View {
             }
         }
     }
+    
+    func openMapsForDirections(latitude: Double, longitude: Double) {
+            let destinationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            let placemark = MKPlacemark(coordinate: destinationCoordinate)
+            let mapItem = MKMapItem(placemark: placemark)
+            mapItem.name = "Destination"
+            mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
+        }
 }
 
 
