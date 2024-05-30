@@ -15,6 +15,8 @@ struct FilterView: View {
     @Binding var maxSize: Int
     @State private var isBedsFilterOn: Bool = false
     @State private var isSizeFilterOn: Bool = false
+    @Binding var selectedAnimalType: String
+    let animalTypes: [String]
     
     var body: some View {
         ZStack {
@@ -66,6 +68,14 @@ struct FilterView: View {
                             }
                         }
                     }
+                    Section(header: Text("Animal Type")) {
+                        Picker("Animal Type", selection: $selectedAnimalType) {
+                            ForEach(animalTypes, id: \.self) { type in
+                                Text(type).tag(type)
+                            }
+                        }
+                            .pickerStyle(WheelPickerStyle())
+                    }
                 }
                 .background(Color(UIColor.systemGray6))
                 .cornerRadius(10)
@@ -87,7 +97,9 @@ struct FilterView: View {
                    maxSize = 1000
                }
            }
-            .onAppear {
+           .onChange(of: selectedAnimalType) { newValue in
+           }
+           .onAppear {
                 isBedsFilterOn = minBeds > 1 || maxBeds < 150
                 isSizeFilterOn = minSize > 10 || maxSize < 1000
         }
