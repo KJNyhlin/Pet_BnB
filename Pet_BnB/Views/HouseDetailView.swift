@@ -116,14 +116,18 @@ struct HouseDetailView: View {
                             showBookings.toggle()
                         })
                         {
-                            FilledButtonLabel(text: "Book")
+                            FilledButtonLabel(text: "Reserv")
                                 .frame(maxWidth: 80)
                             //.fontWeight(.bold)
                         }
                         .padding([.bottom, .trailing], 30)
-                        .sheet(isPresented: $showBookings, content: {
+                        .sheet(isPresented: $showBookings, onDismiss: {
+                            viewModel.selectedBooking = nil
+                            viewModel.selectedBookingID = ""
+                        } ,content: {
                             if let house = viewModel.house {
                                 BookingsList(viewModel: viewModel, house: house)
+                                    .presentationDetents([.medium])
                             }
                         })
                     } else {
@@ -152,32 +156,37 @@ struct BookingsList: View {
         //            .datePickerStyle(.graphical)
         VStack {
             BookingCalendarView(viewModel: viewModel)
-            ForEach(viewModel.bookings) {booking in
-                if viewModel.showBookingsForMonth(booking: booking) {
-                    
-                    HStack {
-                        Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
-                        if booking.renterID == nil {
-                            Image(systemName: viewModel.checkIfChecked(booking: booking) ? "checkmark.square" : "square")
-                                .onTapGesture {
-                                    
-                                    viewModel.setBookingID(booking: booking)
-                                }
-                        }
-                    }
-                    
-                }
-            }
+//            ForEach(viewModel.bookings) {booking in
+//                if viewModel.showBookingsForMonth(booking: booking) {
+//                    
+//                    HStack {
+//                        Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
+//                        if booking.renterID == nil {
+//                            Image(systemName: viewModel.checkIfChecked(booking: booking) ? "checkmark.square" : "square")
+//                                .onTapGesture {
+//                                    
+//                                    viewModel.setBookingID(booking: booking)
+//                                }
+//                        }
+//                    }
+//                    
+//                }
+//            }
+            
+            Text("Selcted period: \(viewModel.selectedBooking?.fromDate.formatted(date: .numeric, time: .omitted) ?? "") - \(viewModel.selectedBooking?.toDate.formatted(date: .numeric, time: .omitted) ?? "")")
+                .opacity(viewModel.selectedBooking == nil ? 0.0 : 1.0)
+                
+            
             Button(action: {
                 showAlert.toggle()
             }, label: {
-                FilledButtonLabel(text: "Book")
+                FilledButtonLabel(text: "Reserv")
                     .frame(width: 100)
                     
             })
             .disabled(viewModel.selectedBookingID == "")
         }
-        .alert("Do you want to reserv the time period?", isPresented: $showAlert) {
+        .alert("Do you want to reserv the time period? Host will have to confirm it.", isPresented: $showAlert) {
             
             Button("No", role: .cancel) {}
             Button("Yes", role: .none) {
@@ -304,6 +313,8 @@ struct CalendarDayView: View {
             }
         }
         .frame( height: 30)
+        .foregroundColor(date.startOfDay == Date.now.startOfDay ? .blue : .black)
+        .background(date.startOfDay <= Date.now.startOfDay ? AppColors.pastDays : Color.clear)
 //        .padding(8)
 //        .border(Color.black)
 //        .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)

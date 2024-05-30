@@ -14,6 +14,7 @@ struct ContentView: View {
     
     var db = Firestore.firestore()
     var body: some View {
+        
         VStack {
             TabView {
                 ExploreView().tabItem { Label(

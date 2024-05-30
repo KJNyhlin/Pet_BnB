@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 class MyBookingViewModel : ObservableObject {
     
@@ -39,5 +40,16 @@ class MyBookingViewModel : ObservableObject {
             }
         }
         completion(nil)
+    }
+    func getShadowColor(from: Booking) -> Color {
+        if let confirmed = from.confirmed {
+            if confirmed {
+                return AppColors.freeBookingColor
+            } else {
+                return AppColors.mainAccent
+            }
+        } else {
+            return .secondary
+        }
     }
 }

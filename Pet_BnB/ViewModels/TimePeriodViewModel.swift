@@ -14,6 +14,7 @@ class TimePeriodViewModel: ObservableObject {
     @Published var endDate : Date? = nil
     @Published var myTimePeriods : [Booking] = []
     @Published var myPastTimePeriods : [Booking] = []
+    @Published var allMyTimePeriods : [Booking] = []
     @Published var house : House
     let firebaseHelper = FirebaseHelper()
     @Published var date: Date
@@ -21,11 +22,14 @@ class TimePeriodViewModel: ObservableObject {
     var dateManager = DateManager()
     @Published var bookingColor : Color = Color.blue
     @Published var selectedBookingID: String = ""
+//    @Published var renter: User?
+    @Published var renterInfo: [String: User] = [:]
     
     init(house: House, date: Date = Date()) {
         self.house = house
         self.date = date.startDateOfMonth
         self.daysInMonth = dateManager.getDaysOfMonth(from: date)
+        
     }
     
     func saveTimePeriod() {
@@ -51,6 +55,8 @@ class TimePeriodViewModel: ObservableObject {
 //                    self.myTimePeriods.append(contentsOf: bookings)
                     self.myTimePeriods.removeAll()
                     self.myPastTimePeriods.removeAll()
+                    self.allMyTimePeriods.removeAll()
+                    self.allMyTimePeriods.append(contentsOf: bookings)
                     for booking in bookings {
                         if booking.toDate < Date.now {
                             self.myPastTimePeriods.append(booking)
@@ -58,9 +64,43 @@ class TimePeriodViewModel: ObservableObject {
                             self.myTimePeriods.append(booking)
                         }
                     }
+                    self.myTimePeriods.sort() {booking1, booking2 in
+                        booking1.fromDate < booking2.fromDate
+                        
+                    }
+                    self.myPastTimePeriods.sort() {booking1, booking2 in
+                        booking1.fromDate < booking2.fromDate
+                    }
+                    self.allMyTimePeriods.sort() {booking1, booking2 in
+                        booking1.fromDate < booking2.fromDate
+                    }
+                    self.fetchRenterInfo()
+                    
+                    
                 }
             }
         }
+    }
+    
+    func fetchRenterInfo() {
+        renterInfo.removeAll()
+        for myTimePeriod in myTimePeriods {
+            if let renterID = myTimePeriod.renterID {
+                firebaseHelper.getRenterInfo(renterID: renterID) {renter in
+                    if let renter = renter {
+                        self.renterInfo[renterID] = renter
+                    }
+                    
+                }
+            }
+        }
+    }
+    
+    func loadRenterInfo(renterID: String?) -> User? {
+        if let renterID = renterID {
+            return self.renterInfo[renterID]
+        }
+        return nil
     }
     
     func setDates(date: Date) {
@@ -111,7 +151,9 @@ class TimePeriodViewModel: ObservableObject {
     }
     
     func getShadowColor(from: Booking) -> Color {
-        if let confirmed = from.confirmed {
+        if from.toDate < Date.now {
+            return .secondary
+        } else if let confirmed = from.confirmed {
             if confirmed {
                 return AppColors.freeBookingColor
             } else {
@@ -170,6 +212,14 @@ class TimePeriodViewModel: ObservableObject {
             return true
         }
     }
+    
+//    func getRenterDetails(booking: Booking) {
+//        if let renterID = booking.renterID {
+//            firebaseHelper.loadUserInfo(userID: renterID) {user in
+//                self.renterInfo = user
+//            }
+//        }
+//    }
     
     
     

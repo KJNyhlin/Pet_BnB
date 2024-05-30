@@ -10,28 +10,35 @@ import SwiftUI
 struct MyHouseView: View {
     //var myHouse: House?
     @StateObject var vm = MyHouseViewModel()
-    @State var selectedTab : Int = 0
+    
     
     var body: some View {
         VStack(){
-            TabBarView(selectedTab: $selectedTab)
-//                .border(Color.black)
-
-            TabView(selection: $selectedTab) {
-                if let house = vm.house {
-                    HouseView(vm: vm).tag(0)
-//                    TimePeriodView(vm: TimePeriodViewModel(house: house)).tag(1)
-                    MyTimePeriodsView(viewModel: TimePeriodViewModel(house: house)).tag(1)
-                    PetsView(vm: PetsViewModel(pet: nil, house: house)).tag(2)
+            NavigationStack{
+                TabBarView(selectedTab: $vm.selectedTab)
+                //                .border(Color.black)
+                
+                TabView(selection: $vm.selectedTab) {
+                    
+                    if let house = vm.house {
+                        HouseView(vm: vm).tag(0)
+                        //                    TimePeriodView(vm: TimePeriodViewModel(house: house)).tag(1)
+                        MyTimePeriodsView(viewModel: TimePeriodViewModel(house: house)).tag(1)
+                        //                    PetsView(vm:PetsViewModel(pet: nil, house: house)).tag(2)
+                        PetsView(vm: PetsViewModel(pet: nil, house: house)).tag(2)
+                        //                    SignUpView().tag(2)
+                    }
+                    
                 }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                
+                Spacer()
+                
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            
-            Spacer()
-            
         }
         .onAppear{
             vm.downloadHouse()
+            
         }
 //        .border(Color.black)
     }
@@ -145,9 +152,9 @@ struct HouseView : View {
                                         Label("Edit", systemImage: "pencil")
                                     }
 
-                                    NavigationLink(destination:PetsView(vm:PetsViewModel(pet: nil, house: house))){
-                                        Label("Pets", systemImage: "pawprint.fill")
-                                    }
+//                                    NavigationLink(destination:PetsView(vm:PetsViewModel(pet: nil, house: house))){
+//                                        Label("Pets", systemImage: "pawprint.fill")
+//                                    }
                                 }
                                 if let house = vm.house {
                                     NavigationLink(destination: TimePeriodView(vm: TimePeriodViewModel(house: house))) {
@@ -183,6 +190,7 @@ struct HouseView : View {
                 }
                 
             }
+            
             
         }
     }

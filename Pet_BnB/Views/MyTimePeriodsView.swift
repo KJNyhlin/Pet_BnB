@@ -15,32 +15,38 @@ struct MyTimePeriodsView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0){
+                    Text("My Time Periods")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding()
                     
-                    Section(header: Text("My Time Periods")
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()) {
-                            
-                            
+//                    Section(header: Text("My Time Periods")
+//                        .font(.title)
+//                        .fontWeight(.bold)
+//                        .frame(maxWidth: .infinity, alignment: .leading)
+//                        .padding()) {
+//                            
+//                            
                             ForEach (viewModel.myTimePeriods){ booking in
-//                                BookingCardView(viewModel: viewModel, booking: booking)
-                                MyTimePeriodCardView(viewModel: viewModel, booking: booking)
+
+                                MyTimePeriodCardView(viewModel: viewModel, booking: booking, renter: viewModel.loadRenterInfo(renterID: booking.renterID))
                             }
-                        }
-                    Section(header: Text("My Past Time Periods")
+//                        }
+                    Text("My Past Time Periods")
                         .font(.title)
                         .fontWeight(.bold)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()) {
+                        .padding()
                             
                             
                             ForEach (viewModel.myPastTimePeriods){ booking in
-                                MyPastTimePeriodCardView(viewModel: viewModel, booking: booking)
+                                MyTimePeriodCardView(viewModel: viewModel, booking: booking)
+//                                MyPastTimePeriodCardView(viewModel: viewModel, booking: booking)
 //                                    BookingCardView(viewModel: viewModel, booking: booking)
                             
                             }
-                        }
+                        
                     Button(action: {
                         showTimePeriodSheet.toggle()
                     }, label: {
@@ -49,11 +55,13 @@ struct MyTimePeriodsView: View {
                 
                     Spacer()
                 }
+                .navigationBarHidden(true)
                 .onAppear {
                     viewModel.getTimePeriods()
                 }
                 .sheet(isPresented: $showTimePeriodSheet, content: {
                     TimePeriodView(vm: viewModel)
+                        .presentationDetents([.medium])
                 })
             }
         }
@@ -63,73 +71,145 @@ struct MyTimePeriodsView: View {
 struct MyTimePeriodCardView : View {
     @ObservedObject var viewModel : TimePeriodViewModel
     var firebaseHelper = FirebaseHelper()
+    
     var booking : Booking
+//    @Binding var renter : User?
     @State var house : House?
     @State var shadowColor: Color = .secondary
+    @State var imageURL : String?
+    @State var renterFirstName: String = ""
+    var renter : User?
     
     var body: some View {
-        NavigationLink(destination: BookingView(house: house, booking: booking)) {
+//        NavigationLink(destination: BookingView(house: house, booking: booking)) {
             VStack(alignment: .leading, spacing: 0) {
-                
-                HStack {
-                    SwipableImageView2(
-                        houseImageURL: house?.imageURL ?? "",
-                        petImageURL: house?.pets?.first?.imageURL ?? "",
-                        height: 100,
-                        width: 100
-                    )
+                if let confirmed = booking.confirmed {
+                    if booking.toDate > Date.now {
+                        Text(!confirmed && booking.toDate > Date.now ? "Not Yet Confirmed" : "Confirmed")
+                        //                        .frame(width: 150)
+                            .frame(maxWidth: .infinity, alignment: .top)
+                            .padding(.horizontal, 2)
+                            .background(viewModel.getShadowColor(from: booking))
+                            .font(.system(size: 14))
+                        //
+                        //                            .rotationEffect(.degrees(-45.0))
+                        ////                            .offset(x: -40, y: -80)
+                        //                            .offset(x:-125)
+                        
+                    }
+                }
+                HStack() {
+                    VStack(spacing: 0) {
+                        if let user = renter {
+                            if let userImageURL = user.imageURL, let imageURL = URL(string: userImageURL) {
+                                AsyncImage(url: imageURL) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        ProgressView()
+                                            .frame(width: 80 ,height: 80)
+//                                            .frame(maxWidth: .infinity)
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 80 ,height: 80)
+//                                            .frame(maxWidth: .infinity)
+                                            .clipShape(Circle())
+                                            .clipped()
+                                            .padding(.horizontal)
+                                            
+                                    case .failure:
+                                        Image(systemName: "photo")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 80 ,height: 80)
+//                                            .frame(maxWidth: .infinity)
+                                            .background(Color.gray)
+                                    @unknown default:
+                                        Image(systemName: "photo")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 80 ,height: 80)
+//                                            .frame(maxWidth: .infinity)
+                                            .background(Color.gray)
+                                    }
+                                }
+                                    
+//                                SwipableImageView2(
+//                                    
+//                                    houseImageURL: imageURL ?? "",
+//                                    petImageURL:  "",
+//                                    height: 100,
+//                                    width: 100
+//                                )
+                            }
+                            Text(renterFirstName)
+                                .font(.system(size: 12))
+                        } else {
+                            SwipableImageView2(
+                                
+                                houseImageURL: "",
+                                petImageURL:  "",
+                                height: 100,
+                                width: 100
+                            )
+                            
+                        }
+                        
+                    }
                     
                     VStack(alignment: .leading, spacing: 8) {
                         Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
                             .font(.headline)
+                            .frame(maxWidth: .infinity)
+//                            .border(Color.black)
                         HStack {
-                            if let confirmed = booking.confirmed {
-                                if !confirmed {
+                            if booking.fromDate > Date.now {
+                                if let confirmed = booking.confirmed {
+                                    if !confirmed {
+                                        Button(action: {
+                                            firebaseHelper.confirm(Booking: booking, docID: booking.docID)
+                                        }, label: {
+                                            Text("Confirm")
+                                                .foregroundColor(.green)
+                                        })
+                                        .buttonStyle(PlainButtonStyle())
+                                    }
                                     Button(action: {
-                                        firebaseHelper.confirm(Booking: booking, docID: booking.docID)
+                                        viewModel.firebaseHelper.deny(Booking: booking, docID: booking.docID)
                                     }, label: {
-                                        Text("Confirm")
-                                            .foregroundColor(.green)
+                                        Text("Deny")
+                                            .foregroundColor(.red)
                                     })
-                                    .buttonStyle(PlainButtonStyle())
                                 }
                                 Button(action: {
-                                    viewModel.firebaseHelper.deny(Booking: booking, docID: booking.docID)
+                                    viewModel.firebaseHelper.remove(timePeriod: booking)
                                 }, label: {
-                                    Text("Deny")
-                                        .foregroundColor(.red)
+                                    Text("Remove")
                                 })
+                                .frame(alignment: .trailing)
+                                .buttonStyle(PlainButtonStyle())
                             }
-                            Button(action: {}, label: {
-                                Text("Remove")
-                            })
-                            .frame(alignment: .trailing)
-                            .buttonStyle(PlainButtonStyle())
-//                            if let confirmed = booking.confirmed {
-//                                if confirmed {
-//                                    Image(systemName: "checkmark")
-//                                        .foregroundColor(.green)
-//                                } else if !confirmed {
-//                                    Image(systemName: "swift")
-//                                        .foregroundColor(.orange)
-//                                }
-//                            }
                         }
+                        .frame(maxWidth: .infinity)
                         .font(.subheadline)
                         
                         .foregroundColor(.secondary)
                         
-        
-                        //                        .foregroundColor(.secondary)
                     }
+                    .frame(maxWidth: .infinity)
                     .padding()
                 }
+                
+            
             }
+            .frame( width: 335)
             .background(Color.white)
             .cornerRadius(20)
             .shadow(color: viewModel.getShadowColor(from: booking),radius: 5)
             .padding(.vertical, 8)
-            .frame(maxWidth: 335, maxHeight: 150)
+
+            
             //        .frame(height: 150)
             //        }
             .buttonStyle(PlainButtonStyle())
@@ -138,12 +218,22 @@ struct MyTimePeriodCardView : View {
                 viewModel.firebaseHelper.fetchHouse(byId: booking.houseID) {house in
                     self.house = house
                 }
+                if let renterID = booking.renterID {
+                    viewModel.firebaseHelper.loadUserInfo(userID: renterID) {user in
+                        self.imageURL = user?.imageURL
+                        if let user = user {
+                            if let firstName = user.firstName {
+                                self.renterFirstName = firstName
+                            }
+                        }
+                    }
+                }
 //                self.shadowColor = viewModel.getShadowColor(from: booking)
 //                viewModel.getHouseDetails(for: booking) { house in
 //                    self.house = house
 //                }
             }
-        }
+//        }
         
         .buttonStyle(PlainButtonStyle())
       
@@ -158,7 +248,7 @@ struct MyPastTimePeriodCardView : View {
     @State var shadowColor: Color = .secondary
     
     var body: some View {
-        NavigationLink(destination: BookingView(house: house, booking: booking)) {
+//        NavigationLink(destination: BookingView(house: house, booking: booking)) {
             VStack(alignment: .leading, spacing: 0) {
                 
                 HStack {
@@ -194,11 +284,12 @@ struct MyPastTimePeriodCardView : View {
                     .padding()
                 }
             }
+            .frame( width: 335)
             .background(Color.white)
             .cornerRadius(20)
             .shadow(radius: 5)
             .padding(.vertical, 8)
-            .frame(maxWidth: 335, maxHeight: 150)
+//            .frame(maxWidth: 335, maxHeight: 150)
             //        .frame(height: 150)
             //        }
             .buttonStyle(PlainButtonStyle())
@@ -212,7 +303,7 @@ struct MyPastTimePeriodCardView : View {
 //                    self.house = house
 //                }
             }
-        }
+//        }
         
         .buttonStyle(PlainButtonStyle())
       

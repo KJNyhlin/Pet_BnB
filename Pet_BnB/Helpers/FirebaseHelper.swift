@@ -429,9 +429,9 @@ class FirebaseHelper: ObservableObject {
     }
     
     
-    func remove(timePeriod: Booking,for house: House) {
+    func remove(timePeriod: Booking) {
         if timePeriod.renterID == nil {
-            if let docID = timePeriod.docID, let houseID = house.id {
+            if let docID = timePeriod.docID{
 //                db.collection("houses").document(houseID).collection("bookings").document(docID).delete()
                 db.collection("bookings").document(docID).delete()
             }
@@ -441,7 +441,7 @@ class FirebaseHelper: ObservableObject {
     func getMyBookings(completion: @escaping ([Booking]?) -> Void) {
         guard let userID = getUserID() else {return}
         var myBookings = [Booking]()
-        db.collection("bookings").whereField("reservedID", isEqualTo: userID).getDocuments() { snapshot, error in
+        db.collection("bookings").whereField("renterID", isEqualTo: userID).getDocuments() { snapshot, error in
             if let error = error {
                 print("Error getting my bookings: \(error)")
                 completion(nil)
@@ -471,5 +471,24 @@ class FirebaseHelper: ObservableObject {
             db.collection("bookings").document(docID).updateData(["renterID" : nil, "reservedID": nil])
         }
     }
+    
+    func getRenterInfo(renterID: String, completion : @escaping (User?) -> Void) {
+        db.collection("users").document(renterID).getDocument() { document, error in
+            if let error = error {
+                print("Error getting renterInfo: \(error)")
+                completion(nil)
+            } else {
+                do {
+                    let renter = try document?.data(as: User.self)
+                    completion(renter)
+                } catch {
+                    print("Error setting document")
+                    completion(nil)
+                }
+            }
+        }
+        
+    }
+    
 }
 
