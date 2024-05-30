@@ -48,6 +48,8 @@ class CreateHouseViewModel: ObservableObject{
                 self.streetNR = "\(house.streetNR)"
                 self.zipCode = "\(house.zipCode)"
                 self.streetName = house.streetName
+                self.latitude = "\(house.latitude ?? 0.0)"
+                self.longitude = "\(house.longitude ?? 0.0)"
                 firebaseHelper.downloadImage(from: imageURL){ image in
                     self.image = image
                 }
@@ -60,11 +62,14 @@ class CreateHouseViewModel: ObservableObject{
     func saveHouse(completion: @escaping(Bool) -> Void) {
         saveing(inProgress: true)
         guard checkAllInfoSet(),
-              let image = image,
-              let bedsInt = Int(beds),
-              let sizeInt = Int(size),
-              let streetNRInt = Int(streetNR),
-              let zipCodeInt = Int(zipCode) else {
+            let image = image,
+            let bedsInt = Int(beds),
+            let sizeInt = Int(size),
+            let streetNRInt = Int(streetNR),
+            let zipCodeInt = Int(zipCode),
+            let latitudeDouble = Double(latitude),
+            let longitudeDouble = Double(longitude)
+        else {
             completion(false)
             return
         }
