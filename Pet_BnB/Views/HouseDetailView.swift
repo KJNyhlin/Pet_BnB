@@ -97,31 +97,35 @@ struct HouseDetailView: View {
                                 .padding(.vertical, 5)
                                 .padding(.horizontal)
                             
-                            Text("Location")
-                                .font(.headline)
-                                .padding(.leading, -173)
-                                .padding(.top, 7)
-                                .padding(.bottom, 1)
-                            
-                            Text("Where you’ll be")
-                                .font(.footnote)
-                                .padding(.leading, -172)
-                                .foregroundColor(.gray)
-                                .padding(.bottom, -12)
-                    
                             if let latitude = house.latitude, let longitude = house.longitude {
-                                MapView(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
-                                    .frame(height: 280)
-                                    .frame(width: 355)
-                                    .cornerRadius(10)
-                                    .padding()
-                            }
+                                if latitude != 0.0 && longitude != 0.0 {
+                                    Text("Location")
+                                        .font(.headline)
+                                        .padding(.leading, -173)
+                                        .padding(.top, 7)
+                                        .padding(.bottom, 1)
+                                    
+                                    Text("Where you’ll be")
+                                        .font(.footnote)
+                                        .padding(.leading, -172)
+                                        .foregroundColor(.gray)
+                                        .padding(.bottom, -12)
                             
-                            Rectangle()
-                                .fill(AppColors.mainAccent)
-                                .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-                                .padding(.vertical, 5)
-                                .padding(.horizontal)
+                                    if let latitude = house.latitude, let longitude = house.longitude {
+                                        MapView(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+                                            .frame(height: 280)
+                                            .frame(width: 355)
+                                            .cornerRadius(10)
+                                            .padding()
+                                    }
+                            
+                                    Rectangle()
+                                        .fill(AppColors.mainAccent)
+                                        .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+                                        .padding(.vertical, 5)
+                                        .padding(.horizontal)
+                                }
+                            }
                             
                             if let owner = viewModel.houseOwner {
                                 VStack {
