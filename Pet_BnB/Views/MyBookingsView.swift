@@ -58,6 +58,23 @@ struct BookingCardView : View {
     var body: some View {
         NavigationLink(destination: BookingView(house: house, booking: booking)) {
             VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: 0) {
+                    if let confirmed = booking.confirmed {
+                        if booking.toDate > Date.now {
+                            Text(!confirmed && booking.toDate > Date.now ? "Not Yet Confirmed" : "Confirmed")
+                            //                        .frame(width: 150)
+                                .frame(maxWidth: .infinity, alignment: .top)
+                                .padding(.horizontal, 2)
+                                .background(viewModel.getShadowColor(from: booking))
+                                .font(.system(size: 14))
+                            //
+                            //                            .rotationEffect(.degrees(-45.0))
+                            ////                            .offset(x: -40, y: -80)
+                            //                            .offset(x:-125)
+                            
+                        }
+                    }
+                }
                 HStack {
                     ZStack {
                         
@@ -95,17 +112,17 @@ struct BookingCardView : View {
                             }
                             .padding()
                         }
-                        if let confirmed = booking.confirmed {
-                            if !confirmed && booking.toDate > Date.now {
-                                Text("Not Yet Confirmed")
-                                    .background(AppColors.mainAccent)
-                                    .font(.system(size: 14))
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .rotationEffect(.degrees(-45.0))
-                                    .offset(x: -40, y: -80)
-                                    
-                            }
-                        }
+//                        if let confirmed = booking.confirmed {
+//                            if !confirmed && booking.toDate > Date.now {
+//                                Text("Not Yet Confirmed")
+//                                    .background(AppColors.mainAccent)
+//                                    .font(.system(size: 14))
+//                                    .frame(maxWidth: .infinity, alignment: .leading)
+//                                    .rotationEffect(.degrees(-45.0))
+//                                    .offset(x: -40, y: -80)
+//                                    
+//                            }
+//                        }
                     }
                 }
             }
