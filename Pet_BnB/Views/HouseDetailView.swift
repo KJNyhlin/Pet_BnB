@@ -79,9 +79,15 @@ struct HouseDetailView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.vertical, 5)
                                 
-                                Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
-                                    .font(.caption)
-                                    .bold()
+                                Button(action: {
+                                    if let latitude = house.latitude, let longitude = house.longitude {
+                                        openMapsForDirections(latitude: latitude, longitude: longitude)
+                                    }
+                                }) {
+                                    Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
+                                        .font(.caption)
+                                        .bold()
+                                }
                                 
                                 Text(house.description)
                                     .fixedSize(horizontal: false, vertical: true)
