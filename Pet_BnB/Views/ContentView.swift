@@ -10,16 +10,21 @@ import FirebaseCore
 import FirebaseFirestore
 
 struct ContentView: View {
-    @StateObject var chatVM = ChatsListViewModel()
+    @EnvironmentObject var chatVM: ChatsListViewModel
+    @EnvironmentObject var authManager: AuthManager
+    @State var navigationPath = NavigationPath()
+
     
     var db = Firestore.firestore()
     var body: some View {
         VStack {
             TabView {
+                
                 ExploreView().tabItem { Label(
                     title: { Text("Explore") },
                     icon: { Image(systemName: "magnifyingglass") }
                 ) }
+                
                 MyBookingsView().tabItem { Label(
                     title: { Text("My Bookings") },
                     icon: { Image(systemName: "calendar") }
@@ -28,7 +33,10 @@ struct ContentView: View {
                     title: { Text("My house") },
                     icon: { Image(systemName: "house") }
                 ) }
-                ChatsListView().tabItem { Label(
+                NavigationStack(path: $navigationPath){
+                    ChatsListView(path: $navigationPath)
+                }
+                .tabItem { Label(
                     title: { Text("Messages") },
                     icon: { Image(systemName: "bubble") }
                 ) }
@@ -40,12 +48,28 @@ struct ContentView: View {
                     title: { Text("Profile") },
                     icon: { Image(systemName: "person.crop.circle") }
                 ) }
-                .environmentObject(chatVM)
+                //.environmentObject(chatVM)
             }
             .tint(AppColors.mainAccent)
             
         }
+        .onChange(of: navigationPath){
+            print(navigationPath)
+        }
+        .onChange(of: authManager.loggedIn){ oldState, newState in
+            print("Loggin changed!!!!!")
+            if !newState{
+                print(navigationPath)
+                resetNavigationStacks()
+               print(navigationPath)
+            }
+            print(authManager.loggedIn)
+            
+        }
         //.padding()
+    }
+    func resetNavigationStacks(){
+        navigationPath = NavigationPath()
     }
 }
 

@@ -53,7 +53,7 @@ class ChatViewModel: ObservableObject{
     
     func loadToUser(){
         Task {
-            firebaseHelper.loadUserInfo(userID:toUserID){ user in
+            await firebaseHelper.loadUserInfo(userID:toUserID){ user in
                 if let user = user{
                     self.toUser = user
                     

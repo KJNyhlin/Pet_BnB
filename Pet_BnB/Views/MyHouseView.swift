@@ -12,6 +12,7 @@ struct MyHouseView: View {
     @StateObject var vm = MyHouseViewModel()
     @State private var showingDeleteAlert = false
     @State private var showAddPeriodSheet = false
+    @EnvironmentObject var authManager: AuthManager
     
     var body: some View {
         NavigationStack{
@@ -103,6 +104,7 @@ struct MyHouseView: View {
                 vm.downloadHouse()
             }
         }
+        .protected()
     }
 }
 

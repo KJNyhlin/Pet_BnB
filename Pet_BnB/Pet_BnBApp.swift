@@ -24,7 +24,9 @@ struct Pet_BnBApp: App {
     @StateObject var firebaseHelper = FirebaseHelper()
     @StateObject var signUpViewModel = SignUpViewModel()
     @StateObject var profileViewModel = ProfileViewModel()
-    
+    @StateObject var authManager = AuthManager.sharedAuth
+    @StateObject var chatListViewModel = ChatsListViewModel()
+   // @StateObject var navigationPath = NavigationPath()
     
     var body: some Scene {
         WindowGroup {
@@ -32,7 +34,8 @@ struct Pet_BnBApp: App {
                 .environmentObject(firebaseHelper)
                 .environmentObject(signUpViewModel)
                 .environmentObject(profileViewModel)
-                
+                .environmentObject(authManager)
+                .environmentObject(chatListViewModel)
         }
     }
 }

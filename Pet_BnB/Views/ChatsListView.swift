@@ -11,17 +11,21 @@ import SwiftUI
 struct ChatsListView: View {
     //   @StateObject var vm: ChatsListViewModel = ChatsListViewModel()
     @EnvironmentObject var vm: ChatsListViewModel
+    @EnvironmentObject var authManager: AuthManager
+    @Binding var path: NavigationPath
     
     var body: some View {
         VStack{
-            NavigationStack{
+
                 
                 List{
                     if !vm.chats.isEmpty{
                         ForEach(vm.chats){ chat in
                             if let toUser = vm.getUserFrom(chat: chat),
                                let toUserID = toUser.docID{
-                                NavigationLink(destination: ChatView(vm: ChatViewModel(toUserID: toUserID, chat: chat, toUser: toUser))){
+                                NavigationLink(value: chat){
+                                
+                                //NavigationLink(destination: ChatView(vm: ChatViewModel(toUserID: toUserID, chat: chat, toUser: toUser))){
                                     ChatListRow(chat: chat, user: toUser, hasUnreadMessages: vm.hasUnReadMessages(chat: chat), timeString: vm.getDateString(timeStamp: chat.lastMessageTimeStamp))
                                     
                                 }
@@ -29,21 +33,41 @@ struct ChatsListView: View {
                             }
                         }
                     }
+
                     
                     else{
                         Text("No messages found!")
                     }
                     
                 }
+                .navigationDestination(for: Chat.self){ chat in
+                    if let toUser = vm.getUserFrom(chat: chat),
+                       let toUserID = toUser.docID{
+                        ChatView(vm: ChatViewModel(toUserID: toUserID, chat: chat, toUser: toUser))
+                    }
+                }
                 .navigationTitle("Messages")
                 .navigationBarTitleDisplayMode(.inline)
                 //.listStyle(.plain)
-            }
+            }.protected()
+        
+//            .overlay(
+//            Group {
+//                if !authManager.loggedIn {
+//                    SignUpView()
+//                }
+//            }
             
             
-        }
+           
+
+   //     )
+//        .fullScreenCover(isPresented: .constant(!authManager.loggedIn)) {
+//            SignUpView()
+//        }
         
     }
+
 }
 
 struct ChatListRow: View{
@@ -154,6 +178,6 @@ struct ChatListRow: View{
     }
 }
 
-#Preview {
-    ChatsListView()
-}
+//#Preview {
+//    ChatsListView()
+//}
