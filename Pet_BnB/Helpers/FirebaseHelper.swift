@@ -520,11 +520,16 @@ class FirebaseHelper: ObservableObject {
             do {
                 try db.collection("houses").document(houseID).collection("ratings").addDocument(from: rating)
                 
+                db.collection("houses").document(houseID).updateData(
+                    ["totalRatingPoints": FieldValue.increment(Int64(rating.rating)),
+                     "numberOfReviews": FieldValue.increment(Int64(1))]
+                )
                 self.setBookingToRated(bookingID: rating.bookingID)
             } catch {
                 print("Error saving rating")
             }
         }
+        
     }
     
     func setBookingToRated(bookingID: String) {
@@ -533,34 +538,65 @@ class FirebaseHelper: ObservableObject {
     }
     
     
-    func calculateRating(houseID: String, completion: @escaping (Double?) -> Void){
-        var totalRating = 0
-        print(totalRating)
-        
-            db.collection("houses").document(houseID).collection("ratings").getDocuments() { snapshot, error in
-                if let error = error {
-                    print("Error getting ratings: \(error)")
-                } else {
-                    if let documents = snapshot?.documents {
-                        print(totalRating)
-                        for document in documents {
-                            do {
-                                print(totalRating)
-                                let review = try document.data(as: Review.self)
-                                totalRating += review.rating
-                                print(totalRating)
-                            } catch {
-                                print("Error converting rating")
-                                completion(nil)
-                            }
+//    func calculateRating(houseID: String, completion: @escaping (Double?) -> Void){
+//        var totalRating = 0
+//        print(totalRating)
+//        
+//            db.collection("houses").document(houseID).collection("ratings").getDocuments() { snapshot, error in
+//                if let error = error {
+//                    print("Error getting ratings: \(error)")
+//                } else {
+//                    if let documents = snapshot?.documents {
+//                        
+//                        for document in documents {
+//                            do {
+//                                
+//                                let review = try document.data(as: Review.self)
+//                                totalRating += review.rating
+//                                
+//                            } catch {
+//                                print("Error converting rating")
+//                                completion(nil)
+//                            }
+//                        }
+//                        if totalRating != 0 {
+//                            let houseRating : Double = Double(totalRating) / Double(documents.count)
+//                            completion(houseRating)
+//                        }
+//                    }
+//                }
+//            }
+//        
+//        completion(nil)
+//    }
+    
+    func fetchReviews(houseID: String, completion: @escaping ([Review]) -> Void) {
+        var reviews : [Review] = []
+        db.collection("houses").document(houseID).collection("ratings").getDocuments() {snapshot, error in
+            if let error = error {
+                print("Error getting ratings: \(error)")
+                completion([])
+            } else {
+                if let documents = snapshot?.documents {
+                    
+                    
+                    for document in documents {
+                        do {
+                            
+                            let review = try document.data(as: Review.self)
+                            reviews.append(review)
+                            
+                        } catch {
+                            print("Error converting rating")
+                            completion([])
                         }
-                        let houseRating : Double = Double(totalRating) / Double(documents.count)
-                        completion(houseRating)
                     }
+                    
+                    
                 }
             }
-        
-        completion(nil)
+            completion(reviews)
+        }
     }
     
 }

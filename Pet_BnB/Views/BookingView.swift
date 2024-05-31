@@ -14,7 +14,7 @@ struct BookingView: View {
     var body: some View {
 //        Text("")
         
-        HouseDetailView( houseId: booking.houseID, firebaseHelper: viewModel.firebaseHelper, booked: true)
+        HouseDetailView( houseId: booking.houseID, firebaseHelper: viewModel.firebaseHelper, booked: true, showMyOwnHouse: false)
         Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
         if booking.toDate > Date.now {
             Button(action: {

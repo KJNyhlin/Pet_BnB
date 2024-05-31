@@ -21,7 +21,8 @@ struct MyHouseView: View {
                 TabView(selection: $vm.selectedTab) {
                     
                     if let house = vm.house {
-                        HouseView(vm: vm).tag(0)
+//                        HouseView(vm: vm).tag(0)
+                        HouseDetailView(houseId: vm.house?.id ?? "", firebaseHelper: FirebaseHelper(), booked: false, showMyOwnHouse: true).tag(0)
                         //                    TimePeriodView(vm: TimePeriodViewModel(house: house)).tag(1)
                         MyTimePeriodsView(viewModel: TimePeriodViewModel(house: house)).tag(1)
                         //                    PetsView(vm:PetsViewModel(pet: nil, house: house)).tag(2)
@@ -156,11 +157,11 @@ struct HouseView : View {
 //                                        Label("Pets", systemImage: "pawprint.fill")
 //                                    }
                                 }
-                                if let house = vm.house {
-                                    NavigationLink(destination: TimePeriodView(vm: TimePeriodViewModel(house: house))) {
-                                        Label("Time Periods", systemImage: "clock")
-                                    }
-                                }
+//                                if let house = vm.house {
+//                                    NavigationLink(destination: TimePeriodView(vm: TimePeriodViewModel(house: house))) {
+//                                        Label("Time Periods", systemImage: "clock")
+//                                    }
+//                                }
 //                                Button(action: {
 ////                                    vm.saveTimePeriod()
 //                                    showAddPeriodSheet.toggle()

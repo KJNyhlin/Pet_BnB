@@ -25,4 +25,15 @@ struct House: Identifiable, Codable {
     var bookings: [Booking]?
     var latitude: Double?
     var longitude: Double?
+    var totalRatingPoints: Int = 0
+    var numberOfReviews: Int = 0
+    
+    func getAverageRating() -> Double? {
+        if self.numberOfReviews != 0 {
+           
+            return Double(self.totalRatingPoints) / Double(self.numberOfReviews)
+           
+        }
+        return nil
+    }
 }

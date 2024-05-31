@@ -117,21 +117,13 @@ struct BookingCardView : View {
                                     showAddRating.toggle()
                                     
                                 }, label: {
-                                    Text("Add review")
+                                    Image(systemName: "star.bubble.fill")
+                                        .font(.system(size: 20))
+                                        .foregroundColor(AppColors.mainAccent)
+                                        .padding(.trailing, 20)
                                 })
                             }
                         }
-//                        if let confirmed = booking.confirmed {
-//                            if !confirmed && booking.toDate > Date.now {
-//                                Text("Not Yet Confirmed")
-//                                    .background(AppColors.mainAccent)
-//                                    .font(.system(size: 14))
-//                                    .frame(maxWidth: .infinity, alignment: .leading)
-//                                    .rotationEffect(.degrees(-45.0))
-//                                    .offset(x: -40, y: -80)
-//                                    
-//                            }
-//                        }
                     }
                 }
             }
@@ -152,7 +144,7 @@ struct BookingCardView : View {
             .sheet(isPresented: $showAddRating, content: {
                 if let house = house {
                     if let docID = booking.docID {
-                        AddReview(viewModel: viewModel, house: house, bookingID: docID)
+                        AddReviewSheet(viewModel: viewModel, house: house, bookingID: docID)
                             .presentationDetents([.medium])
                     }
                 }
@@ -165,7 +157,7 @@ struct BookingCardView : View {
         
 }
 
-struct AddReview : View {
+struct AddReviewSheet : View {
     @ObservedObject var viewModel: MyBookingViewModel
     var house: House
     var bookingID: String
@@ -174,9 +166,28 @@ struct AddReview : View {
     @State var text: String = ""
     var body: some View {
         VStack {
-            Rating(rating: $rating)
+            Text("Add Review")
+                .font(.title)
+                .padding(.vertical, 30)
+            RatingStarsView(rating: $rating)
+                .padding()
             TextField("Title", text: $title)
-            TextField("Review", text: $text)
+//                .frame(height: 40)
+                .padding( 10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 25.0)
+                        .stroke(AppColors.mainAccent, lineWidth: 2)
+                )
+                .padding(.horizontal, 40)
+            TextField("Review", text: $text, axis: .vertical)
+//                .frame(minHeight: 40)
+                .padding( 10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 25.0)
+                        .stroke(AppColors.mainAccent, lineWidth: 2)
+                )
+                .padding(.horizontal, 40)
+            Spacer()
             HStack {
                 Button(action: {
                     if let userID = viewModel.firebaseHelper.getUserID() {
@@ -196,7 +207,7 @@ struct AddReview : View {
     }
 }
 
-struct Rating : View {
+struct RatingStarsView : View {
     @Binding var rating: Int
 
     var label = ""
@@ -233,5 +244,5 @@ struct Rating : View {
 
 #Preview {
 //    MyBookingsView()
-    Rating(rating: .constant(4))
+    RatingStarsView(rating: .constant(4))
 }
