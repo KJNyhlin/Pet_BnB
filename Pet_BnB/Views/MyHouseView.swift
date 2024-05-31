@@ -24,8 +24,8 @@ struct MyHouseView: View {
 
                     
                     if let house = vm.house {
-//                        HouseView(vm: vm).tag(0)
-                        HouseDetailView(houseId: vm.house?.id ?? "", firebaseHelper: FirebaseHelper(), booked: false, showMyOwnHouse: true).tag(0)
+                        HouseView(vm: vm, house: house).tag(0)
+//                        HouseDetailView(houseId: vm.house?.id ?? "", firebaseHelper: FirebaseHelper(), booked: false, showMyOwnHouse: true).tag(0)
 
                         //                    TimePeriodView(vm: TimePeriodViewModel(house: house)).tag(1)
                         MyTimePeriodsView(viewModel: TimePeriodViewModel(house: house)).tag(1)
@@ -123,117 +123,180 @@ struct TabBarItem : View {
 }
 
 struct HouseView : View {
+    @State var showingDeleteAlert: Bool = false
     @ObservedObject var vm : MyHouseViewModel
-    @State private var showingDeleteAlert = false
-    @State private var showAddPeriodSheet = false
-    @EnvironmentObject var authManager: AuthManager
-    
+    var house: House
     var body: some View {
-  //      NavigationStack{
-            VStack{
-                if vm.house == nil {
-                    Text("No house created")
-                    
-                  //  NavigationLink(destination: CreateHouseView(vm: CreateHouseViewModel(house: nil))) {
-                    NavigationLink(value: ""){
-                        FilledButtonLabel(text:"Create House")
-                            .frame(maxWidth: 200)
+        if let houseID = house.id {
+            VStack {
+                ScrollView {
+                    HouseDetailView(houseId: houseID, firebaseHelper: FirebaseHelper(), booked: false, showMyOwnHouse: true)
+                }
+                Menu {
+                    Button(role: .destructive, action: {
+                        //vm.deleteHouse()
+                        showingDeleteAlert = true
                     }
-                }else{
-                    if let house = vm.house,
-                       let imageUrl = vm.house?.imageURL
-                    {
-                        AsyncImageView(imageUrl: imageUrl)
+                    ) {
+                        Label("Delete", systemImage: "trash")
                         
-                        VStack(alignment: .leading){
-                            Text(house.title)
-                                .font(.title)
-            
-                            InformationRow(beds: house.beds, size: house.size)
-                                
-                            AdressView(street: house.streetName, streetNR: house.streetNR, city: house.city, zipCode: house.zipCode)
-         
-                            Text(house.description)
-
-                                //.bold()
-                         
-
-//                            TimePeriodList(vm: vm)
-
-                            Spacer()
-                            
-                            Menu {
-                                Button(role: .destructive, action: {
-                                    //vm.deleteHouse()
-                                    showingDeleteAlert = true
-                                }
-                                ) {
-                                    Label("Delete", systemImage: "trash")
-                                    
-                                }
-                              //  if let house = vm.house{
+                    }
+                    //  if let house = vm.house{
+                    
+                    //                                    NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
+                    //                                        Label("Edit", systemImage: "pencil")
+                    //                                    }
+                    NavigationLink(value: house){
+                        Label("Edit", systemImage: "pencil")
+                    }
+                    
+                    
+                    //                                    NavigationLink(destination:PetsView(vm:PetsViewModel(pet: nil, house: house))){
+                    //                                        Label("Pets", systemImage: "pawprint.fill")
+                    //                                    }
+                    
+                }
+                //                                if let house = vm.house {
+                //                                    NavigationLink(destination: TimePeriodView(vm: TimePeriodViewModel(house: house))) {
+                //                                        Label("Time Periods", systemImage: "clock")
+                //                                    }
+                //                                }
+                
+                //                                Button(action: {
+                ////                                    vm.saveTimePeriod()
+                //                                    showAddPeriodSheet.toggle()
+                //                                }, label: {
+                //                                    Text("Add period")
+                //                                })
+                
+                
+            label: {
+                FilledButtonLabel(text: "Manage")
+            }
+                
+            .alert(isPresented: $showingDeleteAlert) {
+                Alert(title: Text("Delete House"), message: Text("Are you sure you want to delete this house?"), primaryButton: .destructive(Text("Delete")) {
+                    vm.deleteHouse()
+                }, secondaryButton: .cancel())
+            }
+            }
+        }
+    }
     
-//                                    NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
+}
+
+//struct HouseView : View {
+//    @ObservedObject var vm : MyHouseViewModel
+//    @State private var showingDeleteAlert = false
+//    @State private var showAddPeriodSheet = false
+//    @EnvironmentObject var authManager: AuthManager
+//    
+//    var body: some View {
+//  //      NavigationStack{
+//            VStack{
+//                if vm.house == nil {
+//                    Text("No house created")
+//                    
+//                  //  NavigationLink(destination: CreateHouseView(vm: CreateHouseViewModel(house: nil))) {
+//                    NavigationLink(value: ""){
+//                        FilledButtonLabel(text:"Create House")
+//                            .frame(maxWidth: 200)
+//                    }
+//                }else{
+//                    if let house = vm.house,
+//                       let imageUrl = vm.house?.imageURL
+//                    {
+//                        AsyncImageView(imageUrl: imageUrl)
+//                        
+//                        VStack(alignment: .leading){
+//                            Text(house.title)
+//                                .font(.title)
+//            
+//                            InformationRow(beds: house.beds, size: house.size)
+//                                
+//                            AdressView(street: house.streetName, streetNR: house.streetNR, city: house.city, zipCode: house.zipCode)
+//         
+//                            Text(house.description)
+//
+//                                //.bold()
+//                         
+//
+////                            TimePeriodList(vm: vm)
+//
+//                            Spacer()
+//                            
+//                            Menu {
+//                                Button(role: .destructive, action: {
+//                                    //vm.deleteHouse()
+//                                    showingDeleteAlert = true
+//                                }
+//                                ) {
+//                                    Label("Delete", systemImage: "trash")
+//                                    
+//                                }
+//                              //  if let house = vm.house{
+//    
+////                                    NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
+////                                        Label("Edit", systemImage: "pencil")
+////                                    }
+//                                NavigationLink(value: house){
 //                                        Label("Edit", systemImage: "pencil")
 //                                    }
-                                NavigationLink(value: house){
-                                        Label("Edit", systemImage: "pencil")
-                                    }
-
-
-//                                    NavigationLink(destination:PetsView(vm:PetsViewModel(pet: nil, house: house))){
-//                                        Label("Pets", systemImage: "pawprint.fill")
-//                                    }
-
-                                }
-//                                if let house = vm.house {
-//                                    NavigationLink(destination: TimePeriodView(vm: TimePeriodViewModel(house: house))) {
-//                                        Label("Time Periods", systemImage: "clock")
-//                                    }
-//                                }
-
-//                                Button(action: {
-////                                    vm.saveTimePeriod()
-//                                    showAddPeriodSheet.toggle()
-//                                }, label: {
-//                                    Text("Add period")
-//                                })
-
-                                
-                            } label: {
-                                FilledButtonLabel(text: "Manage")
-                            }
-
-                            .alert(isPresented: $showingDeleteAlert) {
-                                Alert(title: Text("Delete House"), message: Text("Are you sure you want to delete this house?"), primaryButton: .destructive(Text("Delete")) {
-                                    vm.deleteHouse()
-                                }, secondaryButton: .cancel())
-                            }
-
-//                            .sheet(isPresented: $showAddPeriodSheet, content: {
-//                                AddPeriodSheet(vm: vm, showAddPeriodSheet: $showAddPeriodSheet)
-//                            })
 //
-                        }
-                        .padding()
-                        
-                        
-                    }
-
-                    Spacer()
-                }
-                
-
-
-                
-  //          }
-            
-            
-        }
- 
- 
-    }
-}
+//
+////                                    NavigationLink(destination:PetsView(vm:PetsViewModel(pet: nil, house: house))){
+////                                        Label("Pets", systemImage: "pawprint.fill")
+////                                    }
+//
+//                                }
+////                                if let house = vm.house {
+////                                    NavigationLink(destination: TimePeriodView(vm: TimePeriodViewModel(house: house))) {
+////                                        Label("Time Periods", systemImage: "clock")
+////                                    }
+////                                }
+//
+////                                Button(action: {
+//////                                    vm.saveTimePeriod()
+////                                    showAddPeriodSheet.toggle()
+////                                }, label: {
+////                                    Text("Add period")
+////                                })
+//
+//                                
+//                             label: {
+//                                FilledButtonLabel(text: "Manage")
+//                            }
+//
+//                            .alert(isPresented: $showingDeleteAlert) {
+//                                Alert(title: Text("Delete House"), message: Text("Are you sure you want to delete this house?"), primaryButton: .destructive(Text("Delete")) {
+//                                    vm.deleteHouse()
+//                                }, secondaryButton: .cancel())
+//                            }
+//
+////                            .sheet(isPresented: $showAddPeriodSheet, content: {
+////                                AddPeriodSheet(vm: vm, showAddPeriodSheet: $showAddPeriodSheet)
+////                            })
+////
+//                        }
+//                        .padding()
+//                        
+//                        
+//                    }
+//
+//                    Spacer()
+//                }
+//                
+//
+//
+//                
+//  //          }
+//            
+//            
+//        }
+// 
+// 
+//    }
+//}
 
 
 
