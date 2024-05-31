@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HouseOwnerProfileView: View {
     var user: User
+
     
     var body: some View {
         VStack {
@@ -108,6 +109,7 @@ struct HouseOwnerProfileView: View {
                 .frame(maxWidth: .infinity)
             }
         }
+
         .navigationTitle("Host")
         .navigationBarTitleDisplayMode(.inline)
         .frame(maxWidth: .infinity)

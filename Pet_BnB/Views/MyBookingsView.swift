@@ -9,8 +9,9 @@ import SwiftUI
 
 struct MyBookingsView: View {
     @StateObject var viewModel = MyBookingViewModel()
+    @EnvironmentObject var authManager: AuthManager
     var body: some View {
-        NavigationStack {
+  //      NavigationStack {
             ScrollView {
                 VStack(spacing: 0){
                     
@@ -43,7 +44,14 @@ struct MyBookingsView: View {
                 .onAppear {
                     viewModel.getBookings()
                 }
-            }
+                .onChange(of: authManager.loggedIn){ oldValue, newValue in
+                    if newValue{
+                        viewModel.getBookings()
+                    }
+                
+                    
+                }
+  //          }
         }
     }
 }
@@ -56,7 +64,9 @@ struct BookingCardView : View {
     @State var house : House?
     
     var body: some View {
-        NavigationLink(destination: BookingView(house: house, booking: booking)) {
+        
+        //NavigationLink(destination: BookingView(house: house, booking: booking)) {
+        NavigationLink(value: BookingNavigation(booking: booking, house: house)){
             VStack(alignment: .leading, spacing: 0) {
                 VStack(alignment: .leading, spacing: 0) {
                     if let confirmed = booking.confirmed {
@@ -140,6 +150,7 @@ struct BookingCardView : View {
                     self.house = house
                 }
             }
+            
         }
         
         .buttonStyle(PlainButtonStyle())

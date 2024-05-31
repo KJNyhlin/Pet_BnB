@@ -11,39 +11,63 @@ import SwiftUI
 struct ChatsListView: View {
     //   @StateObject var vm: ChatsListViewModel = ChatsListViewModel()
     @EnvironmentObject var vm: ChatsListViewModel
+    @EnvironmentObject var authManager: AuthManager
+    @Binding var path: NavigationPath
     
     var body: some View {
         VStack{
-            NavigationStack{
+
                 
                 List{
                     if !vm.chats.isEmpty{
                         ForEach(vm.chats){ chat in
                             if let toUser = vm.getUserFrom(chat: chat),
                                let toUserID = toUser.docID{
-                                NavigationLink(destination: ChatView(vm: ChatViewModel(toUserID: toUserID, chat: chat, toUser: toUser))){
-                                    ChatListRow(chat: chat, user: toUser, hasUnreadMessages: vm.hasUnReadMessages(chat: chat), timeString: vm.getDateString(timeStamp: chat.lastMessageTimeStamp))
+                                NavigationLink(value: chat){
+                                
+                                //NavigationLink(destination: ChatView(vm: ChatViewModel(toUserID: toUserID, chat: chat, toUser: toUser))){
+                                    ChatListRow(chat: chat, user: toUser, hasUnreadMessages: vm.hasUnReadMessages(chat: chat), timeString: vm.getDateString(timeStamp: chat.lastMessageTimeStamp), path: $path)
                                     
                                 }
                                 .listRowInsets(EdgeInsets(top: 10, leading: 5, bottom: 10, trailing: 10))
                             }
                         }
                     }
+
                     
                     else{
                         Text("No messages found!")
                     }
                     
                 }
+                .navigationDestination(for: Chat.self){ chat in
+                    if let toUser = vm.getUserFrom(chat: chat),
+                       let toUserID = toUser.docID{
+                        ChatView(vm: ChatViewModel(toUserID: toUserID, chat: chat, toUser: toUser))
+                    }
+                }
                 .navigationTitle("Messages")
                 .navigationBarTitleDisplayMode(.inline)
                 //.listStyle(.plain)
             }
+        
+//            .overlay(
+//            Group {
+//                if !authManager.loggedIn {
+//                    SignUpView()
+//                }
+//            }
             
             
-        }
+           
+
+   //     )
+//        .fullScreenCover(isPresented: .constant(!authManager.loggedIn)) {
+//            SignUpView()
+//        }
         
     }
+
 }
 
 struct ChatListRow: View{
@@ -51,6 +75,7 @@ struct ChatListRow: View{
     var user: User?
     var hasUnreadMessages: Bool
     var timeString: String
+    @Binding var path: NavigationPath
     
     @State private var navigateToProfile: Bool = false
     
@@ -61,12 +86,17 @@ struct ChatListRow: View{
                 .foregroundColor(AppColors.mainAccent)
                 .opacity(hasUnreadMessages ? 100 : 0)
                 
-            NavigationLink("", destination: HouseOwnerProfileView(user: user!), isActive: $navigateToProfile)
-                .frame(width: 0, height: 0)
-                        .hidden()
+            //NavigationLink("", destination: HouseOwnerProfileView(user: user!), isActive: $navigateToProfile)
+            
+//                .frame(width: 0, height: 0)
+//                        .hidden()
                         
             Button(action: {
-                navigateToProfile = true
+               // navigateToProfile = true
+                if let user = user{
+                    path.append(user)
+                }
+                
             }) {
                             if let url = user?.imageURL{
                                 AsyncImage(url: URL(string: url)) { phase in
@@ -154,6 +184,6 @@ struct ChatListRow: View{
     }
 }
 
-#Preview {
-    ChatsListView()
-}
+//#Preview {
+//    ChatsListView()
+//}
