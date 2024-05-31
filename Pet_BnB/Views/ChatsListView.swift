@@ -49,7 +49,7 @@ struct ChatsListView: View {
                 .navigationTitle("Messages")
                 .navigationBarTitleDisplayMode(.inline)
                 //.listStyle(.plain)
-            }.protected()
+            }
         
 //            .overlay(
 //            Group {

@@ -14,7 +14,7 @@ struct ContentView: View {
     @EnvironmentObject var authManager: AuthManager
     @State var messageStackPath = NavigationPath()
     @State var houseStackPath = NavigationPath()
-
+    @State var bookingStackPath = NavigationPath()
     
     var db = Firestore.firestore()
     var body: some View {
@@ -27,7 +27,13 @@ struct ContentView: View {
                     icon: { Image(systemName: "magnifyingglass") }
                 ) }
                 
-                MyBookingsView().tabItem { Label(
+                NavigationStack(path: $bookingStackPath) {
+                    MyBookingsView()
+                        .navigationDestination(for: BookingNavigation.self) { bookingNav in
+                            BookingView(house: bookingNav.house, booking: bookingNav.booking)
+                        }
+                }
+                    .tabItem { Label(
                     title: { Text("My Bookings") },
                     icon: { Image(systemName: "calendar") }
                 ) }
@@ -56,6 +62,7 @@ struct ContentView: View {
                             HouseOwnerProfileView(user: user)
                         }
                 }
+                .protected()
                 .tabItem { Label(
                     title: { Text("Messages") },
                     icon: { Image(systemName: "bubble") }
@@ -92,6 +99,7 @@ struct ContentView: View {
     func resetNavigationStacks(){
         messageStackPath = NavigationPath()
         houseStackPath = NavigationPath()
+        bookingStackPath = NavigationPath()
     }
 }
 
