@@ -39,6 +39,7 @@ struct ContentView: View {
                 ) }
                 .protected()
                 
+                
                 NavigationStack(path: $houseStackPath){
                     MyHouseView(path: $houseStackPath)
                         .navigationDestination(for: House.self ){ house in
@@ -48,9 +49,7 @@ struct ContentView: View {
                             CreateHouseView(vm: CreateHouseViewModel(house: nil))
                         }
 
-                }
-                
-                .tabItem {Label(
+                }.tabItem {Label(
                     title: { Text("My house") },
                     icon: { Image(systemName: "house") }
                 ) }
@@ -108,3 +107,4 @@ struct ContentView: View {
         .environmentObject(FirebaseHelper()
             )
 }
+
