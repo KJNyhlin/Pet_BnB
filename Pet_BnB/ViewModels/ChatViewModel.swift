@@ -83,6 +83,7 @@ class ChatViewModel: ObservableObject{
         }
     }
     
+    
     func saveMessageToFirebase(){
         if let userID = firebaseHelper.getUserID(){
             if let chat = chat,
@@ -102,9 +103,14 @@ class ChatViewModel: ObservableObject{
     }
     
     func createChat(senderID: String, compleation: @escaping (String?) -> Void){
-        let newChat = Chat(participants: [senderID, toUserID], lastMessage: messageInput, lastMessageTimeStamp: Timestamp(), unreadMessagesCount:[senderID:0])
+        var newChat = Chat(participants: [senderID, toUserID], lastMessage: messageInput, lastMessageTimeStamp: Timestamp(), unreadMessagesCount:[senderID:0])
         do{
             let ref = try db.collection("chats").addDocument(from: newChat)
+            newChat.id = ref.documentID
+            DispatchQueue.main.async {
+                self.chat = newChat
+            }
+            
             compleation(ref.documentID)
         } catch {
             print("error creating chat!")
