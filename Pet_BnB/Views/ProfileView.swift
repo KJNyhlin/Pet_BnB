@@ -14,6 +14,7 @@ struct ProfileView: View {
     @EnvironmentObject var profileViewModel: ProfileViewModel
     @EnvironmentObject var chatListViewModel: ChatsListViewModel
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var authManager: AuthManager
     
     var body: some View {
         NavigationStack {
@@ -61,7 +62,16 @@ struct ProfileView: View {
         })
         .onAppear {
             profileViewModel.getUserDetails()
+            
         }
+        .onChange(of: authManager.loggedIn){ oldVlaue, newValue in
+            if newValue {
+                profileViewModel.getUserDetails()
+                  
+                
+            }
+        }
+        
     }
 }
 

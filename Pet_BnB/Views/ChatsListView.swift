@@ -26,7 +26,7 @@ struct ChatsListView: View {
                                 NavigationLink(value: chat){
                                 
                                 //NavigationLink(destination: ChatView(vm: ChatViewModel(toUserID: toUserID, chat: chat, toUser: toUser))){
-                                    ChatListRow(chat: chat, user: toUser, hasUnreadMessages: vm.hasUnReadMessages(chat: chat), timeString: vm.getDateString(timeStamp: chat.lastMessageTimeStamp))
+                                    ChatListRow(chat: chat, user: toUser, hasUnreadMessages: vm.hasUnReadMessages(chat: chat), timeString: vm.getDateString(timeStamp: chat.lastMessageTimeStamp), path: $path)
                                     
                                 }
                                 .listRowInsets(EdgeInsets(top: 10, leading: 5, bottom: 10, trailing: 10))
@@ -75,6 +75,7 @@ struct ChatListRow: View{
     var user: User?
     var hasUnreadMessages: Bool
     var timeString: String
+    @Binding var path: NavigationPath
     
     @State private var navigateToProfile: Bool = false
     
@@ -85,12 +86,17 @@ struct ChatListRow: View{
                 .foregroundColor(AppColors.mainAccent)
                 .opacity(hasUnreadMessages ? 100 : 0)
                 
-            NavigationLink("", destination: HouseOwnerProfileView(user: user!), isActive: $navigateToProfile)
-                .frame(width: 0, height: 0)
-                        .hidden()
+            //NavigationLink("", destination: HouseOwnerProfileView(user: user!), isActive: $navigateToProfile)
+            
+//                .frame(width: 0, height: 0)
+//                        .hidden()
                         
             Button(action: {
-                navigateToProfile = true
+               // navigateToProfile = true
+                if let user = user{
+                    path.append(user)
+                }
+                
             }) {
                             if let url = user?.imageURL{
                                 AsyncImage(url: URL(string: url)) { phase in

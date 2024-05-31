@@ -6,10 +6,15 @@
 //
 
 import Foundation
+import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 
-struct House: Identifiable, Codable {
+struct House: Identifiable, Codable, Hashable, Equatable{
+//    static func == (lhs: House, rhs: House) -> Bool {
+//        lhs.id == rhs.id
+//    }
+    
     @DocumentID var id: String?
     var title: String
     var description: String

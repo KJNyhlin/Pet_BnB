@@ -15,7 +15,8 @@ struct PetsView: View {
             if let pets = vm.house.pets, !pets.isEmpty {
                 List {
                     ForEach(pets) { pet in
-                        NavigationLink(destination: CreatePetView(vm: vm, pet: pet)) {
+                     //   NavigationLink(destination: CreatePetView(vm: vm, pet: pet)) {
+                        NavigationLink(value: pet){
                             PetRowView(pet: pet)
                                 
                         }
@@ -29,11 +30,18 @@ struct PetsView: View {
 
             Spacer()
             VStack(alignment: .trailing) {
-                NavigationLink(destination: CreatePetView(vm: vm, pet: nil)) {
+            //    NavigationLink(destination: CreatePetView(vm: vm, pet: nil)) {
+                NavigationLink(value: 0){
                     FilledButtonLabel(text: "Add Pet")
                         .frame(maxWidth: 100)
                 }
             }
+        }
+        .navigationDestination(for: Pet.self ){ pet in
+            CreatePetView(vm: vm, pet: pet)
+        }
+        .navigationDestination(for: Int.self ){ pet in
+            CreatePetView(vm: vm, pet: nil)
         }
     }
 }

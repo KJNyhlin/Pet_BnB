@@ -11,6 +11,7 @@ import PhotosUI
 struct CreatePetView: View {
     @ObservedObject var vm: PetsViewModel
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var authManager: AuthManager
     var pet: Pet?
 
     @State private var isImagePickerPresented = false
@@ -214,6 +215,11 @@ struct CreatePetView: View {
                         hideKeyboard()
                     }
                 }
+            }
+        }
+        .onChange(of: authManager.loggedIn){ oldValue, newValue in
+            if !newValue {
+                presentationMode.wrappedValue.dismiss()
             }
         }
     }

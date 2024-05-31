@@ -22,7 +22,7 @@ struct CreateHouseView: View {
     }
 
     var body: some View {
-        NavigationStack {
+
             VStack {
                 Form {
                     PhotosPicker(selection: $vm.imageSelection, matching: .images) {
@@ -104,7 +104,7 @@ struct CreateHouseView: View {
                         saveHouse()
                     }
                 )
-            }
+ 
         }
     }
 

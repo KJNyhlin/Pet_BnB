@@ -12,7 +12,8 @@ import FirebaseFirestore
 struct ContentView: View {
     @EnvironmentObject var chatVM: ChatsListViewModel
     @EnvironmentObject var authManager: AuthManager
-    @State var navigationPath = NavigationPath()
+    @State var messageStackPath = NavigationPath()
+    @State var houseStackPath = NavigationPath()
 
     
     var db = Firestore.firestore()
@@ -30,12 +31,30 @@ struct ContentView: View {
                     title: { Text("My Bookings") },
                     icon: { Image(systemName: "calendar") }
                 ) }
-                MyHouseView().tabItem {Label(
+                .protected()
+                
+                NavigationStack(path: $houseStackPath){
+                    MyHouseView(path: $houseStackPath)
+                        .navigationDestination(for: House.self ){ house in
+                            CreateHouseView(vm: CreateHouseViewModel(house: house))
+                        }
+                        .navigationDestination(for: String.self ){ _ in
+                            CreateHouseView(vm: CreateHouseViewModel(house: nil))
+                        }
+
+                }
+                
+                .tabItem {Label(
                     title: { Text("My house") },
                     icon: { Image(systemName: "house") }
                 ) }
-                NavigationStack(path: $navigationPath){
-                    ChatsListView(path: $navigationPath)
+                
+                
+                NavigationStack(path: $messageStackPath){
+                    ChatsListView(path: $messageStackPath)
+                        .navigationDestination(for: User.self ){ user in
+                            HouseOwnerProfileView(user: user)
+                        }
                 }
                 .tabItem { Label(
                     title: { Text("Messages") },
@@ -49,20 +68,21 @@ struct ContentView: View {
                     title: { Text("Profile") },
                     icon: { Image(systemName: "person.crop.circle") }
                 ) }
+                .protected()
                 //.environmentObject(chatVM)
             }
             .tint(AppColors.mainAccent)
             
         }
-        .onChange(of: navigationPath){
-            print(navigationPath)
+        .onChange(of: messageStackPath){
+            print(messageStackPath)
         }
         .onChange(of: authManager.loggedIn){ oldState, newState in
             print("Loggin changed!!!!!")
             if !newState{
-                print(navigationPath)
+                print(messageStackPath)
                 resetNavigationStacks()
-               print(navigationPath)
+               print(messageStackPath)
             }
             print(authManager.loggedIn)
             
@@ -70,7 +90,8 @@ struct ContentView: View {
         //.padding()
     }
     func resetNavigationStacks(){
-        navigationPath = NavigationPath()
+        messageStackPath = NavigationPath()
+        houseStackPath = NavigationPath()
     }
 }
 

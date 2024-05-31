@@ -10,18 +10,20 @@ import SwiftUI
 struct MyHouseView: View {
     //var myHouse: House?
     @StateObject var vm = MyHouseViewModel()
+    @Binding var path: NavigationPath
+    @EnvironmentObject var authManager: AuthManager
     
     
     var body: some View {
         VStack(){
-            NavigationStack{
+        //    NavigationStack{
                 TabBarView(selectedTab: $vm.selectedTab)
                 //                .border(Color.black)
                 
                 TabView(selection: $vm.selectedTab) {
-                    
-                    if let house = vm.house {
                         HouseView(vm: vm).tag(0)
+                    if let house = vm.house {
+                        
                         //                    TimePeriodView(vm: TimePeriodViewModel(house: house)).tag(1)
                         MyTimePeriodsView(viewModel: TimePeriodViewModel(house: house)).tag(1)
                         //                    PetsView(vm:PetsViewModel(pet: nil, house: house)).tag(2)
@@ -34,10 +36,27 @@ struct MyHouseView: View {
                 
                 Spacer()
                 
+            //}
+        }.onChange(of: authManager.loggedIn){ oldValue, newValue in
+            if !newValue {
+                vm.selectedTab = 0
             }
         }
+
+
+        
+        
+        .protected()
         .onAppear{
             vm.downloadHouse()
+            
+        }
+        .onChange(of: authManager.loggedIn){ oldValue, newValue in
+            if newValue{
+                vm.downloadHouse()
+            } else {
+                vm.house = nil
+            }
             
         }
 //        .border(Color.black)
@@ -107,12 +126,13 @@ struct HouseView : View {
     @EnvironmentObject var authManager: AuthManager
     
     var body: some View {
-        NavigationStack{
+  //      NavigationStack{
             VStack{
                 if vm.house == nil {
                     Text("No house created")
                     
-                    NavigationLink(destination: CreateHouseView(vm: CreateHouseViewModel(house: nil))) {
+                  //  NavigationLink(destination: CreateHouseView(vm: CreateHouseViewModel(house: nil))) {
+                    NavigationLink(value: ""){
                         FilledButtonLabel(text:"Create House")
                             .frame(maxWidth: 200)
                     }
@@ -148,16 +168,20 @@ struct HouseView : View {
                                     Label("Delete", systemImage: "trash")
                                     
                                 }
-                                if let house = vm.house{
+                              //  if let house = vm.house{
     
-                                    NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
+//                                    NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
+//                                        Label("Edit", systemImage: "pencil")
+//                                    }
+                                NavigationLink(value: house){
                                         Label("Edit", systemImage: "pencil")
                                     }
+
 
 //                                    NavigationLink(destination:PetsView(vm:PetsViewModel(pet: nil, house: house))){
 //                                        Label("Pets", systemImage: "pawprint.fill")
 //                                    }
-                                }
+                            //    }
                                 if let house = vm.house {
                                     NavigationLink(destination: TimePeriodView(vm: TimePeriodViewModel(house: house))) {
                                         Label("Time Periods", systemImage: "clock")
@@ -174,11 +198,13 @@ struct HouseView : View {
                             } label: {
                                 FilledButtonLabel(text: "Manage")
                             }
+
                             .alert(isPresented: $showingDeleteAlert) {
                                 Alert(title: Text("Delete House"), message: Text("Are you sure you want to delete this house?"), primaryButton: .destructive(Text("Delete")) {
                                     vm.deleteHouse()
                                 }, secondaryButton: .cancel())
                             }
+
 //                            .sheet(isPresented: $showAddPeriodSheet, content: {
 //                                AddPeriodSheet(vm: vm, showAddPeriodSheet: $showAddPeriodSheet)
 //                            })
@@ -188,14 +214,19 @@ struct HouseView : View {
                         
                         
                     }
+
                     Spacer()
                 }
                 
-            }
+
+
+                
+  //          }
             
             
         }
-        .protected()
+ 
+ 
     }
 }
 
