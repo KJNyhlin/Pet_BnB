@@ -16,11 +16,14 @@ struct HouseDetailView: View {
     @State var showBookings: Bool = false
     @State private var region = MKCoordinateRegion()
     @State var booked: Bool
+    @State var showReviewSheet: Bool = false
+    var showMyOwnHouse: Bool
     
-    init(houseId: String, firebaseHelper: FirebaseHelper, booked: Bool) {
+    init(houseId: String, firebaseHelper: FirebaseHelper, booked: Bool, showMyOwnHouse: Bool) {
         _viewModel = StateObject(wrappedValue: HouseDetailViewModel(firebaseHelper: firebaseHelper))
         self.houseId = houseId
         self.booked = booked
+        self.showMyOwnHouse = showMyOwnHouse
     }
     
     var body: some View {
@@ -62,7 +65,23 @@ struct HouseDetailView: View {
                             VStack(alignment: .leading, spacing: 10) {
                                 Text(house.title)
                                     .font(.title)
-                                
+                                HStack {
+                                    Image(systemName: "star.fill")
+                                        .foregroundColor(AppColors.mainAccent)
+                                    if let rating = house.getAverageRating() {
+                                        Text("\(rating, specifier: "%.1f")")
+                                            .foregroundColor(AppColors.mainAccent)
+                                        Button(action: {
+                                            showReviewSheet.toggle()
+                                        }, label: {
+                                            Text("Read reviews")
+                                        })
+                                    } else {
+                                        Text("No ratings yet")
+                                            .foregroundColor(AppColors.mainAccent)
+                                    }
+                                }
+                                    .font(.caption)
                                 HStack {
                                     Label(
                                         title: { Text("\(house.beds) st") },
@@ -302,6 +321,7 @@ struct HouseDetailView: View {
                         ProgressView()
                             .onAppear {
                                 viewModel.fetchHouse(byId: houseId)
+                                
                             }
                     }
                 VStack(alignment: .center){
@@ -364,33 +384,39 @@ struct HouseDetailView: View {
 
                     Spacer()
                     if !booked {
-                        Button(action: {
-                            // Lägg till funktion för bokning
-                            showBookings.toggle()
-                        })
-                        {
-                            FilledButtonLabel(text: "Reserv")
-                                .frame(maxWidth: 80)
-                            //.fontWeight(.bold)
-                        }
-                        .padding([.bottom, .trailing], 30)
-                        .sheet(isPresented: $showBookings, onDismiss: {
-                            viewModel.selectedBooking = nil
-                            viewModel.selectedBookingID = ""
-                        } ,content: {
-                            if let house = viewModel.house {
-                                BookingsList(viewModel: viewModel, house: house)
-                                    .presentationDetents([.medium])
+                        if !showMyOwnHouse {
+                            Button(action: {
+                                // Lägg till funktion för bokning
+                                showBookings.toggle()
+                            })
+                            {
+                                FilledButtonLabel(text: "Reserv")
+                                    .frame(maxWidth: 80)
+                                //.fontWeight(.bold)
                             }
-                        })
-                    } else {
-                        Text("")
+                            .padding([.bottom, .trailing], 30)
+                            
+                            .sheet(isPresented: $showBookings, onDismiss: {
+                                viewModel.selectedBooking = nil
+                                viewModel.selectedBookingID = ""
+                            } ,content: {
+                                if let house = viewModel.house {
+                                    BookingsList(viewModel: viewModel, house: house)
+                                        .presentationDetents([.medium])
+                                }
+                            })
+                        } else {
+                            Text("")
+                        }
                     }
                     
                 }
+                .sheet(isPresented: $showReviewSheet, content: {
+                    ReadReviewSheet(viewModel: viewModel, houseId: houseId)
+                })
                 .toolbar{
                     if let house = viewModel.house,
-                       let houseId = house.id{
+                       let houseId = house.id, !showMyOwnHouse{
                         NavigationLink(destination: ChatView(vm:ChatViewModel(toUserID: house.ownerID))){
                             Image(systemName: "envelope.fill")
                                 //.font(.largeTitle)
@@ -413,12 +439,91 @@ struct HouseDetailView: View {
         }
 }
 
-
-
-
-#Preview {
-    HouseDetailView(houseId: "1", firebaseHelper: FirebaseHelper(),booked: false)
+struct ReadReviewSheet: View {
+    @ObservedObject var viewModel : HouseDetailViewModel
+    var houseId: String
+    
+    var body: some View {
+        ScrollView {
+            VStack {
+                ForEach(viewModel.reviews) {review in
+                    reviewCardView(review: review, user: viewModel.loadReviewerInfo(reviewerID: review.userID))
+                        
+                        .padding(.horizontal, 20)
+                    
+                }
+            }
+            
+            .onAppear() {
+                viewModel.getReviews(houseID: houseId)
+                
+            }
+        }
+        .padding(.vertical, 50)
+    }
 }
+
+struct reviewCardView : View {
+    var review: Review
+    var user: User?
+    var body: some View {
+        if let user = user {
+            VStack {
+                HStack {
+                    RatingStars(totalStars: 5, rating: review.rating)
+                        
+                        .padding(.leading, 20)
+                    NavigationLink(destination: HouseOwnerProfileView(user: user)) { //Funkar inte än, väntar på kristians lösning
+                        Text("\(user.firstName ?? "Unknown user")")
+                            .font(.caption)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding([.leading, .top], 10)
+                if let title = review.title, let text = review.text {
+                    Text(title)
+                        .font(.system(size: 16))
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding([.horizontal, .top], 20)
+                        
+                    Text(text)
+                        .font(.system(size: 14))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding([.horizontal, .bottom], 20)
+                }
+            }
+            .frame(maxWidth: .infinity ,minHeight: 80)
+            .background(Color.white)
+            .cornerRadius(20)
+            .shadow(radius: 5)
+            .padding(.vertical, 8)
+        }
+    }
+}
+
+struct RatingStars : View {
+    var totalStars: Int
+    var rating: Int
+    
+    var offColor = Color.gray
+    var onColor = Color.yellow
+    
+    var body: some View {
+        HStack {
+            ForEach(1..<totalStars + 1, id: \.self) { number in
+                Image(systemName: "star.fill")
+                    .foregroundStyle(number > rating ? offColor : onColor)
+            }
+        }
+    }
+}
+
+//
+//
+//#Preview {
+//    HouseDetailView(houseId: "1", firebaseHelper: FirebaseHelper(),booked: false)
+//}
 
 struct BookingsList: View {
     @StateObject var viewModel : HouseDetailViewModel

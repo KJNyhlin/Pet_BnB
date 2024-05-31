@@ -22,6 +22,9 @@ class HouseDetailViewModel: ObservableObject {
     @Published var bookingColor : Color = Color.blue
     @Published var selectedBookingID: String = ""
     @Published var selectedBooking: Booking?
+    @Published var rating: Double?
+    @Published var reviews: [Review] = []
+    @Published var reviewerInfo: [String: User] = [:]
     
     
     init(firebaseHelper: FirebaseHelper, date: Date = Date()) {
@@ -125,13 +128,6 @@ class HouseDetailViewModel: ObservableObject {
         }
     
     
-//    func daysInMonth(for date: Date) -> [Date] {
-//        guard let monthInterval = Calendar.current.dateInterval(of: .month, for: date),
-//              let monthStart = monthInterval.start else { return []}
-//         var dates = [Date]()
-//        for day in 0..< Calendar.current.range(of: .day, in: .month, for: monthStart)!.count
-//    }
-    
     private func fetchHousePet(byId id: String) {
             firebaseHelper.fetchPet(byId: id) { [weak self] result in
                 switch result {
@@ -144,4 +140,37 @@ class HouseDetailViewModel: ObservableObject {
                 }
             }
         }
+    
+    
+    func getReviews(houseID: String) {
+        self.reviews.removeAll()
+        firebaseHelper.fetchReviews(houseID: houseID) {reviews in
+            self.reviews.removeAll()
+            print(reviews.count)
+            self.reviews.append(contentsOf: reviews)
+            print(reviews.count)
+            self.fetchReviewerInfo()
+        }
+    }
+    
+    func fetchReviewerInfo() {
+        self.reviewerInfo.removeAll()
+        for review in self.reviews {
+            firebaseHelper.getRenterInfo(renterID: review.userID) {reviewer in
+                if let reviewer = reviewer {
+                    self.reviewerInfo[review.userID] = reviewer
+                }
+            }
+        }
+    }
+    
+    func loadReviewerInfo(reviewerID: String) -> User? {
+        
+            return self.reviewerInfo[reviewerID]
+        
+        
+    }
+    
+    
+    
 }
