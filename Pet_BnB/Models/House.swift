@@ -23,4 +23,6 @@ struct House: Identifiable, Codable {
     var ownerID: String
     var pets: [Pet]?
     var bookings: [Booking]?
+    var latitude: Double?
+    var longitude: Double?
 }

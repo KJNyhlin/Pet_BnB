@@ -7,15 +7,20 @@
 
 
 import SwiftUI
+import MapKit
+import CoreLocation
 
 struct HouseDetailView: View {
     @StateObject private var viewModel: HouseDetailViewModel
     var houseId: String
     @State var showBookings: Bool = false
+    @State private var region = MKCoordinateRegion()
+    @State var booked: Bool
     
-    init(houseId: String, firebaseHelper: FirebaseHelper) {
+    init(houseId: String, firebaseHelper: FirebaseHelper, booked: Bool) {
         _viewModel = StateObject(wrappedValue: HouseDetailViewModel(firebaseHelper: firebaseHelper))
         self.houseId = houseId
+        self.booked = booked
     }
     
     var body: some View {
@@ -88,7 +93,33 @@ struct HouseDetailView: View {
                             
                             Rectangle()
                                 .fill(AppColors.mainAccent)
-                                .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.5)
+                                .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+                                .padding(.vertical, 5)
+                                .padding(.horizontal)
+                            
+                            Text("Location")
+                                .font(.headline)
+                                .padding(.leading, -173)
+                                .padding(.top, 7)
+                                .padding(.bottom, 1)
+                            
+                            Text("Where you’ll be")
+                                .font(.footnote)
+                                .padding(.leading, -172)
+                                .foregroundColor(.gray)
+                                .padding(.bottom, -12)
+                    
+                            if let latitude = house.latitude, let longitude = house.longitude {
+                                MapView(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+                                    .frame(height: 280)
+                                    .frame(width: 355)
+                                    .cornerRadius(10)
+                                    .padding()
+                            }
+                            
+                            Rectangle()
+                                .fill(AppColors.mainAccent)
+                                .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
                                 .padding(.vertical, 5)
                                 .padding(.horizontal)
                             
@@ -307,32 +338,42 @@ struct HouseDetailView: View {
                 HStack {
 
                     Spacer()
-                    Button(action: {
-                        // Lägg till funktion för bokning
-                        showBookings.toggle()
-                    })
-                    {
-                        FilledButtonLabel(text: "Book")
-                            .frame(maxWidth: 80)
+                    if !booked {
+                        Button(action: {
+                            // Lägg till funktion för bokning
+                            showBookings.toggle()
+                        })
+                        {
+                            FilledButtonLabel(text: "Reserv")
+                                .frame(maxWidth: 80)
                             //.fontWeight(.bold)
-                    }
-                    .padding([.bottom, .trailing], 30)
-                    .sheet(isPresented: $showBookings, content: {
-                        if let house = viewModel.house {
-                            BookingsList(viewModel: viewModel, house: house)
                         }
-                    })
-                    .toolbar{
-                        if let house = viewModel.house,
-                           let houseId = house.id{
-                            NavigationLink(destination: ChatView(vm:ChatViewModel(toUserID: house.ownerID))){
-                                Image(systemName: "envelope.fill")
-                                    //.font(.largeTitle)
-                                    .padding()
-                                    .foregroundColor(AppColors.mainAccent)
+                        .padding([.bottom, .trailing], 30)
+                        .sheet(isPresented: $showBookings, onDismiss: {
+                            viewModel.selectedBooking = nil
+                            viewModel.selectedBookingID = ""
+                        } ,content: {
+                            if let house = viewModel.house {
+                                BookingsList(viewModel: viewModel, house: house)
+                                    .presentationDetents([.medium])
                             }
+                        })
+                    } else {
+                        Text("")
+                    }
+                    
+                }
+                .toolbar{
+                    if let house = viewModel.house,
+                       let houseId = house.id{
+                        NavigationLink(destination: ChatView(vm:ChatViewModel(toUserID: house.ownerID))){
+                            Image(systemName: "envelope.fill")
+                                //.font(.largeTitle)
+                                .padding()
+                                .foregroundColor(AppColors.mainAccent)
                         }
                     }
+
                 }
             }
         }
@@ -343,7 +384,7 @@ struct HouseDetailView: View {
 
 
 #Preview {
-    HouseDetailView(houseId: "1", firebaseHelper: FirebaseHelper())
+    HouseDetailView(houseId: "1", firebaseHelper: FirebaseHelper(),booked: false)
 }
 
 struct BookingsList: View {
@@ -356,32 +397,37 @@ struct BookingsList: View {
         //            .datePickerStyle(.graphical)
         VStack {
             BookingCalendarView(viewModel: viewModel)
-            ForEach(viewModel.bookings) {booking in
-                if viewModel.showBookingsForMonth(booking: booking) {
-                    
-                    HStack {
-                        Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
-                        if booking.renterID == nil {
-                            Image(systemName: viewModel.checkIfChecked(booking: booking) ? "checkmark.square" : "square")
-                                .onTapGesture {
-                                    
-                                    viewModel.setBookingID(booking: booking)
-                                }
-                        }
-                    }
-                    
-                }
-            }
+//            ForEach(viewModel.bookings) {booking in
+//                if viewModel.showBookingsForMonth(booking: booking) {
+//                    
+//                    HStack {
+//                        Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
+//                        if booking.renterID == nil {
+//                            Image(systemName: viewModel.checkIfChecked(booking: booking) ? "checkmark.square" : "square")
+//                                .onTapGesture {
+//                                    
+//                                    viewModel.setBookingID(booking: booking)
+//                                }
+//                        }
+//                    }
+//                    
+//                }
+//            }
+            
+            Text("Selcted period: \(viewModel.selectedBooking?.fromDate.formatted(date: .numeric, time: .omitted) ?? "") - \(viewModel.selectedBooking?.toDate.formatted(date: .numeric, time: .omitted) ?? "")")
+                .opacity(viewModel.selectedBooking == nil ? 0.0 : 1.0)
+                
+            
             Button(action: {
                 showAlert.toggle()
             }, label: {
-                FilledButtonLabel(text: "Book")
+                FilledButtonLabel(text: "Reserv")
                     .frame(width: 100)
                     
             })
             .disabled(viewModel.selectedBookingID == "")
         }
-        .alert("Do you want to reserv the time period?", isPresented: $showAlert) {
+        .alert("Do you want to reserv the time period? Host will have to confirm it.", isPresented: $showAlert) {
             
             Button("No", role: .cancel) {}
             Button("Yes", role: .none) {
@@ -508,6 +554,8 @@ struct CalendarDayView: View {
             }
         }
         .frame( height: 30)
+        .foregroundColor(date.startOfDay == Date.now.startOfDay ? .blue : .black)
+        .background(date.startOfDay <= Date.now.startOfDay ? AppColors.pastDays : Color.clear)
 //        .padding(8)
 //        .border(Color.black)
 //        .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
@@ -544,3 +592,22 @@ struct CalendarHeader: View {
     }
 }
 
+struct MapView: UIViewRepresentable {
+    var coordinate: CLLocationCoordinate2D
+
+    func makeUIView(context: Context) -> MKMapView {
+        MKMapView(frame: .zero)
+    }
+
+    func updateUIView(_ uiView: MKMapView, context: Context) {
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate
+        uiView.addAnnotation(annotation)
+
+        let region = MKCoordinateRegion(
+            center: coordinate,
+            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        )
+        uiView.setRegion(region, animated: true)
+    }
+}
