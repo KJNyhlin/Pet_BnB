@@ -11,6 +11,7 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
 import FirebaseFirestoreSwift
+import SwiftUI
 
 class FirebaseHelper: ObservableObject {
 
@@ -18,6 +19,7 @@ class FirebaseHelper: ObservableObject {
     let storage = Storage.storage()
     let auth = Auth.auth()
     @Published var houses = [House]()
+    private var authManager = AuthManager.sharedAuth
 
     func getUserID() -> String? {
         return auth.currentUser?.uid
@@ -51,6 +53,7 @@ class FirebaseHelper: ObservableObject {
                 self.loadUserInfo(userID: userID) { user in
                     completion(true)
                     print("\(user)")
+                    self.authManager.set(loggedIn: true)
                 }
             }
         }
@@ -59,6 +62,7 @@ class FirebaseHelper: ObservableObject {
     func signOut() {
         do {
             try auth.signOut()
+            authManager.set(loggedIn: false)
         } catch {
             print("error signing out")
         }
@@ -102,7 +106,7 @@ class FirebaseHelper: ObservableObject {
 
     
     
-    func saveHouse(uiImage: UIImage, title: String, description: String, beds: Int, size: Int, StreetName: String, streetNr: Int, city: String, zipCode: Int,  completion: @escaping (Bool) -> Void){
+    func saveHouse(uiImage: UIImage, title: String, description: String, beds: Int, size: Int, StreetName: String, streetNr: Int, city: String, zipCode: Int, latitude: Double, longitude: Double,  completion: @escaping (Bool) -> Void){
         
         guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else {
             print("Failed convert image")

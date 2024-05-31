@@ -18,11 +18,11 @@ struct CreateHouseView: View {
     @State private var isSaving = false
 
     enum Field {
-        case title, beds, size, streetName, streetNR, zipCode, city, description
+        case title, beds, size, streetName, streetNR, zipCode, city, description, latitude, longitude
     }
 
     var body: some View {
-        NavigationStack {
+
             VStack {
                 Form {
                     PhotosPicker(selection: $vm.imageSelection, matching: .images) {
@@ -56,6 +56,13 @@ struct CreateHouseView: View {
                             .focused($focusedField, equals: .zipCode)
                         NewHouseFormRowView(rowTitle: "City", rowValue: $vm.city)
                             .focused($focusedField, equals: .city)
+                    }
+                    
+                    Section(header: Text("Location")) {
+                        NewHouseFormRowView(rowTitle: "Latitude", rowValue: $vm.latitude, keyboardType: .decimalPad)
+                            .focused($focusedField, equals: .latitude)
+                        NewHouseFormRowView(rowTitle: "Longitude", rowValue: $vm.longitude, keyboardType: .decimalPad)
+                            .focused($focusedField, equals: .longitude)
                     }
 
                     Section(header: Text("Description")) {
@@ -104,7 +111,7 @@ struct CreateHouseView: View {
                         saveHouse()
                     }
                 )
-            }
+ 
         }
     }
 

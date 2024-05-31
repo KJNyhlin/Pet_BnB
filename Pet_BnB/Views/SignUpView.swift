@@ -235,6 +235,7 @@ struct SignIn : View {
                 Button(action: {
                     signInViewModel.signIn(email: signInViewModel.email, password: signInViewModel.password){ success in
                         if success {
+                          //  @EnvironmentObject var chatListViewModel: ChatsListViewModel
                             chatListViewModel.setupChatsListener()
                             dismiss()
                         }else{

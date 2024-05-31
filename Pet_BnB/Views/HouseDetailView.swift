@@ -98,9 +98,15 @@ struct HouseDetailView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.vertical, 5)
                                 
-                                Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
-                                    .font(.caption)
-                                    .bold()
+                                Button(action: {
+                                    if let latitude = house.latitude, let longitude = house.longitude {
+                                        openMapsForDirections(latitude: latitude, longitude: longitude)
+                                    }
+                                }) {
+                                    Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
+                                        .font(.caption)
+                                        .bold()
+                                }
                                 
                                 Text(house.description)
                                     .fixedSize(horizontal: false, vertical: true)
@@ -116,31 +122,50 @@ struct HouseDetailView: View {
                                 .padding(.vertical, 5)
                                 .padding(.horizontal)
                             
-                            Text("Location")
-                                .font(.headline)
-                                .padding(.leading, -173)
-                                .padding(.top, 7)
-                                .padding(.bottom, 1)
-                            
-                            Text("Where you’ll be")
-                                .font(.footnote)
-                                .padding(.leading, -172)
-                                .foregroundColor(.gray)
-                                .padding(.bottom, -12)
-                    
                             if let latitude = house.latitude, let longitude = house.longitude {
-                                MapView(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
-                                    .frame(height: 280)
-                                    .frame(width: 355)
-                                    .cornerRadius(10)
-                                    .padding()
-                            }
+                                if latitude != 0.0 && longitude != 0.0 {
+                                    Text("Location")
+                                        .font(.headline)
+                                        .padding(.leading, -173)
+                                        .padding(.top, 7)
+                                        .padding(.bottom, 1)
+                                    
+                                    Text("Where you’ll be")
+                                        .font(.footnote)
+                                        .padding(.leading, -172)
+                                        .foregroundColor(.gray)
+                                        .padding(.bottom, -12)
                             
-                            Rectangle()
-                                .fill(AppColors.mainAccent)
-                                .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-                                .padding(.vertical, 5)
-                                .padding(.horizontal)
+                                    if let latitude = house.latitude, let longitude = house.longitude {
+                                        MapView(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+                                            .frame(height: 280)
+                                            .frame(width: 355)
+                                            .cornerRadius(10)
+                                            .padding()
+                                    }
+                                    
+                                    if let latitude = viewModel.house?.latitude, let longitude = viewModel.house?.longitude {
+                                        Button("Get directions") {
+                                            openMapsForDirections(latitude: latitude, longitude: longitude)
+                                        }
+                                            .font(.footnote)
+                                            .frame(maxWidth: 110)
+                                            .foregroundColor(.white)
+                                            .padding(.vertical, 7)
+                                            .background(AppColors.mainAccent)
+                                            .cornerRadius(20)
+                                            .fontWeight(.bold)
+                                            .padding(.leading, -179)
+                                            .padding(.top, -10)
+                                    }
+                            
+                                    Rectangle()
+                                        .fill(AppColors.mainAccent)
+                                        .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+                                        .padding(.vertical, 5)
+                                        .padding(.horizontal)
+                                }
+                            }
                             
                             if let owner = viewModel.houseOwner {
                                 VStack {
@@ -404,6 +429,14 @@ struct HouseDetailView: View {
             }
         }
     }
+    
+    func openMapsForDirections(latitude: Double, longitude: Double) {
+            let destinationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            let placemark = MKPlacemark(coordinate: destinationCoordinate)
+            let mapItem = MKMapItem(placemark: placemark)
+            mapItem.name = "Destination"
+            mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
+        }
 }
 
 struct ReadReviewSheet: View {

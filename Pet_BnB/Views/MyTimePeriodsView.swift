@@ -12,7 +12,7 @@ struct MyTimePeriodsView: View {
     @State var showTimePeriodSheet: Bool = false
     
     var body: some View {
-        NavigationStack {
+    //    NavigationStack {
             ScrollView {
                 VStack(spacing: 0){
                     Text("My Time Periods")
@@ -64,7 +64,7 @@ struct MyTimePeriodsView: View {
                         .presentationDetents([.medium])
                 })
             }
-        }
+//        }
     }
 }
 
