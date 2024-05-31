@@ -106,7 +106,7 @@ class FirebaseHelper: ObservableObject {
 
     
     
-    func saveHouse(uiImage: UIImage, title: String, description: String, beds: Int, size: Int, StreetName: String, streetNr: Int, city: String, zipCode: Int,  completion: @escaping (Bool) -> Void){
+    func saveHouse(uiImage: UIImage, title: String, description: String, beds: Int, size: Int, StreetName: String, streetNr: Int, city: String, zipCode: Int, latitude: Double, longitude: Double,  completion: @escaping (Bool) -> Void){
         
         guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else {
             print("Failed convert image")
