@@ -19,6 +19,8 @@ class CreateHouseViewModel: ObservableObject{
     @Published var streetNR = ""
     @Published var city = ""
     @Published var zipCode = ""
+    @Published var latitude = ""
+    @Published var longitude = ""
     var house: House? = nil
     let firebaseHelper = FirebaseHelper()
 
@@ -46,6 +48,8 @@ class CreateHouseViewModel: ObservableObject{
                 self.streetNR = "\(house.streetNR)"
                 self.zipCode = "\(house.zipCode)"
                 self.streetName = house.streetName
+                self.latitude = "\(house.latitude ?? 0.0)"
+                self.longitude = "\(house.longitude ?? 0.0)"
                 firebaseHelper.downloadImage(from: imageURL){ image in
                     self.image = image
                 }
@@ -58,17 +62,20 @@ class CreateHouseViewModel: ObservableObject{
     func saveHouse(completion: @escaping(Bool) -> Void) {
         saveing(inProgress: true)
         guard checkAllInfoSet(),
-              let image = image,
-              let bedsInt = Int(beds),
-              let sizeInt = Int(size),
-              let streetNRInt = Int(streetNR),
-              let zipCodeInt = Int(zipCode) else {
+            let image = image,
+            let bedsInt = Int(beds),
+            let sizeInt = Int(size),
+            let streetNRInt = Int(streetNR),
+            let zipCodeInt = Int(zipCode),
+            let latitudeDouble = Double(latitude),
+            let longitudeDouble = Double(longitude)
+        else {
             completion(false)
             return
         }
         if house == nil{
             // Create a new House
-            firebaseHelper.saveHouse(uiImage: image, title: title, description: description, beds: bedsInt, size: sizeInt, StreetName: streetName, streetNr: streetNRInt, city: city, zipCode: zipCodeInt){ success in
+            firebaseHelper.saveHouse(uiImage: image, title: title, description: description, beds: bedsInt, size: sizeInt, StreetName: streetName, streetNr: streetNRInt, city: city, zipCode: zipCodeInt, latitude: latitudeDouble, longitude: longitudeDouble){ success in
                 completion(success)
             }
             // Only returns true if the house is created for now not if is saved properly
@@ -90,7 +97,7 @@ class CreateHouseViewModel: ObservableObject{
                                 self.firebaseHelper.deleteImage(atUrl: oldURL)
                             }
                             
-                            let changedHouse = House(title: self.title, description: self.description, imageURL: urlString, beds: bedsInt, size: sizeInt, streetName: self.streetName, streetNR: streetNRInt, city: self.city, zipCode: zipCodeInt, ownerID: userID)
+                            let changedHouse = House(title: self.title, description: self.description, imageURL: urlString, beds: bedsInt, size: sizeInt, streetName: self.streetName, streetNR: streetNRInt, city: self.city, zipCode: zipCodeInt, ownerID: userID, latitude: latitudeDouble, longitude: longitudeDouble)
                             self.firebaseHelper.updateHouse(houseID: id, house: changedHouse) { success in
                                 completion(success)
                             }
@@ -100,7 +107,7 @@ class CreateHouseViewModel: ObservableObject{
                     }
                 } else {
                     if let id = house.id {
-                        let changedHouse = House(title: title, description: description, beds: bedsInt, size: sizeInt, streetName: streetName, streetNR: streetNRInt, city: city, zipCode: zipCodeInt, ownerID: userID)
+                        let changedHouse = House(title: title, description: description, beds: bedsInt, size: sizeInt, streetName: streetName, streetNR: streetNRInt, city: city, zipCode: zipCodeInt, ownerID: userID, latitude: latitudeDouble, longitude: longitudeDouble)
                         firebaseHelper.updateHouse(houseID: id, house: changedHouse) { success in
                             completion(success)
                         }
