@@ -10,7 +10,7 @@ import FirebaseCore
 import FirebaseFirestore
 
 struct ContentView: View {
-    @EnvironmentObject var chatVM: ChatsListViewModel
+    
     @EnvironmentObject var authManager: AuthManager
     @State var messageStackPath = NavigationPath()
     @State var houseStackPath = NavigationPath()
@@ -26,50 +26,12 @@ struct ContentView: View {
                     title: { Text("Explore") },
                     icon: { Image(systemName: "magnifyingglass") }
                 ) }
-                
-                NavigationStack(path: $bookingStackPath) {
-                    MyBookingsView()
-                        .navigationDestination(for: BookingNavigation.self) { bookingNav in
-                            BookingView(house: bookingNav.house, booking: bookingNav.booking)
-                        }
-                }
-                    .tabItem { Label(
-                    title: { Text("My Bookings") },
-                    icon: { Image(systemName: "calendar") }
-                ) }
-                .protected()
-                
-                
-                NavigationStack(path: $houseStackPath){
-                    MyHouseView(path: $houseStackPath)
-                        .navigationDestination(for: House.self ){ house in
-                            CreateHouseView(vm: CreateHouseViewModel(house: house))
-                        }
-                        .navigationDestination(for: String.self ){ _ in
-                            CreateHouseView(vm: CreateHouseViewModel(house: nil))
-                        }
+                MyBookingsTabView(path: $bookingStackPath)
 
-                }.tabItem {Label(
-                    title: { Text("My house") },
-                    icon: { Image(systemName: "house") }
-                ) }
-                
-                
-                NavigationStack(path: $messageStackPath){
-                    ChatsListView(path: $messageStackPath)
-                        .navigationDestination(for: User.self ){ user in
-                            HouseOwnerProfileView(user: user)
-                        }
-                }
-                .protected()
-                .tabItem { Label(
-                    title: { Text("Messages") },
-                    icon: { Image(systemName: "bubble") }
-                ) }
-                .badge(chatVM.unreadCount)
-                .environmentObject(chatVM)
-                
-               
+                MyHouseTabView(path: $houseStackPath)
+
+                ChatListTabView(path: $messageStackPath)
+
                 ProfileView().tabItem { Label(
                     title: { Text("Profile") },
                     icon: { Image(systemName: "person.crop.circle") }
@@ -101,6 +63,75 @@ struct ContentView: View {
         bookingStackPath = NavigationPath()
     }
 }
+
+
+struct MyBookingsTabView: View {
+    @Binding var path: NavigationPath
+    
+    var body: some View {
+        NavigationStack(path: $path) {
+            MyBookingsView()
+                .navigationDestination(for: BookingNavigation.self) { bookingNav in
+                    BookingView(house: bookingNav.house, booking: bookingNav.booking)
+                }
+        }
+            .tabItem { Label(
+            title: { Text("My Bookings") },
+            icon: { Image(systemName: "calendar") }
+        ) }
+        .protected()
+    }
+}
+
+struct MyHouseTabView: View {
+    @Binding var path: NavigationPath
+    
+    var body: some View {
+        NavigationStack(path: $path){
+            MyHouseView(path: $path)
+                .navigationDestination(for: House.self ){ house in
+                    CreateHouseView(vm: CreateHouseViewModel(house: house))
+                }
+                .navigationDestination(for: String.self ){ _ in
+                    CreateHouseView(vm: CreateHouseViewModel(house: nil))
+                }
+
+        }.tabItem {Label(
+            title: { Text("My house") },
+            icon: { Image(systemName: "house") }
+        ) }
+        
+    }
+}
+
+struct ChatListTabView: View {
+    @Binding var path: NavigationPath
+    @EnvironmentObject var chatVM: ChatsListViewModel
+    
+    var body: some View {
+        NavigationStack(path: $path){
+            ChatsListView(path: $path)
+                .navigationDestination(for: User.self ){ user in
+                    HouseOwnerProfileView(user: user)
+                }
+        }
+        .protected()
+        .tabItem { Label(
+            title: { Text("Messages") },
+            icon: { Image(systemName: "bubble") }
+        ) }
+        .badge(chatVM.unreadCount)
+        .environmentObject(chatVM)
+    }
+}
+
+
+
+
+
+
+
+
 
 #Preview {
     ContentView()
