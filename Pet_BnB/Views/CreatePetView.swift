@@ -127,6 +127,7 @@ struct CreatePetView: View {
                             .overlay(
                                 RoundedRectangle(cornerRadius: 25.0)
                                     .stroke(AppColors.mainAccent, lineWidth: 3)
+                                    .frame(height: 45)
                             )
                         }
                         .padding(.horizontal)
