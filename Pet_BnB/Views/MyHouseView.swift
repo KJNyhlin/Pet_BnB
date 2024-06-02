@@ -22,6 +22,7 @@ struct MyHouseView: View {
                 
                 TabView(selection: $vm.selectedTab) {
 
+
                     
                     if let house = vm.house {
                         HouseView(vm: vm, house: house).tag(0)
@@ -32,6 +33,11 @@ struct MyHouseView: View {
                         //                    PetsView(vm:PetsViewModel(pet: nil, house: house)).tag(2)
                         PetsView(vm: PetsViewModel(pet: nil, house: house)).tag(2)
                         //                    SignUpView().tag(2)
+                    } else {
+                        NavigationLink(value: ""){
+                            FilledButtonLabel(text:"Create House")
+                                .frame(maxWidth: 200)
+                        }
                     }
                     
                 }
