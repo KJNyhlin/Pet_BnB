@@ -21,6 +21,7 @@ struct CreatePetView: View {
     @State private var imageScale: CGFloat = 1.0
     @State private var lastImageScale: CGFloat = 1.0
     @State private var isImageLoading = true
+    @State private var newRule: String = ""
 
     @FocusState private var isNameFocused: Bool
     @FocusState private var isDescriptionFocused: Bool
@@ -102,6 +103,28 @@ struct CreatePetView: View {
                     )
                     .padding(.vertical)
 
+                
+                Section(header: Text("Pet rules:")) {
+                                    ForEach(vm.informationArray, id: \.self) { rule in
+                                        HStack {
+                                            Image(systemName: "pawprint.fill")
+                                                .foregroundColor(.yellow)
+                                            Text(rule)
+                                        }
+                                    }
+                                    .onDelete(perform: deleteRule)
+                                    
+                                    HStack {
+                                        TextField("New Rule", text: $newRule)
+                                        Button(action: addRule) {
+                                            Image(systemName: "plus.circle.fill")
+                                                .foregroundColor(.yellow)
+                                        }
+                                    }
+                                }
+                                .padding(.horizontal)
+                
+                
                 Spacer()
 
                 Button(action: {
@@ -149,6 +172,7 @@ struct CreatePetView: View {
                     vm.selectedSpices = pet.species
                     vm.description = pet.description ?? ""
                     vm.imageURL = pet.imageURL
+                    vm.informationArray = pet.information
                     vm.loadImageFromURL(pet.imageURL ?? "") {
                         self.isImageLoading = false
                     }
@@ -233,6 +257,16 @@ struct CreatePetView: View {
         }
         return croppedImage
     }
+    
+    private func addRule() {
+            guard !newRule.isEmpty else { return }
+            vm.informationArray.append(newRule)
+            newRule = ""
+        }
+
+        private func deleteRule(at offsets: IndexSet) {
+            vm.informationArray.remove(atOffsets: offsets)
+        }
 }
 
 extension PetsViewModel {
