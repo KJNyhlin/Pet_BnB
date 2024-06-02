@@ -104,26 +104,25 @@ struct CreatePetView: View {
                     .padding(.vertical)
 
                 
-                Section(header: Text("Pet rules:")) {
-                                    ForEach(vm.informationArray, id: \.self) { rule in
-                                        HStack {
-                                            Image(systemName: "pawprint.fill")
-                                                .foregroundColor(.yellow)
-                                            Text(rule)
-                                        }
-                                    }
-                                    .onDelete(perform: deleteRule)
+                Section(header: Text("Pet Rules:")) {
+                    ForEach(vm.informationArray, id: \.self) { rule in
+                        HStack {
+                            Image(systemName: "pawprint.fill")
+                                .foregroundColor(.yellow)
+                            Text(rule)
+                        }
+                    }
+                    .onDelete(perform: deleteRule)
                                     
-                                    HStack {
-                                        TextField("New Rule", text: $newRule)
-                                        Button(action: addRule) {
-                                            Image(systemName: "plus.circle.fill")
-                                                .foregroundColor(.yellow)
-                                        }
-                                    }
-                                }
-                                .padding(.horizontal)
-                
+                    HStack {
+                        TextField("New Rule", text: $newRule)
+                        Button(action: addRule) {
+                            Image(systemName: "plus.circle.fill")
+                                .foregroundColor(.yellow)
+                        }
+                    }
+                }
+                .padding(.horizontal)
                 
                 Spacer()
 
