@@ -34,7 +34,7 @@ struct CreatePetView: View {
                         GeometryReader { geometry in
                             Image(uiImage: image)
                                 .resizable()
-                                .aspectRatio(contentMode: .fit)
+                                .aspectRatio(contentMode: .fill)
                                 .offset(x: self.imagePosition.width, y: self.imagePosition.height)
                                 .scaleEffect(self.imageScale)
                                 .frame(width: geometry.size.width, height: geometry.size.height)
