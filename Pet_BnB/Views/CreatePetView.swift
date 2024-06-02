@@ -97,7 +97,7 @@ struct CreatePetView: View {
 
                         TextEditor(text: $vm.description)
                             .focused($isDescriptionFocused)
-                            .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 400)
+                            .frame(maxWidth: .infinity, minHeight: 170, maxHeight: 400)
                             .padding()
                             .overlay(
                                 RoundedRectangle(cornerRadius: 25.0)
@@ -127,7 +127,7 @@ struct CreatePetView: View {
                             .overlay(
                                 RoundedRectangle(cornerRadius: 25.0)
                                     .stroke(AppColors.mainAccent, lineWidth: 3)
-                                    .frame(height: 45)
+                                    .frame(height: 40)
                             )
                         }
                         .padding(.horizontal)
@@ -251,6 +251,7 @@ struct CreatePetView: View {
                     }
                 }
             }
+            .navigationTitle("My Pet")
         }
     }
 
