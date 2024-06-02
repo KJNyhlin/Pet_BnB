@@ -76,56 +76,68 @@ struct CreatePetView: View {
                     isImagePickerPresented = true
                 }
                 .padding(.top, 20)
+                ScrollView {
+                    VStack {
+                        
+                        EntryFields(placeHolder: "Name", promt: "", field: $vm.name)
+                            .focused($isNameFocused) // Sätt fokus på namnfältet
 
-                EntryFields(placeHolder: "Name", promt: "", field: $vm.name)
-                    .focused($isNameFocused) // Sätt fokus på namnfältet
-
-                Picker("Species", selection: $vm.selectedSpices) {
-                    ForEach(vm.speciesOptions, id: \.self) { specie in
-                        Text(specie)
-                    }
-                }
-                .tint(.black)
-                .frame(maxWidth: .infinity)
-                .pickerStyle(MenuPickerStyle())
-                .overlay(
-                    RoundedRectangle(cornerRadius: 25.0)
-                        .stroke(AppColors.mainAccent, lineWidth: 3)
-                )
-
-                TextEditor(text: $vm.description)
-                    .focused($isDescriptionFocused)
-                    .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 400)
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 25.0)
-                            .stroke(AppColors.mainAccent, lineWidth: 3)
-                    )
-                    .padding(.vertical)
-
-                
-                Section(header: Text("Pet Rules:")) {
-                    ForEach(vm.informationArray, id: \.self) { rule in
-                        HStack {
-                            Image(systemName: "pawprint.fill")
-                                .foregroundColor(.yellow)
-                            Text(rule)
+                        Picker("Species", selection: $vm.selectedSpices) {
+                            ForEach(vm.speciesOptions, id: \.self) { specie in
+                                Text(specie)
+                            }
                         }
-                    }
-                    .onDelete(perform: deleteRule)
-                                    
-                    HStack {
-                        TextField("New Rule", text: $newRule)
-                        Button(action: addRule) {
-                            Image(systemName: "plus.circle.fill")
-                                .foregroundColor(.yellow)
-                        }
-                    }
-                }
-                .padding(.horizontal)
-                
-                Spacer()
+                        .tint(.black)
+                        .frame(maxWidth: .infinity)
+                        .pickerStyle(MenuPickerStyle())
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 25.0)
+                                .stroke(AppColors.mainAccent, lineWidth: 3)
+                        )
 
+                        TextEditor(text: $vm.description)
+                            .focused($isDescriptionFocused)
+                            .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 400)
+                            .padding()
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 25.0)
+                                    .stroke(AppColors.mainAccent, lineWidth: 3)
+                            )
+                            .padding(.vertical)
+
+                        
+                        Section(header: Text("Pet Rules:")) {
+                            ForEach(vm.informationArray, id: \.self) { rule in
+                                HStack {
+                                    Image(systemName: "pawprint.fill")
+                                        .foregroundColor(.yellow)
+                                    Text(rule)
+                                }
+                            }
+                            .onDelete(perform: deleteRule)
+                                            
+                            HStack {
+                                TextField("New Rule", text: $newRule)
+                                Button(action: addRule) {
+                                    Image(systemName: "plus.circle.fill")
+                                        .foregroundColor(.yellow)
+                                }
+                            }
+                            .padding()
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 25.0)
+                                    .stroke(AppColors.mainAccent, lineWidth: 3)
+                            )
+                        }
+                        .padding(.horizontal)
+                        
+                        Spacer()
+                    }
+                    .padding(.leading, 5)
+                    .padding(.trailing, 5)
+                    .padding(.vertical, 20)
+                }
+                
                 Button(action: {
                     hideKeyboard()
                     isSaving = true
