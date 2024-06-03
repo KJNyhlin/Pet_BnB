@@ -60,7 +60,6 @@ struct CreatePetView: View {
                                         }
                                 )
                                 .clipped()
-                                .padding(.leading, 20)
                         }
                         .frame(width: 150, height: 150)
                     } else if isImageLoading {
@@ -73,6 +72,9 @@ struct CreatePetView: View {
                             .frame(width: 100, height: 100)
                             .padding()
                     }
+                    Circle()
+                        .stroke(AppColors.mainAccent, lineWidth: 3)
+                        .frame(width: 150, height: 150)
                 }
                 .onTapGesture {
                     isImagePickerPresented = true
