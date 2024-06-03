@@ -16,5 +16,6 @@ struct Review: Encodable, Decodable, Identifiable {
     var rating : Int
     var title : String?
     var text: String?
+    var date: Date = Date.now
     
 }

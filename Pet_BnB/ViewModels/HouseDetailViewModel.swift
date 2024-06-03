@@ -70,15 +70,6 @@ class HouseDetailViewModel: ObservableObject {
         }
     }
     
-//    func bookHouse(houseID: String) {
-//        
-//        if selectedBookingID != "" {
-//                self.firebaseHelper.bookPeriod(houseID: houseID, docID: selectedBookingID)
-//            }
-//        selectedBookingID = ""
-//        
-//    }
-    
     func getColor(from booking: Booking) -> Color {
         if let bookingID = booking.docID {
             if bookingID == selectedBookingID {
@@ -146,9 +137,11 @@ class HouseDetailViewModel: ObservableObject {
         self.reviews.removeAll()
         firebaseHelper.fetchReviews(houseID: houseID) {reviews in
             self.reviews.removeAll()
-            print(reviews.count)
+            
             self.reviews.append(contentsOf: reviews)
-            print(reviews.count)
+            self.reviews.sort{review1, review2 in
+                review1.date > review2.date
+            }
             self.fetchReviewerInfo()
         }
     }

@@ -454,16 +454,25 @@ struct HouseDetailView: View {
 struct ReadReviewSheet: View {
     @ObservedObject var viewModel : HouseDetailViewModel
     var houseId: String
+    @State var selectedUser: User? = nil
     
     var body: some View {
         ScrollView {
             VStack {
-                ForEach(viewModel.reviews) {review in
-                    reviewCardView(review: review, user: viewModel.loadReviewerInfo(reviewerID: review.userID))
+                if selectedUser == nil {
+                    ForEach(viewModel.reviews) {review in
+                        reviewCardView(review: review, user: viewModel.loadReviewerInfo(reviewerID: review.userID), selectedUser: $selectedUser)
                         
-                        .padding(.horizontal, 20)
-                    
-                }
+                            .padding(.horizontal, 20)
+                        
+                    }
+                    .transition(.scale)
+                } else if let user = selectedUser {
+                    ReviewProfileView(user: user, selectedUser: $selectedUser)
+                        
+                        .transition(.move(edge: .trailing))
+                    }
+                
             }
             
             .onAppear() {
@@ -475,52 +484,90 @@ struct ReadReviewSheet: View {
     }
 }
 
+struct ReviewProfileView: View {
+    var user: User
+    @Binding var selectedUser: User?
+    var body: some View {
+        VStack {
+            Image(systemName: "chevron.left")
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, 20)
+                .foregroundColor(AppColors.mainAccent)
+                .onTapGesture { withAnimation() {
+                    
+                    selectedUser = nil
+                }
+                }
+            
+            HouseOwnerProfileView(user: user)
+                .padding(.top, 60)
+                
+        }
+        
+    }
+}
+
 struct reviewCardView : View {
     var review: Review
     var user: User?
+    @Binding var selectedUser: User?
     var body: some View {
-        if let user = user {
-            VStack {
-                HStack {
-                    RatingStars(totalStars: 5, rating: review.rating)
+        
+            if let user = user {
+                VStack {
+                    HStack {
                         
-                        .padding(.leading, 20)
-                    NavigationLink(destination: HouseOwnerProfileView(user: user)) { //Funkar inte än, väntar på kristians lösning
-                        Text("\(user.firstName ?? "Unknown user")")
+//                        NavigationLink(destination: HouseOwnerProfileView(user: user)) { //Funkar inte än, väntar på kristians lösning
+                            Text("\(user.firstName ?? "Unknown user")")
+                                .font(.caption)
+                                .padding(.leading, 20)
+                                .onTapGesture {
+                                    withAnimation() {
+                                        selectedUser = user
+                                    }
+                                    //------------------------------------------------------------------------
+                                }
+//                        }
+                        Text("\(review.date.formatted(date: .numeric, time: .omitted))")
                             .font(.caption)
+                            .foregroundColor(.gray)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding([.leading, .top], 10)
+                    RatingStars(totalStars: 5, rating: review.rating)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.leading, 20)
+                        .padding(.top, 5)
+                    if let title = review.title, let text = review.text {
+                        if text != "" && title != "" {
+                            Text(title)
+                                .font(.system(size: 16))
+                                .fontWeight(.bold)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding([.horizontal, .top], 20)
+                            
+                            Text(text)
+                                .font(.system(size: 14))
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding([.horizontal, .bottom], 20)
+                        } else {
+                            Text("No written review.")
+                                .font(.system(size: 16))
+                                .fontWeight(.bold)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal, 20)
+                                .padding(.top, 5)
+                        }
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding([.leading, .top], 10)
-                if let title = review.title, let text = review.text {
-                    if text != "" && title != "" {
-                        Text(title)
-                            .font(.system(size: 16))
-                            .fontWeight(.bold)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding([.horizontal, .top], 20)
-                        
-                        Text(text)
-                            .font(.system(size: 14))
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding([.horizontal, .bottom], 20)
-                    } else {
-                        Text("No written review.")
-                            .font(.system(size: 16))
-                            .fontWeight(.bold)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, 20)
-                            .padding(.top, 5)
-                    }
-                }
+                .frame(maxWidth: .infinity ,minHeight: 80)
+                .background(Color.white)
+                .cornerRadius(20)
+                .shadow(radius: 5)
+                .padding(.vertical, 8)
             }
-            .frame(maxWidth: .infinity ,minHeight: 80)
-            .background(Color.white)
-            .cornerRadius(20)
-            .shadow(radius: 5)
-            .padding(.vertical, 8)
         }
-    }
+    
 }
 
 struct RatingStars : View {
