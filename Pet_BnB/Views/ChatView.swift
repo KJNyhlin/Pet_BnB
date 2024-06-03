@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ChatView: View {
     @StateObject var vm: ChatViewModel
-    // @EnvironmentObject var chatListVM: ChatsListViewModel
     @State private var scrollTarget: String?
     @Environment(\.dismiss) var dismiss
     
@@ -19,13 +18,9 @@ struct ChatView: View {
         VStack{
             ScrollViewReader { proxy in
                 List{
-                    
                     ForEach(vm.messages){ message in
-                        
-                        
                         MessageView(message: message, fromLoggedIn: vm.fromLoggedInUser(id: message.senderID), dateString: vm.getDateString(timeStamp: message.timestamp),timeString:vm.getTime(from: message.timestamp), vm:vm)
                             .listRowSeparator(.hidden)
-                            .id(message.id)
                             .onAppear{
                                 if message == vm.messages.last{
                                     vm.loadMoreMessages()
@@ -53,7 +48,7 @@ struct ChatView: View {
         .onDisappear {
             vm.removeListener()
         }
-
+        
         
         .toolbar{
             ToolbarItem(placement: .principal){
@@ -156,10 +151,8 @@ struct MessageInputView: View {
                 .lineLimit(5)
                 .frame(maxWidth: .infinity)
             
-            
             Button(action: {
                 sendAction()
-                
             }, label: {
                 Image(systemName: messageInput.isEmpty ? "stop.circle.fill" : "arrow.up.circle.fill")
                     .font(.title)
@@ -175,16 +168,16 @@ struct MessageInputView: View {
 }
 
 struct FlippedUpsideDown: ViewModifier {
-   func body(content: Content) -> some View {
-    content
-      .rotationEffect(.degrees(180))
-      .scaleEffect(x: -1, y: 1, anchor: .center)
-   }
+    func body(content: Content) -> some View {
+        content
+            .rotationEffect(.degrees(180))
+            .scaleEffect(x: -1, y: 1, anchor: .center)
+    }
 }
 extension View{
-   func flippedUpsideDown() -> some View{
-     self.modifier(FlippedUpsideDown())
-   }
+    func flippedUpsideDown() -> some View{
+        self.modifier(FlippedUpsideDown())
+    }
 }
 
 //#Preview {
