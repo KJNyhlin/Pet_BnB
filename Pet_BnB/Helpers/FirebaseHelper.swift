@@ -372,11 +372,13 @@ class FirebaseHelper: ObservableObject {
     }
 
     
-    func bookPeriod(houseID: String, docID: String?) {
+    func bookPeriod(houseID: String, docID: String?, completion: @escaping (Bool) -> Void) {
+        
         if let userID = getUserID(), let docID = docID {
-//            self.db.collection("houses").document(houseID).collection("bookings").document(docID).updateData( ["renterID": userID])
             self.db.collection("bookings").document(docID).updateData( ["renterID": userID, "confirmed": false])
+            completion(true)
         }
+        completion(false)
     }
     
     func confirm(Booking: Booking, docID: String?) {
@@ -405,27 +407,6 @@ class FirebaseHelper: ObservableObject {
         guard let userID = getUserID() else {return}
         var myBookings = [Booking]()
         
-//        db.collection("bookings").whereField("renterID", isEqualTo: userID).getDocuments() { snapshot, error in
-//            if let error = error {
-//                print("Error getting my bookings: \(error)")
-//                completion(nil)
-//            } else {
-//                if let snapshot = snapshot {
-//                    for document in snapshot.documents {
-//                        do {
-//                            let booking = try document.data(as: Booking.self)
-//                            myBookings.append(booking)
-//                        } catch {
-//                            print("Error converting booking")
-//                            completion(nil)
-//                        }
-//                    }
-//                    completion(myBookings)
-//                } else {
-//                    completion(nil)
-//                }
-//            }
-//        }
         db.collection("bookings").whereField("renterID", isEqualTo: userID).addSnapshotListener {snapshot, error in
 
         if let error = error {
@@ -456,10 +437,12 @@ class FirebaseHelper: ObservableObject {
     
     
 
-    func unbook(booking: Booking) {
+    func unbook(booking: Booking, completion: @escaping (Bool) -> Void) {
         if let docID = booking.docID {
-            db.collection("bookings").document(docID).updateData(["renterID" : nil, "reservedID": nil])
+            db.collection("bookings").document(docID).updateData(["renterID" : nil, "reservedID": nil, "confirmed": nil])
+            completion(true)
         }
+        completion(false)
     }
     
     func getRenterInfo(renterID: String, completion : @escaping (User?) -> Void) {

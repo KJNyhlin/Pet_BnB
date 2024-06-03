@@ -13,7 +13,7 @@ class HouseDetailViewModel: ObservableObject {
     @Published var house: House?
     @Published var houseOwner: User?
     @Published var housePet: Pet?
-    private var firebaseHelper: FirebaseHelper
+     var firebaseHelper: FirebaseHelper
     private var cancellables = Set<AnyCancellable>()
     @Published var bookings = [Booking]()
     @Published var date: Date
@@ -70,14 +70,14 @@ class HouseDetailViewModel: ObservableObject {
         }
     }
     
-    func bookHouse(houseID: String) {
-        
-        if selectedBookingID != "" {
-                self.firebaseHelper.bookPeriod(houseID: houseID, docID: selectedBookingID)
-            }
-        selectedBookingID = ""
-        
-    }
+//    func bookHouse(houseID: String) {
+//        
+//        if selectedBookingID != "" {
+//                self.firebaseHelper.bookPeriod(houseID: houseID, docID: selectedBookingID)
+//            }
+//        selectedBookingID = ""
+//        
+//    }
     
     func getColor(from booking: Booking) -> Color {
         if let bookingID = booking.docID {

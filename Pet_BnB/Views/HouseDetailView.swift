@@ -481,16 +481,25 @@ struct reviewCardView : View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding([.leading, .top], 10)
                 if let title = review.title, let text = review.text {
-                    Text(title)
-                        .font(.system(size: 16))
-                        .fontWeight(.bold)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding([.horizontal, .top], 20)
+                    if text != "" && title != "" {
+                        Text(title)
+                            .font(.system(size: 16))
+                            .fontWeight(.bold)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding([.horizontal, .top], 20)
                         
-                    Text(text)
-                        .font(.system(size: 14))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding([.horizontal, .bottom], 20)
+                        Text(text)
+                            .font(.system(size: 14))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding([.horizontal, .bottom], 20)
+                    } else {
+                        Text("No written review.")
+                            .font(.system(size: 16))
+                            .fontWeight(.bold)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 20)
+                            .padding(.top, 5)
+                    }
                 }
             }
             .frame(maxWidth: .infinity ,minHeight: 80)
@@ -527,30 +536,14 @@ struct RatingStars : View {
 
 struct BookingsList: View {
     @StateObject var viewModel : HouseDetailViewModel
+    @Environment(\.dismiss) var dismiss
     var house : House
     @State var showAlert : Bool = false
     @State var startDate = Date.now
     var body: some View {
-        //        DatePicker("Select period", selection: $startDate, displayedComponents: .date)
-        //            .datePickerStyle(.graphical)
+
         VStack {
             BookingCalendarView(viewModel: viewModel)
-//            ForEach(viewModel.bookings) {booking in
-//                if viewModel.showBookingsForMonth(booking: booking) {
-//                    
-//                    HStack {
-//                        Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
-//                        if booking.renterID == nil {
-//                            Image(systemName: viewModel.checkIfChecked(booking: booking) ? "checkmark.square" : "square")
-//                                .onTapGesture {
-//                                    
-//                                    viewModel.setBookingID(booking: booking)
-//                                }
-//                        }
-//                    }
-//                    
-//                }
-//            }
             
             Text("Selcted period: \(viewModel.selectedBooking?.fromDate.formatted(date: .numeric, time: .omitted) ?? "") - \(viewModel.selectedBooking?.toDate.formatted(date: .numeric, time: .omitted) ?? "")")
                 .opacity(viewModel.selectedBooking == nil ? 0.0 : 1.0)
@@ -572,7 +565,15 @@ struct BookingsList: View {
                 
                 if let houseID = house.id
                 {
-                    viewModel.bookHouse(houseID: houseID)
+                    if viewModel.selectedBookingID != "" {
+//                        viewModel.bookHouse(houseID: houseID)
+                        viewModel.firebaseHelper.bookPeriod(houseID: houseID, docID: viewModel.selectedBookingID) {success in
+                            if success {
+                                dismiss()
+                            }
+                            
+                        }
+                    }
                 }
             }
         }
