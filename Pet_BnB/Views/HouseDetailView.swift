@@ -466,11 +466,11 @@ struct ReadReviewSheet: View {
                             .padding(.horizontal, 20)
                         
                     }
-                    .transition(.slide)
+                    .transition(.scale)
                 } else if let user = selectedUser {
                     ReviewProfileView(user: user, selectedUser: $selectedUser)
                         
-                        .transition(.slide)
+                        .transition(.move(edge: .trailing))
                     }
                 
             }
@@ -522,7 +522,9 @@ struct reviewCardView : View {
                                 .font(.caption)
                                 .padding(.leading, 20)
                                 .onTapGesture {
-                                    selectedUser = user
+                                    withAnimation() {
+                                        selectedUser = user
+                                    }
                                     //------------------------------------------------------------------------
                                 }
 //                        }
