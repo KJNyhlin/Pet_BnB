@@ -52,9 +52,6 @@ class ChatsListViewModel: ObservableObject{
         listenerRegistration = nil
         chats.removeAll()
     }
-
-    
-
     
     private func fetchParticipants() {
         print("fetchParticipantNames called!!!")
@@ -64,7 +61,6 @@ class ChatsListViewModel: ObservableObject{
                     firebaseHelper.loadUserInfo(userID: participant){ user in
                         DispatchQueue.main.async {
                             self.chatParticipants[participant] = user
-
                         }
                     }
                 }
@@ -79,7 +75,6 @@ class ChatsListViewModel: ObservableObject{
                     return chatParticipants[userID]
                 }
             }
-            
         }
         return nil
     }
@@ -92,6 +87,7 @@ class ChatsListViewModel: ObservableObject{
         }
         return false
     }
+    
     func totalUnreadMessages(chats: [Chat]){
         var count = 0
         if let userID = firebaseHelper.getUserID(){
