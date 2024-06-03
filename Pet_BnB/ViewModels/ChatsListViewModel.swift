@@ -24,7 +24,6 @@ class ChatsListViewModel: ObservableObject{
     init(chats: [Chat] = [], firebaseHelper: FirebaseHelper = FirebaseHelper(), listenerRegistration: ListenerRegistration? = nil) {
         self.chats = chats
         self.firebaseHelper = firebaseHelper
-        // self.listenerRegistration = listenerRegistration
         
         setupChatsListener()
     }
@@ -55,22 +54,17 @@ class ChatsListViewModel: ObservableObject{
     }
 
     
-    // Make use of function in firebasehelper
+
     
     private func fetchParticipants() {
         print("fetchParticipantNames called!!!")
         for chat in chats {
             for participant in chat.participants {
                 if chatParticipants[participant] == nil { // Fetch only if not already fetched
-                    
-                    db.collection("users").document(participant).getDocument { documentSnapshot, error in
-                        if let document = documentSnapshot, document.exists {
-                            if let user = try? document.data(as: User.self) {
-                                DispatchQueue.main.async {
-                                    self.chatParticipants[participant] = user
-//                                    print(self.chatParticipants)
-                                }
-                            }
+                    firebaseHelper.loadUserInfo(userID: participant){ user in
+                        DispatchQueue.main.async {
+                            self.chatParticipants[participant] = user
+
                         }
                     }
                 }

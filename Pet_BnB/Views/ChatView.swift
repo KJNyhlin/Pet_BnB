@@ -17,10 +17,6 @@ struct ChatView: View {
     var body: some View {
         
         VStack{
-            //            if let toUser = vm.toUser{
-            //                ChatHeader(toUser: toUser)
-            //            }
-            
             ScrollViewReader { proxy in
                 List{
                     
@@ -40,16 +36,6 @@ struct ChatView: View {
                 }
                 .listStyle(.plain)
                 .flippedUpsideDown()
-//                .onChange(of: vm.messages){
-//                    if vm.isFirstLoad{
-//                        proxy.scrollTo(vm.messages.last?.id)
-//                        scrollTarget = vm.messages.first?.id
-//                    } else {
-//                        proxy.scrollTo(scrollTarget, anchor: .top)
-//                        scrollTarget = vm.messages.first?.id
-//                    }
-//                }
-//                
             }
             VStack{
                 MessageInputView(messageInput: $vm.messageInput, sendAction: vm.sendMessage)
@@ -135,7 +121,6 @@ struct MessageView: View{
     
     var body: some View{
         VStack{
-            //if !vm.sameAsLastString(string: dateString){
             if vm.dateStringChanged(string: dateString){
                 Text(dateString)
                     .font(.caption2)
