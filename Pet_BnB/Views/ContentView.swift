@@ -95,6 +95,9 @@ struct MyHouseTabView: View {
                 .navigationDestination(for: String.self ){ _ in
                     CreateHouseView(vm: CreateHouseViewModel(house: nil))
                 }
+                .navigationDestination(for: User.self){ user in
+                    HouseOwnerProfileView(user: user)
+                }
 
         }.tabItem {Label(
             title: { Text("My house") },
