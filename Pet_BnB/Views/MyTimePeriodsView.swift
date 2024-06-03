@@ -151,13 +151,19 @@ struct MyTimePeriodCardView : View {
                                 .font(.headline)
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                             if let renterID = booking.renterID, booking.toDate > Date.now {
-                                NavigationLink(destination: ChatView(vm:ChatViewModel(toUserID: renterID))){
+                            //    NavigationLink(destination: ChatView(vm:ChatViewModel(toUserID: renterID))){
+                                NavigationLink(value: renterID) {
                                     Image(systemName: "envelope.fill")
                                     //.font(.largeTitle)
                                         .padding(.vertical)
                                         .foregroundColor(AppColors.mainAccent)
                                 }
+                                .navigationDestination(for: String.self) { toUserID in
+                                    ChatView(vm: ChatViewModel(toUserID: toUserID))
+                                }
+
                             }
+        
                         }
                         HStack {
                             if booking.fromDate > Date.now {
