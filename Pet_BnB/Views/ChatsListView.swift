@@ -16,8 +16,6 @@ struct ChatsListView: View {
     
     var body: some View {
         VStack{
-            
-            
             List{
                 if !vm.chats.isEmpty{
                     ForEach(vm.chats){ chat in

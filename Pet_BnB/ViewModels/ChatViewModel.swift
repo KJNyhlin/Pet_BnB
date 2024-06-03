@@ -255,12 +255,6 @@ class ChatViewModel: ObservableObject{
         }
     }
     
-    //    func sameAsLastString(string: String) -> Bool {
-    //        let same = string == lastMessageDateString
-    //        lastMessageDateString = string
-    //        
-    //        return same
-    //    }
     
     func dateStringChanged(string: String) -> Bool {
         let changed = string != lastMessageDateString
