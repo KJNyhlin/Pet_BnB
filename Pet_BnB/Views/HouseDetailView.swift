@@ -174,7 +174,8 @@ struct HouseDetailView: View {
                                         .padding(.bottom, 8)
                                         .padding(.top, -4)
                                     
-                                    NavigationLink(destination: HouseOwnerProfileView(user: owner)) {
+                                  //  NavigationLink(destination: HouseOwnerProfileView(user: owner)) {
+                                    NavigationLink(value: owner) {
                                         if let url = owner.imageURL {
                                             AsyncImage(url: URL(string: url)) { phase in
                                                 let size: CGFloat = 100
