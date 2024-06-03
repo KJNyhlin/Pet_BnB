@@ -11,6 +11,7 @@ import PhotosUI
 struct CreatePetView: View {
     @ObservedObject var vm: PetsViewModel
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var authManager: AuthManager
     var pet: Pet?
 
     @State private var isImagePickerPresented = false
@@ -20,6 +21,8 @@ struct CreatePetView: View {
     @State private var lastImagePosition = CGSize.zero
     @State private var imageScale: CGFloat = 1.0
     @State private var lastImageScale: CGFloat = 1.0
+    @State private var isImageLoading = true
+    @State private var newRule: String = ""
 
     @FocusState private var isNameFocused: Bool
     @FocusState private var isDescriptionFocused: Bool
@@ -28,11 +31,11 @@ struct CreatePetView: View {
         VStack {
             VStack {
                 ZStack {
-                    if let image = vm.image {
+                    if let image = vm.image, !isImageLoading {
                         GeometryReader { geometry in
                             Image(uiImage: image)
                                 .resizable()
-                                .aspectRatio(contentMode: .fit)
+                                .aspectRatio(contentMode: .fill)
                                 .offset(x: self.imagePosition.width, y: self.imagePosition.height)
                                 .scaleEffect(self.imageScale)
                                 .frame(width: geometry.size.width, height: geometry.size.height)
@@ -59,6 +62,9 @@ struct CreatePetView: View {
                                 .padding(.leading, 20)
                         }
                         .frame(width: 150, height: 150)
+                    } else if isImageLoading {
+                        ProgressView() // Visa en laddningsindikator medan bilden laddas
+                            .frame(width: 150, height: 150)
                     } else {
                         Image(systemName: "pawprint.fill")
                             .resizable()
@@ -70,38 +76,72 @@ struct CreatePetView: View {
                 .onTapGesture {
                     isImagePickerPresented = true
                 }
-                .padding(.top, 20) // Lägger till toppmarginal för att undvika statusfältet
+                .padding(.top, 20)
+                ScrollView {
+                    VStack {
+                        
+                        EntryFields(placeHolder: "Name", promt: "", field: $vm.name)
+                            .focused($isNameFocused) // Sätt fokus på namnfältet
 
-                EntryFields(placeHolder: "Name", promt: "", field: $vm.name)
-                    .focused($isNameFocused) // Sätt fokus på namnfältet
+                        Picker("Species", selection: $vm.selectedSpices) {
+                            ForEach(vm.speciesOptions, id: \.self) { specie in
+                                Text(specie)
+                            }
+                        }
+                        .tint(.black)
+                        .frame(maxWidth: .infinity)
+                        .pickerStyle(MenuPickerStyle())
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 25.0)
+                                .stroke(AppColors.mainAccent, lineWidth: 3)
+                        )
 
-                Picker("Species", selection: $vm.selectedSpices) {
-                    ForEach(vm.speciesOptions, id: \.self) { specie in
-                        Text(specie)
+                        TextEditor(text: $vm.description)
+                            .focused($isDescriptionFocused)
+                            .frame(maxWidth: .infinity, minHeight: 170, maxHeight: 400)
+                            .padding()
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 25.0)
+                                    .stroke(AppColors.mainAccent, lineWidth: 3)
+                            )
+                            .padding(.vertical)
+
+                        
+                        Section(header: Text("Pet Rules:")) {
+                            ForEach(vm.informationArray, id: \.self) { rule in
+                                HStack {
+                                    Image(systemName: "pawprint.fill")
+                                        .foregroundColor(.yellow)
+                                    Text(rule)
+                                }
+                            }
+                            .onDelete(perform: deleteRule)
+                                            
+                            HStack {
+                                TextField("New Rule", text: $newRule)
+                                Button(action: addRule) {
+                                    Image(systemName: "plus.circle.fill")
+                                        .foregroundColor(.yellow)
+                                }
+                            }
+                            .padding()
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 25.0)
+                                    .stroke(AppColors.mainAccent, lineWidth: 3)
+                                    .frame(height: 40)
+                            )
+                        }
+                        .padding(.horizontal)
+                        
+                        Spacer()
                     }
+                    .padding(.leading, 5)
+                    .padding(.trailing, 5)
+                    .padding(.vertical, 20)
                 }
-                .tint(.black)
-                .frame(maxWidth: .infinity)
-                .pickerStyle(MenuPickerStyle())
-                .overlay(
-                    RoundedRectangle(cornerRadius: 25.0)
-                        .stroke(AppColors.mainAccent, lineWidth: 3)
-                )
-
-                TextEditor(text: $vm.description)
-                    .focused($isDescriptionFocused)
-                    .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 400)
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 25.0)
-                            .stroke(AppColors.mainAccent, lineWidth: 3)
-                    )
-                    .padding(.vertical)
-
-                Spacer()
-
+                
                 Button(action: {
-                    hideKeyboard() // Lägg till för att minimera tangentbordet innan sparandet
+                    hideKeyboard()
                     isSaving = true
                     Task {
                         if let selectedImage = vm.image {
@@ -130,7 +170,7 @@ struct CreatePetView: View {
                     }
                 }, label: {
                     if isSaving {
-                        ProgressView() // Visa en laddningsindikator under sparprocessen
+                        ProgressView() // Visar en laddningsindikator under sparprocessen
                     } else {
                         FilledButtonLabel(text: "Save")
                     }
@@ -145,11 +185,14 @@ struct CreatePetView: View {
                     vm.selectedSpices = pet.species
                     vm.description = pet.description ?? ""
                     vm.imageURL = pet.imageURL
-                    vm.loadImageFromURL(pet.imageURL ?? "")
-                    vm.pet = pet // Tilldela pet för att redigera
+                    vm.informationArray = pet.information
+                    vm.loadImageFromURL(pet.imageURL ?? "") {
+                        self.isImageLoading = false
+                    }
+                    vm.pet = pet
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.isNameFocused = true // Sätt fokus på namnfältet efter en kort fördröjning
+                    self.isNameFocused = true
                 }
             }
             .photosPicker(isPresented: $isImagePickerPresented, selection: $vm.imageSelection, matching: .images, photoLibrary: .shared())
@@ -209,6 +252,12 @@ struct CreatePetView: View {
                     }
                 }
             }
+            .navigationTitle("My Pet")
+        }
+        .onChange(of: authManager.loggedIn){ oldValue, newValue in
+            if !newValue {
+                presentationMode.wrappedValue.dismiss()
+            }
         }
     }
 
@@ -227,6 +276,16 @@ struct CreatePetView: View {
         }
         return croppedImage
     }
+    
+    private func addRule() {
+            guard !newRule.isEmpty else { return }
+            vm.informationArray.append(newRule)
+            newRule = ""
+        }
+
+        private func deleteRule(at offsets: IndexSet) {
+            vm.informationArray.remove(atOffsets: offsets)
+        }
 }
 
 extension PetsViewModel {
@@ -240,59 +299,29 @@ extension PetsViewModel {
                (image != nil && imageURL != pet.imageURL) ||
                imagePosition != .zero || imageScale != 1.0
     }
-}
 
-//
-//struct InformationSheet: View {
-//    @ObservedObject var vm: CreatePetViewModel
-//    //@Binding var informationArray: [String]
-//    @Binding var isPresented: Bool
-//    @State private var inputText: String = ""
-//    var body: some View {
-//        VStack{
-//            
-//            HStack(){
-//                EntryFields(placeHolder: "Information", promt: "", field: $inputText )
-//                    .multilineTextAlignment(.leading)
-//                
-//                Button("Add"){
-//                    if inputText.isEmpty{
-//                        return
-//                    }else{
-//                        vm.addInformation(information: inputText)
-//                        inputText = ""
-//                    }
-//                    
-//                }
-//                
-//            }
-//            .padding(.top, 40)
-//            List{
-//                ForEach(Array(vm.informationArray.enumerated()), id: \.element) { index, information in
-//                    PetInformationRow(vm: vm, arrayID: index, information: information)
-//                }
-//                .onDelete(perform: vm.deleteInformation)
-//                
-//                
-//            }
-//        }
-//    }
-//}
-//
-//struct PetInformationRow: View {
-//    @ObservedObject var vm: CreatePetViewModel
-//    var arrayID: Int
-//    var information: String
-//    
-//    var body: some View {
-//        HStack{
-//            Image(systemName: "circle.fill")
-//                .foregroundColor(AppColors.mainAccent)
-//            Text(information)
-//        }
-//        
-//    }
-//}
+    func loadImageFromURL(_ url: String, completion: @escaping () -> Void) {
+        guard !url.isEmpty, let imageUrl = URL(string: url) else {
+            completion()
+            return
+        }
+
+        let task = URLSession.shared.dataTask(with: imageUrl) { data, response, error in
+            guard let data = data, error == nil, let uiImage = UIImage(data: data) else {
+                DispatchQueue.main.async {
+                    completion()
+                }
+                return
+            }
+
+            DispatchQueue.main.async {
+                self.image = uiImage
+                completion()
+            }
+        }
+        task.resume()
+    }
+}
 
 //#Preview {
 //    CreatePetView(vm: CreatePetViewModel(pet: Pet(name: "Rufus", species: "Dog"), house: House(title: "", description: "", beds: 1, size: 1, streetName: "", streetNR: 1, city: "", zipCode: 1, ownerID: "")))

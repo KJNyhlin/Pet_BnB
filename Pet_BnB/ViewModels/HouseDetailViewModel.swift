@@ -11,7 +11,9 @@ import SwiftUI
 
 class HouseDetailViewModel: ObservableObject {
     @Published var house: House?
-    private var firebaseHelper: FirebaseHelper
+    @Published var houseOwner: User?
+    @Published var housePet: Pet?
+     var firebaseHelper: FirebaseHelper
     private var cancellables = Set<AnyCancellable>()
     @Published var bookings = [Booking]()
     @Published var date: Date
@@ -19,6 +21,10 @@ class HouseDetailViewModel: ObservableObject {
     var dateManager = DateManager()
     @Published var bookingColor : Color = Color.blue
     @Published var selectedBookingID: String = ""
+    @Published var selectedBooking: Booking?
+    @Published var rating: Double?
+    @Published var reviews: [Review] = []
+    @Published var reviewerInfo: [String: User] = [:]
     
     
     init(firebaseHelper: FirebaseHelper, date: Date = Date()) {
@@ -46,9 +52,12 @@ class HouseDetailViewModel: ObservableObject {
         firebaseHelper.fetchHouse(byId: id) { [weak self] house in
             DispatchQueue.main.async {
                 self?.house = house
+                if let ownerId = house?.ownerID {
+                    self?.fetchHouseOwner(byId: ownerId)
+                }
                 if let houseID = house?.id {
                     self?.firebaseHelper.getTimePeriodsFor(houseID: houseID) {bookings in
-                        
+                        print("we get new bookings")
                         if let bookings = bookings {
                             self?.bookings.removeAll()
                             for booking in bookings {
@@ -61,14 +70,14 @@ class HouseDetailViewModel: ObservableObject {
         }
     }
     
-    func bookHouse(houseID: String) {
-        
-        if selectedBookingID != "" {
-                self.firebaseHelper.bookPeriod(houseID: houseID, docID: selectedBookingID)
-            }
-        selectedBookingID = ""
-        
-    }
+//    func bookHouse(houseID: String) {
+//        
+//        if selectedBookingID != "" {
+//                self.firebaseHelper.bookPeriod(houseID: houseID, docID: selectedBookingID)
+//            }
+//        selectedBookingID = ""
+//        
+//    }
     
     func getColor(from booking: Booking) -> Color {
         if let bookingID = booking.docID {
@@ -85,11 +94,14 @@ class HouseDetailViewModel: ObservableObject {
     
     func setBookingID(booking: Booking) {
         if booking.renterID == nil {
+            
             if let docID = booking.docID {
                 if self.selectedBookingID == docID {
                     self.selectedBookingID = ""
+                    selectedBooking = nil
                 } else {
                     self.selectedBookingID = docID
+                    selectedBooking = booking
                 }
             }
         }
@@ -107,12 +119,58 @@ class HouseDetailViewModel: ObservableObject {
         return date.isDateInMonth(date: booking.fromDate, selectedMonth: date) || date.isDateInMonth(date: booking.toDate, selectedMonth: date) 
     }
     
+    func fetchHouseOwner(byId ownerId: String) {
+            firebaseHelper.fetchUser(byId: ownerId) { [weak self] user in
+                DispatchQueue.main.async {
+                    self?.houseOwner = user
+                }
+            }
+        }
     
-//    func daysInMonth(for date: Date) -> [Date] {
-//        guard let monthInterval = Calendar.current.dateInterval(of: .month, for: date),
-//              let monthStart = monthInterval.start else { return []}
-//         var dates = [Date]()
-//        for day in 0..< Calendar.current.range(of: .day, in: .month, for: monthStart)!.count
-//    }
+    
+    private func fetchHousePet(byId id: String) {
+            firebaseHelper.fetchPet(byId: id) { [weak self] result in
+                switch result {
+                case .success(let pet):
+                    DispatchQueue.main.async {
+                        self?.housePet = pet
+                    }
+                case .failure(let error):
+                    print("Error fetching house pet: \(error.localizedDescription)")
+                }
+            }
+        }
+    
+    
+    func getReviews(houseID: String) {
+        self.reviews.removeAll()
+        firebaseHelper.fetchReviews(houseID: houseID) {reviews in
+            self.reviews.removeAll()
+            print(reviews.count)
+            self.reviews.append(contentsOf: reviews)
+            print(reviews.count)
+            self.fetchReviewerInfo()
+        }
+    }
+    
+    func fetchReviewerInfo() {
+        self.reviewerInfo.removeAll()
+        for review in self.reviews {
+            firebaseHelper.getRenterInfo(renterID: review.userID) {reviewer in
+                if let reviewer = reviewer {
+                    self.reviewerInfo[review.userID] = reviewer
+                }
+            }
+        }
+    }
+    
+    func loadReviewerInfo(reviewerID: String) -> User? {
+        
+            return self.reviewerInfo[reviewerID]
+        
+        
+    }
+    
+    
     
 }

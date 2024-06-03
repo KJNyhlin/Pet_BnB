@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SignUpView: View {
     @EnvironmentObject var signUpViewModel :SignUpViewModel
+    @EnvironmentObject var chaListViewModel: ChatsListViewModel
    
     
     var body: some View {
@@ -99,6 +100,7 @@ struct ShowSpinner: View {
 
 struct SignUp: View {
     @EnvironmentObject var signUpViewModel : SignUpViewModel
+
     
     var body: some View {
         EntryFields(placeHolder: "Enter email", promt: "", field: $signUpViewModel.email)
@@ -113,10 +115,16 @@ struct SignUp: View {
 
 struct SignUpButtons: View {
     @EnvironmentObject var signUpViewModel : SignUpViewModel
-
+    @EnvironmentObject var chatListViewModel: ChatsListViewModel
     var body: some View {
         Button(action: { withAnimation() {
-            signUpViewModel.signUp(name: signUpViewModel.email, password: signUpViewModel.password)
+            signUpViewModel.signUp(name: signUpViewModel.email, password: signUpViewModel.password){ success in
+                if success{
+                    chatListViewModel.setupChatsListener()
+                } else{
+                    // Not signed up tell user!
+                }
+            }
         }
         }, label: {
           FilledButtonLabel(text: "Sign up")
@@ -205,6 +213,7 @@ struct EnterPersonalInfo : View {
 struct SignIn : View {
     @EnvironmentObject var signInViewModel : SignUpViewModel
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var chatListViewModel: ChatsListViewModel
     
     var body: some View {
         
@@ -224,8 +233,17 @@ struct SignIn : View {
                 EntryFields(placeHolder: "Email", promt: "", field: $signInViewModel.email)
                 EntryFields(placeHolder: "Password", promt: "", field: $signInViewModel.password, isSecure: true)
                 Button(action: {
-                    signInViewModel.signIn(email: signInViewModel.email, password: signInViewModel.password)
-                    dismiss()
+                    signInViewModel.signIn(email: signInViewModel.email, password: signInViewModel.password){ success in
+                        if success {
+                          //  @EnvironmentObject var chatListViewModel: ChatsListViewModel
+                            chatListViewModel.setupChatsListener()
+                            dismiss()
+                        }else{
+                            // Something is wrong tell the user
+                        }
+                        
+                    }
+                   
                 }, label: {
                     FilledButtonLabel(text: "Sign In")
                         .frame(width: 100)

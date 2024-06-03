@@ -11,6 +11,7 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
 import FirebaseFirestoreSwift
+import SwiftUI
 
 class FirebaseHelper: ObservableObject {
 
@@ -18,6 +19,7 @@ class FirebaseHelper: ObservableObject {
     let storage = Storage.storage()
     let auth = Auth.auth()
     @Published var houses = [House]()
+    private var authManager = AuthManager.sharedAuth
 
     func getUserID() -> String? {
         return auth.currentUser?.uid
@@ -38,14 +40,20 @@ class FirebaseHelper: ObservableObject {
         }
     }
     
-    func signIn(email: String, password: String) {
+    func signIn(email: String, password: String, completion: @escaping (Bool) -> Void)  {
         auth.signIn(withEmail: email, password: password) { result, error in
             if let error = error {
                 print("Error signing in: \(error)")
+                completion(false)
             } else {
-                guard let userID = result?.user.uid else { return }
+                guard let userID = result?.user.uid else {
+                    completion(false)
+                    return
+                }
                 self.loadUserInfo(userID: userID) { user in
+                    completion(true)
                     print("\(user)")
+                    self.authManager.set(loggedIn: true)
                 }
             }
         }
@@ -54,6 +62,7 @@ class FirebaseHelper: ObservableObject {
     func signOut() {
         do {
             try auth.signOut()
+            authManager.set(loggedIn: false)
         } catch {
             print("error signing out")
         }
@@ -76,9 +85,9 @@ class FirebaseHelper: ObservableObject {
         }
     }
     
-    func savePersonalInfoToDB(firstName: String, surName: String) {
+    func savePersonalInfoToDB(firstName: String, surName: String, aboutMe: String) {
         guard let userID = auth.currentUser?.uid else { return }
-        let userInfo = User(firstName: firstName, surName: surName)
+        let userInfo = User(firstName: firstName, surName: surName, aboutMe: aboutMe)
         
         do {
             try db.collection("users").document(userID).setData(from: userInfo) { error in }
@@ -97,7 +106,7 @@ class FirebaseHelper: ObservableObject {
 
     
     
-    func saveHouse(uiImage: UIImage, title: String, description: String, beds: Int, size: Int, StreetName: String, streetNr: Int, city: String, zipCode: Int,  completion: @escaping (Bool) -> Void){
+    func saveHouse(uiImage: UIImage, title: String, description: String, beds: Int, size: Int, StreetName: String, streetNr: Int, city: String, zipCode: Int, latitude: Double, longitude: Double,  completion: @escaping (Bool) -> Void){
         
         guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else {
             print("Failed convert image")
@@ -205,28 +214,6 @@ class FirebaseHelper: ObservableObject {
             completion(image)
         }
     }
-  
-  /*
-  func fetchHouses() {
-            db.collection("houses").addSnapshotListener { (querySnapshot, error) in
-                if let error = error {
-                    print("Error getting documents: \(error)")
-                    return
-                }
-                
-                guard let documents = querySnapshot?.documents else {
-                    print("No documents")
-                    return
-                }
-                
-                self.houses = documents.compactMap { queryDocumentSnapshot -> House? in
-                    let result = try? queryDocumentSnapshot.data(as: House.self)
-                    print("House: \(String(describing: result))")
-                    return result
-                }
-            }
-        }
-   */
 
         
     func fetchHouse(byId id: String, completion: @escaping (House?) -> Void) {
@@ -381,38 +368,35 @@ class FirebaseHelper: ObservableObject {
                 
             }
         }
-//        db.collection("houses").document(houseID).collection("bookings").getDocuments() {snapshot, error in
-//            if let error = error {
-//                print("Error loading bookings: \(error)")
-//                completion(nil)
-//            } else {
-//                if let documents = snapshot?.documents {
-//                    for document in documents {
-//                        print("\(document)")
-//                        do {
-//                            let booking = try document.data(as: Booking.self)
-//                            bookings.append(booking)
-//                        } catch {
-//                            print("Error converting document")
-//                            completion(nil)
-//                        }
-//                    }
-//                    completion(bookings)
-//                }
-//            }
-//        }
+
     }
 
-    func bookPeriod(houseID: String, docID: String) {
-        if let userID = getUserID() {
-//            self.db.collection("houses").document(houseID).collection("bookings").document(docID).updateData( ["renterID": userID])
-            self.db.collection("bookings").document(docID).updateData( ["renterID": userID])
+    
+    func bookPeriod(houseID: String, docID: String?, completion: @escaping (Bool) -> Void) {
+        
+        if let userID = getUserID(), let docID = docID {
+            self.db.collection("bookings").document(docID).updateData( ["renterID": userID, "confirmed": false])
+            completion(true)
+        }
+        completion(false)
+    }
+    
+    func confirm(Booking: Booking, docID: String?) {
+        if let userID = getUserID(), let docID = docID  {
+            self.db.collection("bookings").document(docID).updateData(["confirmed": true])
         }
     }
     
-    func remove(timePeriod: Booking,for house: House) {
+    func deny(Booking: Booking, docID: String?) {
+        if let userID = getUserID(), let docID = docID  {
+            self.db.collection("bookings").document(docID).updateData(["renterID" : nil, "confirmed": nil])
+        }
+    }
+    
+    
+    func remove(timePeriod: Booking) {
         if timePeriod.renterID == nil {
-            if let docID = timePeriod.docID, let houseID = house.id {
+            if let docID = timePeriod.docID{
 //                db.collection("houses").document(houseID).collection("bookings").document(docID).delete()
                 db.collection("bookings").document(docID).delete()
             }
@@ -422,29 +406,185 @@ class FirebaseHelper: ObservableObject {
     func getMyBookings(completion: @escaping ([Booking]?) -> Void) {
         guard let userID = getUserID() else {return}
         var myBookings = [Booking]()
-        db.collection("bookings").whereField("renterID", isEqualTo: userID).getDocuments() { snapshot, error in
+        
+        db.collection("bookings").whereField("renterID", isEqualTo: userID).addSnapshotListener {snapshot, error in
+
+        if let error = error {
+            print("Error loading bookings: \(error)")
+            completion(nil)
+        } else {
+            guard let documents = snapshot?.documents else {
+                completion(nil)
+                return
+            }
+            myBookings.removeAll()
+            for document in documents {
+                
+                do {
+                    let booking = try document.data(as: Booking.self)
+                    myBookings.append(booking)
+                } catch {
+                    print("Error decode booking")
+                    completion(nil)
+                }
+            }
+            completion(myBookings)
+            
+        }
+    }
+        
+    }
+    
+    
+
+    func unbook(booking: Booking, completion: @escaping (Bool) -> Void) {
+        if let docID = booking.docID {
+            db.collection("bookings").document(docID).updateData(["renterID" : nil, "reservedID": nil, "confirmed": nil])
+            completion(true)
+        }
+        completion(false)
+    }
+    
+    func getRenterInfo(renterID: String, completion : @escaping (User?) -> Void) {
+        db.collection("users").document(renterID).getDocument() { document, error in
             if let error = error {
-                print("Error getting my bookings: \(error)")
+                print("Error getting renterInfo: \(error)")
                 completion(nil)
             } else {
-                if let snapshot = snapshot {
-                    for document in snapshot.documents {
-                        do {
-                            let booking = try document.data(as: Booking.self)
-                            myBookings.append(booking)
-                        } catch {
-                            print("Error converting booking")
-                            completion(nil)
-                        }
-                    }
-                    completion(myBookings)
-                } else {
+                do {
+                    let renter = try document?.data(as: User.self)
+                    completion(renter)
+                } catch {
+                    print("Error setting document")
                     completion(nil)
                 }
             }
         }
     }
+              
+
+    func fetchUser(byId userId: String, completion: @escaping (User?) -> Void) {
+            db.collection("users").document(userId).getDocument { snapshot, error in
+                guard let snapshot = snapshot, snapshot.exists else {
+                    print("Error fetching user: \(error?.localizedDescription ?? "Unknown error")")
+                    completion(nil)
+                    return
+                }
+                
+                do {
+                    let user = try snapshot.data(as: User.self)
+                    completion(user)
+                } catch {
+                    print("Error decoding user: \(error.localizedDescription)")
+                    completion(nil)
+                }
+            }
+        }
     
+
+    
+    func fetchPet(byId id: String, completion: @escaping (Result<Pet, Error>) -> Void) {
+          let db = Firestore.firestore()
+          db.collection("pets").document(id).getDocument { (document, error) in
+              if let document = document, document.exists {
+                  do {
+                      let pet = try document.data(as: Pet.self)
+                      completion(.success(pet))
+                  } catch {
+                      completion(.failure(error))
+                  }
+              } else if let error = error {
+                  completion(.failure(error))
+              } else {
+                  completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Pet not found"])))
+              }
+          }
+      }
+    
+    
+    func save(rating: Review, for house: House) {
+        if let houseID = house.id {
+            do {
+                try db.collection("houses").document(houseID).collection("ratings").addDocument(from: rating)
+                
+                db.collection("houses").document(houseID).updateData(
+                    ["totalRatingPoints": FieldValue.increment(Int64(rating.rating)),
+                     "numberOfReviews": FieldValue.increment(Int64(1))]
+                )
+                self.setBookingToRated(bookingID: rating.bookingID)
+            } catch {
+                print("Error saving rating")
+            }
+        }
+        
+    }
+    
+    func setBookingToRated(bookingID: String) {
+        
+        db.collection("bookings").document(bookingID).updateData(["rated": true])
+    }
+    
+    
+//    func calculateRating(houseID: String, completion: @escaping (Double?) -> Void){
+//        var totalRating = 0
+//        print(totalRating)
+//        
+//            db.collection("houses").document(houseID).collection("ratings").getDocuments() { snapshot, error in
+//                if let error = error {
+//                    print("Error getting ratings: \(error)")
+//                } else {
+//                    if let documents = snapshot?.documents {
+//                        
+//                        for document in documents {
+//                            do {
+//                                
+//                                let review = try document.data(as: Review.self)
+//                                totalRating += review.rating
+//                                
+//                            } catch {
+//                                print("Error converting rating")
+//                                completion(nil)
+//                            }
+//                        }
+//                        if totalRating != 0 {
+//                            let houseRating : Double = Double(totalRating) / Double(documents.count)
+//                            completion(houseRating)
+//                        }
+//                    }
+//                }
+//            }
+//        
+//        completion(nil)
+//    }
+    
+    func fetchReviews(houseID: String, completion: @escaping ([Review]) -> Void) {
+        var reviews : [Review] = []
+        db.collection("houses").document(houseID).collection("ratings").getDocuments() {snapshot, error in
+            if let error = error {
+                print("Error getting ratings: \(error)")
+                completion([])
+            } else {
+                if let documents = snapshot?.documents {
+                    
+                    
+                    for document in documents {
+                        do {
+                            
+                            let review = try document.data(as: Review.self)
+                            reviews.append(review)
+                            
+                        } catch {
+                            print("Error converting rating")
+                            completion([])
+                        }
+                    }
+                    
+                    
+                }
+            }
+            completion(reviews)
+        }
+    }
     
 }
 

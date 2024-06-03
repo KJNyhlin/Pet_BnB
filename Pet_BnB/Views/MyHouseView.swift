@@ -10,101 +10,301 @@ import SwiftUI
 struct MyHouseView: View {
     //var myHouse: House?
     @StateObject var vm = MyHouseViewModel()
-    @State private var showingDeleteAlert = false
-    @State private var showAddPeriodSheet = false
+    @Binding var path: NavigationPath
+    @EnvironmentObject var authManager: AuthManager
+    
     
     var body: some View {
-        NavigationStack{
-            VStack{
-                if vm.house == nil {
-                    Text("No house created")
+        VStack(){
+        //    NavigationStack{
+                TabBarView(selectedTab: $vm.selectedTab)
+                //                .border(Color.black)
+                
+                TabView(selection: $vm.selectedTab) {
+
+
                     
-                    NavigationLink(destination: CreateHouseView(vm: CreateHouseViewModel(house: nil))) {
-                        FilledButtonLabel(text:"Create House")
-                            .frame(maxWidth: 200)
-                    }
-                }else{
-                    if let house = vm.house,
-                       let imageUrl = vm.house?.imageURL
-                    {
-                        AsyncImageView(imageUrl: imageUrl)
-                        
-                        VStack(alignment: .leading){
-                            Text(house.title)
-                                .font(.title)
-            
-                            InformationRow(beds: house.beds, size: house.size)
-                                
-                            AdressView(street: house.streetName, streetNR: house.streetNR, city: house.city, zipCode: house.zipCode)
-         
-                            Text(house.description)
+                    if let house = vm.house {
+                        HouseView(vm: vm, house: house).tag(0)
+//                        HouseDetailView(houseId: vm.house?.id ?? "", firebaseHelper: FirebaseHelper(), booked: false, showMyOwnHouse: true).tag(0)
 
-                                .bold()
-                         
-
-//                            TimePeriodList(vm: vm)
-
-                            Spacer()
-                            
-                            Menu {
-                                Button(role: .destructive, action: {
-                                    //vm.deleteHouse()
-                                    showingDeleteAlert = true
-                                }
-                                ) {
-                                    Label("Delete", systemImage: "trash")
-                                    
-                                }
-                                if let house = vm.house{
-    
-                                    NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
-                                        Label("Edit", systemImage: "pencil")
-                                    }
-
-                                    NavigationLink(destination:PetsView(vm:PetsViewModel(pet: nil, house: house))){
-                                        Label("Pets", systemImage: "pawprint.fill")
-                                    }
-                                }
-                                if let house = vm.house {
-                                    NavigationLink(destination: TimePeriodView(vm: TimePeriodViewModel(house: house))) {
-                                        Label("Time Periods", systemImage: "clock")
-                                    }
-                                }
-//                                Button(action: {
-////                                    vm.saveTimePeriod()
-//                                    showAddPeriodSheet.toggle()
-//                                }, label: {
-//                                    Text("Add period")
-//                                })
-
-                                
-                            } label: {
-                                FilledButtonLabel(text: "Manage")
-                            }
-                            .alert(isPresented: $showingDeleteAlert) {
-                                Alert(title: Text("Delete House"), message: Text("Are you sure you want to delete this house?"), primaryButton: .destructive(Text("Delete")) {
-                                    vm.deleteHouse()
-                                }, secondaryButton: .cancel())
-                            }
-//                            .sheet(isPresented: $showAddPeriodSheet, content: {
-//                                AddPeriodSheet(vm: vm, showAddPeriodSheet: $showAddPeriodSheet)
-//                            })
-//                            
+                        //                    TimePeriodView(vm: TimePeriodViewModel(house: house)).tag(1)
+                        MyTimePeriodsView(viewModel: TimePeriodViewModel(house: house)).tag(1)
+                        //                    PetsView(vm:PetsViewModel(pet: nil, house: house)).tag(2)
+                        PetsView(vm: PetsViewModel(pet: nil, house: house)).tag(2)
+                        //                    SignUpView().tag(2)
+                    } else {
+                        NavigationLink(value: ""){
+                            FilledButtonLabel(text:"Create House")
+                                .frame(maxWidth: 200)
                         }
-                        .padding()
-                        
-                        
                     }
-                    Spacer()
+                    
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                
+                Spacer()
+                
+            //}
+        }.onChange(of: authManager.loggedIn){ oldValue, newValue in
+            if !newValue {
+                vm.selectedTab = 0
+            }
+        }
+
+
+        
+        
+        .protected()
+        .onAppear{
+            vm.downloadHouse()
+            
+        }
+        .onChange(of: authManager.loggedIn){ oldValue, newValue in
+            if newValue{
+                vm.downloadHouse()
+            } else {
+                vm.house = nil
+            }
+            
+        }
+//        .border(Color.black)
+    }
+}
+
+struct TabBarView: View {
+    @Binding var selectedTab: Int
+    var tabBarNames = ["House", "Time periods", "Pets"]
+    var body: some View {
+        GeometryReader { geometry in
+//            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .center) {
+                    ForEach(Array(zip(self.tabBarNames.indices, self.tabBarNames)), id: \.0) { index, name in
+                        TabBarItem(selectedTab: self.$selectedTab, tabBarItemName: name, tab: index)
+                            .frame(width: geometry.size.width / CGFloat(self.tabBarNames.count))
+//                            .border(Color.blue)
+                    }
+                    
+                    
+//                }
+//                .frame(maxWidth: .infinity)
+//                .border(Color.orange)
+            }
+            
+            .frame(maxWidth: .infinity)
+        }
+        .frame(height: 40)
+    }
+}
+
+struct TabBarItem : View {
+    @Binding var selectedTab: Int
+    var tabBarItemName: String
+    var tab: Int
+    var body: some View {
+        Button(action: {
+            self.selectedTab = tab
+        }, label: {
+            VStack {
+                Spacer()
+                Text(tabBarItemName)
+                    .frame(maxWidth: .infinity)
+                if selectedTab == tab {
+                    AppColors.mainAccent
+                        .frame(height: 2)
+                } else {
+                    Color.clear
+                        .frame(height: 2)
                 }
                 
             }
-            .onAppear{
-                vm.downloadHouse()
+            .frame(maxWidth: .infinity)
+            
+        })
+//        Text(tabBarItemName)
+        .buttonStyle(PlainButtonStyle())
+        
+        
+    }
+}
+
+struct HouseView : View {
+    @State var showingDeleteAlert: Bool = false
+    @ObservedObject var vm : MyHouseViewModel
+    var house: House
+    var body: some View {
+        if let houseID = house.id {
+            VStack {
+                ScrollView {
+                    HouseDetailView(houseId: houseID, firebaseHelper: FirebaseHelper(), booked: false, showMyOwnHouse: true)
+                }
+                Menu {
+                    Button(role: .destructive, action: {
+                        //vm.deleteHouse()
+                        showingDeleteAlert = true
+                    }
+                    ) {
+                        Label("Delete", systemImage: "trash")
+                        
+                    }
+                    //  if let house = vm.house{
+                    
+                    //                                    NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
+                    //                                        Label("Edit", systemImage: "pencil")
+                    //                                    }
+                    NavigationLink(value: house){
+                        Label("Edit", systemImage: "pencil")
+                    }
+                    
+                    
+                    //                                    NavigationLink(destination:PetsView(vm:PetsViewModel(pet: nil, house: house))){
+                    //                                        Label("Pets", systemImage: "pawprint.fill")
+                    //                                    }
+                    
+                }
+                //                                if let house = vm.house {
+                //                                    NavigationLink(destination: TimePeriodView(vm: TimePeriodViewModel(house: house))) {
+                //                                        Label("Time Periods", systemImage: "clock")
+                //                                    }
+                //                                }
+                
+                //                                Button(action: {
+                ////                                    vm.saveTimePeriod()
+                //                                    showAddPeriodSheet.toggle()
+                //                                }, label: {
+                //                                    Text("Add period")
+                //                                })
+                
+                
+            label: {
+                FilledButtonLabel(text: "Manage")
+            }
+                
+            .alert(isPresented: $showingDeleteAlert) {
+                Alert(title: Text("Delete House"), message: Text("Are you sure you want to delete this house?"), primaryButton: .destructive(Text("Delete")) {
+                    vm.deleteHouse()
+                }, secondaryButton: .cancel())
+            }
             }
         }
     }
+    
 }
+
+//struct HouseView : View {
+//    @ObservedObject var vm : MyHouseViewModel
+//    @State private var showingDeleteAlert = false
+//    @State private var showAddPeriodSheet = false
+//    @EnvironmentObject var authManager: AuthManager
+//    
+//    var body: some View {
+//  //      NavigationStack{
+//            VStack{
+//                if vm.house == nil {
+//                    Text("No house created")
+//                    
+//                  //  NavigationLink(destination: CreateHouseView(vm: CreateHouseViewModel(house: nil))) {
+//                    NavigationLink(value: ""){
+//                        FilledButtonLabel(text:"Create House")
+//                            .frame(maxWidth: 200)
+//                    }
+//                }else{
+//                    if let house = vm.house,
+//                       let imageUrl = vm.house?.imageURL
+//                    {
+//                        AsyncImageView(imageUrl: imageUrl)
+//                        
+//                        VStack(alignment: .leading){
+//                            Text(house.title)
+//                                .font(.title)
+//            
+//                            InformationRow(beds: house.beds, size: house.size)
+//                                
+//                            AdressView(street: house.streetName, streetNR: house.streetNR, city: house.city, zipCode: house.zipCode)
+//         
+//                            Text(house.description)
+//
+//                                //.bold()
+//                         
+//
+////                            TimePeriodList(vm: vm)
+//
+//                            Spacer()
+//                            
+//                            Menu {
+//                                Button(role: .destructive, action: {
+//                                    //vm.deleteHouse()
+//                                    showingDeleteAlert = true
+//                                }
+//                                ) {
+//                                    Label("Delete", systemImage: "trash")
+//                                    
+//                                }
+//                              //  if let house = vm.house{
+//    
+////                                    NavigationLink(destination:CreateHouseView(vm: CreateHouseViewModel(house: vm.house))){
+////                                        Label("Edit", systemImage: "pencil")
+////                                    }
+//                                NavigationLink(value: house){
+//                                        Label("Edit", systemImage: "pencil")
+//                                    }
+//
+//
+////                                    NavigationLink(destination:PetsView(vm:PetsViewModel(pet: nil, house: house))){
+////                                        Label("Pets", systemImage: "pawprint.fill")
+////                                    }
+//
+//                                }
+////                                if let house = vm.house {
+////                                    NavigationLink(destination: TimePeriodView(vm: TimePeriodViewModel(house: house))) {
+////                                        Label("Time Periods", systemImage: "clock")
+////                                    }
+////                                }
+//
+////                                Button(action: {
+//////                                    vm.saveTimePeriod()
+////                                    showAddPeriodSheet.toggle()
+////                                }, label: {
+////                                    Text("Add period")
+////                                })
+//
+//                                
+//                             label: {
+//                                FilledButtonLabel(text: "Manage")
+//                            }
+//
+//                            .alert(isPresented: $showingDeleteAlert) {
+//                                Alert(title: Text("Delete House"), message: Text("Are you sure you want to delete this house?"), primaryButton: .destructive(Text("Delete")) {
+//                                    vm.deleteHouse()
+//                                }, secondaryButton: .cancel())
+//                            }
+//
+////                            .sheet(isPresented: $showAddPeriodSheet, content: {
+////                                AddPeriodSheet(vm: vm, showAddPeriodSheet: $showAddPeriodSheet)
+////                            })
+////
+//                        }
+//                        .padding()
+//                        
+//                        
+//                    }
+//
+//                    Spacer()
+//                }
+//                
+//
+//
+//                
+//  //          }
+//            
+//            
+//        }
+// 
+// 
+//    }
+//}
+
+
 
 struct AdressView:View {
     var street: String
@@ -148,45 +348,8 @@ struct InformationRow: View{
         .padding(.vertical, 5)
     }
 }
+////
 //
-//struct  TimePeriodList : View {
-//    @StateObject var vm : MyHouseViewModel
-//    var body: some View {
-//        List(vm.myTimePeriods) {
-//            Text("\($0.fromDate.formatted(date: .numeric, time: .omitted)) - \($0.toDate.formatted(date: .numeric, time: .omitted))")
-//        }
-//    }
-//}
-
-//struct AddPeriodSheet: View {
-//    @StateObject var vm : MyHouseViewModel
-//    @State var startDate = Date.now
-//    @State var endDate = Date.now
-//    @Binding var showAddPeriodSheet : Bool
-//    
-//    var body: some View {
-//        VStack {
-//            Text("Select a time period for others to book")
-//            DatePicker(selection: $startDate, in: Date.now..., displayedComponents: .date) {
-//                    Text("Select a date")
-//                }
-//            
-//            
-//            DatePicker(selection: $endDate, in: Date.now..., displayedComponents: .date) {
-//                    Text("Select a date")
-//                }
-//            Button(action: {
-//                vm.saveTimePeriod(startDate: startDate, endDate: endDate)
-//                showAddPeriodSheet.toggle()
-//                
-//            }, label: {
-//                Text("Save")
-//            })
-//            
-//        }
-//    }
-//}
-
 //#Preview {
 //    AdressView(street: "Gatan", streetNR: 3, city: "Uppsala")
 //}

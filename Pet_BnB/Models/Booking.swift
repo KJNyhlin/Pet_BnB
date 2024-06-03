@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-struct Booking: Identifiable, Decodable, Encodable {
+struct Booking: Identifiable, Decodable, Encodable, Hashable {
     var id = UUID()
     @DocumentID var docID: String?
     var houseID: String
@@ -16,6 +16,8 @@ struct Booking: Identifiable, Decodable, Encodable {
     var fromDate: Date
     var toDate: Date
     var pet: Pet?
+    var confirmed: Bool?
+    var rated: Bool = false
     
     
 }

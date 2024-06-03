@@ -15,9 +15,12 @@ struct ExploreView: View {
     @State private var maxBeds: Int = 150
     @State private var minSize: Int = 10
     @State private var maxSize: Int = 1000
+    @State private var selectedAnimalType: String = "All"
+    
+    let animalTypes = ["All", "Bird", "Cat", "Dog", "Fish", "Rabbit", "Reptile", "Other"]
     
     var isFilterActive: Bool {
-            return minBeds > 1 || maxBeds < 150 || minSize > 10 || maxSize < 1000
+            return minBeds > 1 || maxBeds < 150 || minSize > 10 || maxSize < 1000 || selectedAnimalType != "All"
     }
     
     var filteredHouses: [House] {
@@ -29,7 +32,8 @@ struct ExploreView: View {
                     house.pets?.contains { $0.species.lowercased().contains(searchText.lowercased()) } ?? false
                 let matchesBeds = house.beds >= minBeds && house.beds <= maxBeds
                 let matchesSize = house.size >= minSize && house.size <= maxSize
-                return matchesSearchText && matchesBeds && matchesSize
+                let matchesAnimalType = selectedAnimalType == "All" || (house.pets?.contains { $0.species.lowercased() == selectedAnimalType.lowercased() } ?? false)
+                return matchesSearchText && matchesBeds && matchesSize && matchesAnimalType
             }
     }
         
@@ -51,7 +55,7 @@ struct ExploreView: View {
                                 .padding(.trailing, 16)
                         }
                         .sheet(isPresented: $showFilter) {
-                            FilterView(isPresented: $showFilter, minBeds: $minBeds, maxBeds: $maxBeds, minSize: $minSize, maxSize: $maxSize)
+                            FilterView(isPresented: $showFilter, minBeds: $minBeds, maxBeds: $maxBeds, minSize: $minSize, maxSize: $maxSize, selectedAnimalType: $selectedAnimalType, animalTypes: animalTypes)
                         }
             }
                 .background(Color(.white))

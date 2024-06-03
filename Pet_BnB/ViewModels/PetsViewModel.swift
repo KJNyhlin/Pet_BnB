@@ -33,7 +33,7 @@ class PetsViewModel: ObservableObject {
     }
     @Published var selectedSpices = "Dog"
     @Published var informationArray: [String] = []
-    let speciesOptions = ["Dog", "Cat", "Rabbit"]
+    let speciesOptions = ["Dog", "Cat", "Rabbit", "Fish", "Bird", "Reptile", "Other"]
     let firebaseHelper = FirebaseHelper()
     @Published var image: UIImage?
     @Published var showImagePicker: Bool = false

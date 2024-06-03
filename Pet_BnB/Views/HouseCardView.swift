@@ -12,7 +12,7 @@ struct HouseCardView: View {
     @EnvironmentObject var firebaseHelper: FirebaseHelper
     
     var body: some View {
-        NavigationLink(destination: HouseDetailView(houseId: house.id ?? "", firebaseHelper: firebaseHelper)) {
+        NavigationLink(destination: HouseDetailView(houseId: house.id ?? "", firebaseHelper: firebaseHelper, booked: false, showMyOwnHouse: false)) {
             VStack(alignment: .leading, spacing: 0) {
                 SwipableImageView(
                     houseImageURL: house.imageURL,
@@ -21,6 +21,20 @@ struct HouseCardView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(house.title)
                         .font(.headline)
+                    HStack {
+                        Image(systemName: "star.fill")
+                            .foregroundColor(AppColors.mainAccent)
+                            .font(.system(size: 12))
+                        if let rating = house.getAverageRating() {
+                            Text("\(rating, specifier: "%.1f")")
+                                .foregroundColor(AppColors.mainAccent)
+                                .font(.system(size: 12))
+                        } else {
+                            Text("No ratings yet")
+                                .foregroundColor(AppColors.mainAccent)
+                                .font(.system(size: 12))
+                        }
+                    }
                     HStack {
                         Label(
                             title: { Text("\(house.beds) st") },
@@ -48,6 +62,6 @@ struct HouseCardView: View {
             .padding(.vertical, 8)
             .frame(maxWidth: 335)
         }
-        .buttonStyle(PlainButtonStyle())
+//        .buttonStyle(PlainButtonStyle())
     }
 }
