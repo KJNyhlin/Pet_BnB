@@ -502,7 +502,7 @@ class FirebaseHelper: ObservableObject {
       }
     
     
-    func save(rating: Review, for house: House) {
+    func save(rating: Review, for house: House, completion: @escaping (Bool) -> Void) {
         if let houseID = house.id {
             do {
                 try db.collection("houses").document(houseID).collection("ratings").addDocument(from: rating)
@@ -512,10 +512,13 @@ class FirebaseHelper: ObservableObject {
                      "numberOfReviews": FieldValue.increment(Int64(1))]
                 )
                 self.setBookingToRated(bookingID: rating.bookingID)
+                completion(true)
             } catch {
                 print("Error saving rating")
+                completion(false)
             }
         }
+        completion(false)
         
     }
     
