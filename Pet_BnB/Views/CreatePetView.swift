@@ -302,14 +302,20 @@ struct CreatePetView: View {
     }
     
     private func addRule() {
-            guard !newRule.isEmpty else { return }
+        guard !newRule.isEmpty else { return }
+        if let editingIndex = editingRuleIndex {
+            vm.informationArray[editingIndex] = newRule
+            editingRuleIndex = nil
+        } else {
             vm.informationArray.append(newRule)
-            newRule = ""
         }
+        newRule = ""
+    }
 
-        private func deleteRule(at offsets: IndexSet) {
-            vm.informationArray.remove(atOffsets: offsets)
-        }
+    private func deleteRule(at offsets: IndexSet) {
+        vm.informationArray.remove(atOffsets: offsets)
+    }
+    
 }
 
 extension PetsViewModel {
