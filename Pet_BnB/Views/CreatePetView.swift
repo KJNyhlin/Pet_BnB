@@ -22,6 +22,7 @@ struct CreatePetView: View {
     @State private var imageScale: CGFloat = 1.0
     @State private var lastImageScale: CGFloat = 1.0
     @State private var isImageLoading = true
+    @State private var newRule: String = ""
 
     @FocusState private var isNameFocused: Bool
     @FocusState private var isDescriptionFocused: Bool
@@ -34,7 +35,7 @@ struct CreatePetView: View {
                         GeometryReader { geometry in
                             Image(uiImage: image)
                                 .resizable()
-                                .aspectRatio(contentMode: .fit)
+                                .aspectRatio(contentMode: .fill)
                                 .offset(x: self.imagePosition.width, y: self.imagePosition.height)
                                 .scaleEffect(self.imageScale)
                                 .frame(width: geometry.size.width, height: geometry.size.height)
@@ -76,35 +77,69 @@ struct CreatePetView: View {
                     isImagePickerPresented = true
                 }
                 .padding(.top, 20)
+                ScrollView {
+                    VStack {
+                        
+                        EntryFields(placeHolder: "Name", promt: "", field: $vm.name)
+                            .focused($isNameFocused) // Sätt fokus på namnfältet
 
-                EntryFields(placeHolder: "Name", promt: "", field: $vm.name)
-                    .focused($isNameFocused) // Sätt fokus på namnfältet
+                        Picker("Species", selection: $vm.selectedSpices) {
+                            ForEach(vm.speciesOptions, id: \.self) { specie in
+                                Text(specie)
+                            }
+                        }
+                        .tint(.black)
+                        .frame(maxWidth: .infinity)
+                        .pickerStyle(MenuPickerStyle())
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 25.0)
+                                .stroke(AppColors.mainAccent, lineWidth: 3)
+                        )
 
-                Picker("Species", selection: $vm.selectedSpices) {
-                    ForEach(vm.speciesOptions, id: \.self) { specie in
-                        Text(specie)
+                        TextEditor(text: $vm.description)
+                            .focused($isDescriptionFocused)
+                            .frame(maxWidth: .infinity, minHeight: 170, maxHeight: 400)
+                            .padding()
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 25.0)
+                                    .stroke(AppColors.mainAccent, lineWidth: 3)
+                            )
+                            .padding(.vertical)
+
+                        
+                        Section(header: Text("Pet Rules:")) {
+                            ForEach(vm.informationArray, id: \.self) { rule in
+                                HStack {
+                                    Image(systemName: "pawprint.fill")
+                                        .foregroundColor(.yellow)
+                                    Text(rule)
+                                }
+                            }
+                            .onDelete(perform: deleteRule)
+                                            
+                            HStack {
+                                TextField("New Rule", text: $newRule)
+                                Button(action: addRule) {
+                                    Image(systemName: "plus.circle.fill")
+                                        .foregroundColor(.yellow)
+                                }
+                            }
+                            .padding()
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 25.0)
+                                    .stroke(AppColors.mainAccent, lineWidth: 3)
+                                    .frame(height: 40)
+                            )
+                        }
+                        .padding(.horizontal)
+                        
+                        Spacer()
                     }
+                    .padding(.leading, 5)
+                    .padding(.trailing, 5)
+                    .padding(.vertical, 20)
                 }
-                .tint(.black)
-                .frame(maxWidth: .infinity)
-                .pickerStyle(MenuPickerStyle())
-                .overlay(
-                    RoundedRectangle(cornerRadius: 25.0)
-                        .stroke(AppColors.mainAccent, lineWidth: 3)
-                )
-
-                TextEditor(text: $vm.description)
-                    .focused($isDescriptionFocused)
-                    .frame(maxWidth: .infinity, minHeight: 200, maxHeight: 400)
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 25.0)
-                            .stroke(AppColors.mainAccent, lineWidth: 3)
-                    )
-                    .padding(.vertical)
-
-                Spacer()
-
+                
                 Button(action: {
                     hideKeyboard()
                     isSaving = true
@@ -150,6 +185,7 @@ struct CreatePetView: View {
                     vm.selectedSpices = pet.species
                     vm.description = pet.description ?? ""
                     vm.imageURL = pet.imageURL
+                    vm.informationArray = pet.information
                     vm.loadImageFromURL(pet.imageURL ?? "") {
                         self.isImageLoading = false
                     }
@@ -216,6 +252,7 @@ struct CreatePetView: View {
                     }
                 }
             }
+            .navigationTitle("My Pet")
         }
         .onChange(of: authManager.loggedIn){ oldValue, newValue in
             if !newValue {
@@ -239,6 +276,16 @@ struct CreatePetView: View {
         }
         return croppedImage
     }
+    
+    private func addRule() {
+            guard !newRule.isEmpty else { return }
+            vm.informationArray.append(newRule)
+            newRule = ""
+        }
+
+        private func deleteRule(at offsets: IndexSet) {
+            vm.informationArray.remove(atOffsets: offsets)
+        }
 }
 
 extension PetsViewModel {

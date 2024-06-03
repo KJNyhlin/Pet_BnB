@@ -303,6 +303,17 @@ struct HouseDetailView: View {
                                                 .font(.body)
                                                 .multilineTextAlignment(.center)
                                                 .padding(.horizontal)
+                                                .padding(.bottom, 5)
+                                            
+                                            Section(header: Text("Pet Rules:")) {
+                                                ForEach(pet.information, id: \.self) { rule in
+                                                    HStack {
+                                                        Image(systemName: "pawprint.fill")
+                                                            .foregroundColor(.yellow)
+                                                        Text(rule)
+                                                    }
+                                                }
+                                            }
                                         }
                                         .padding()
                                         .padding(.top,-5)
