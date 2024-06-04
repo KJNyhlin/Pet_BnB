@@ -14,7 +14,6 @@ struct BookingView: View {
     var booking: Booking
     @State var showAlert = false
     var body: some View {
-        //        Text("")
         VStack {
             
             HouseDetailView( houseId: booking.houseID, firebaseHelper: viewModel.firebaseHelper, booked: true, showMyOwnHouse: false)

@@ -74,6 +74,9 @@ struct MyBookingsTabView: View {
                 .navigationDestination(for: BookingNavigation.self) { bookingNav in
                     BookingView(house: bookingNav.house, booking: bookingNav.booking)
                 }
+                .navigationDestination(for: User.self){ user in
+                    HouseOwnerProfileView(user: user)
+                }
         }
             .tabItem { Label(
             title: { Text("My Bookings") },
@@ -127,13 +130,6 @@ struct ChatListTabView: View {
         .environmentObject(chatVM)
     }
 }
-
-
-
-
-
-
-
 
 
 #Preview {

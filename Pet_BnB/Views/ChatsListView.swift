@@ -70,59 +70,7 @@ struct ChatListRow: View{
                 }
                 
             }) {
-                if let url = user?.imageURL{
-                    AsyncImage(url: URL(string: url)) { phase in
-                        let size:CGFloat = 40
-                        switch phase {
-                        case .empty:
-                            ProgressView()
-                                .frame(height: size)
-                                .frame(maxWidth: size)
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: size)
-                                .frame(maxWidth: size)
-                                .clipShape(Circle())
-                                .overlay(
-                                    Circle()
-                                        .stroke(AppColors.mainAccent, lineWidth: 1)
-                                )
-                        case .failure:
-                            Image(systemName: "person.circle")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: size)
-                                .frame(maxWidth: size)
-                                .background(Color.gray)
-                                .overlay(
-                                    Circle()
-                                        .stroke(AppColors.mainAccent, lineWidth: 1)
-                                )
-                        @unknown default:
-                            Image(systemName: "person.circle")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: size)
-                                .frame(maxWidth: size)
-                                .background(Color.gray)
-                                .overlay(
-                                    Circle()
-                                        .stroke(AppColors.mainAccent, lineWidth: 1)
-                                )
-                        }
-                    }
-             
-                    
-                } else {
-                    Image(systemName: "person.circle")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: 40)
-                        .frame(width: 40)
-                    
-                }
+                AsyncImageView(imageUrl: user?.imageURL, maxWidth: 40, height: 40, isCircle: true)
             }
             .buttonStyle(PlainButtonStyle())
             

@@ -16,53 +16,9 @@ struct HouseOwnerProfileView: View {
             HStack(spacing: 0) {
                 VStack {
                     ZStack {
-                        if let image = user.imageURL {
-                            AsyncImage(url: URL(string: image)) { phase in
-                                let size: CGFloat = 150
-                                switch phase {
-                                case .empty:
-                                    ProgressView()
-                                        .frame(height: size)
-                                        .frame(maxWidth: size)
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(height: size)
-                                        .frame(maxWidth: size)
-                                        .clipShape(Circle())
-                                        .overlay(
-                                            Circle()
-                                                .stroke(AppColors.mainAccent, lineWidth: 2)
-                                        )
-                                case .failure:
-                                    Image(systemName: "person.circle")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(height: size)
-                                        .frame(maxWidth: size)
-                                        .background(Color.gray)
-                                        .clipShape(Circle())
-                                        .overlay(
-                                            Circle()
-                                                .stroke(AppColors.mainAccent, lineWidth: 2)
-                                        )
-                                @unknown default:
-                                    Image(systemName: "person.circle")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(height: size)
-                                        .frame(maxWidth: size)
-                                        .background(Color.gray)
-                                        .clipShape(Circle())
-                                        .overlay(
-                                            Circle()
-                                                .stroke(AppColors.mainAccent, lineWidth: 2)
-                                        )
-                                }
-                            }
+                        AsyncImageView(imageUrl: user.imageURL, maxWidth: 150, height: 150, isCircle: true)
                             .padding(.leading)
-                        }
+
                     }
                     
                     Text("First Name")

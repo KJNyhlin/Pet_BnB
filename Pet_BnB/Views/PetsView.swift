@@ -15,7 +15,7 @@ struct PetsView: View {
             if let pets = vm.house.pets, !pets.isEmpty {
                 List {
                     ForEach(pets) { pet in
-                     //   NavigationLink(destination: CreatePetView(vm: vm, pet: pet)) {
+
                         NavigationLink(value: pet){
                             PetRowView(pet: pet)
                                 
@@ -30,7 +30,7 @@ struct PetsView: View {
 
             Spacer()
             VStack(alignment: .trailing) {
-            //    NavigationLink(destination: CreatePetView(vm: vm, pet: nil)) {
+ 
                 NavigationLink(value: 0){
                     FilledButtonLabel(text: "Add Pet")
                         .frame(maxWidth: 100)
@@ -51,40 +51,7 @@ struct PetRowView: View {
 
     var body: some View {
         HStack {
-            if let imageURL = pet.imageURL, let url = URL(string: imageURL) {
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                            .frame(width: 50, height: 50)
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 50, height: 50)
-                            .clipShape(Circle())
-                            .clipped()
-                    case .failure:
-                        Image(systemName: "photo")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 50, height: 50)
-                            .padding(.horizontal)
-                    @unknown default:
-                        Image(systemName: "photo")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 50, height: 50)
-                            .padding(.horizontal)
-                    }
-                }
-            } else {
-                Image(systemName: "photo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 50, height: 50)
-                    .padding(.horizontal)
-            }
+            AsyncImageView(imageUrl: pet.imageURL, maxWidth: 50, height: 50, isCircle: true, isAnimal: true)
             VStack(alignment: .leading) {
                 Text(pet.name)
                     .font(.title3)
