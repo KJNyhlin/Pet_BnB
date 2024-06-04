@@ -17,7 +17,9 @@ struct HouseDetailView: View {
     @State private var region = MKCoordinateRegion()
     @State var booked: Bool
     @State var showReviewSheet: Bool = false
+    @State var showLoginSheet: Bool = false
     var showMyOwnHouse: Bool
+    @EnvironmentObject var authManager: AuthManager
     
     init(houseId: String, firebaseHelper: FirebaseHelper, booked: Bool, showMyOwnHouse: Bool) {
         _viewModel = StateObject(wrappedValue: HouseDetailViewModel(firebaseHelper: firebaseHelper))
@@ -399,7 +401,12 @@ struct HouseDetailView: View {
                         if !showMyOwnHouse {
                             Button(action: {
                                 // Lägg till funktion för bokning
-                                showBookings.toggle()
+                                if authManager.loggedIn{
+                                    showBookings.toggle()
+                                } else{
+                                    showLoginSheet = true
+                                }
+                                
                             })
                             {
                                 FilledButtonLabel(text: "Reserv")
@@ -421,23 +428,37 @@ struct HouseDetailView: View {
                             Text("")
                         }
                     }
-                    
+                }
+                .sheet(isPresented: $showLoginSheet){
+                    SignUpView()
                 }
                 .sheet(isPresented: $showReviewSheet, content: {
                     ReadReviewSheet(viewModel: viewModel, houseId: houseId)
                 })
                 .toolbar{
+                    let envelope = Image(systemName: "envelope.fill")
+                    .padding()
+                    .foregroundColor(AppColors.mainAccent)
+                    
                     if let house = viewModel.house,
                        let houseId = house.id, !showMyOwnHouse{
-                        NavigationLink(destination: ChatView(vm:ChatViewModel(toUserID: house.ownerID))){
-                            Image(systemName: "envelope.fill")
-                                //.font(.largeTitle)
-                                .padding()
-                                .foregroundColor(AppColors.mainAccent)
+                        if authManager.loggedIn {
+                            
+                            NavigationLink(destination: ChatView(vm:ChatViewModel(toUserID: house.ownerID))){
+                                envelope
+                            }
+                        } else {
+                            Button(action: {
+                                showLoginSheet = true
+                            }, label: {
+
+                                envelope
+                            })
                         }
                     }
 
                 }
+
             }
         }
     }
