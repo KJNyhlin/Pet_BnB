@@ -25,34 +25,33 @@ class FirebaseHelper: ObservableObject {
         return auth.currentUser?.uid
     }
 
-    func createAccount(name: String, password: String, completion: @escaping (String?) -> Void) {
+    func createAccount(name: String, password: String, completion: @escaping (_ result: String?,_ error: Error?) -> Void) {
         auth.createUser(withEmail: name, password: password) { result, error in
             if let error = error {
-                print("Error sign up: \(error)")
-                completion(nil)
+                print("Error sign up: \(error)")//---------------------------------------------------------------------------------------------------------
+                completion(nil, error)
             } else {
                 guard let userID = result?.user.uid else {
-                    completion(nil)
+                    completion(nil, nil)//---------------------------------------------------------------------------------------------------------
                     return
                 }
-                completion(userID)
+                completion(userID, nil)
             }
         }
     }
     
-    func signIn(email: String, password: String, completion: @escaping (Bool) -> Void)  {
+    func signIn(email: String, password: String, completion: @escaping (_ success: Bool, _ error: Error?) -> Void)  {
         auth.signIn(withEmail: email, password: password) { result, error in
             if let error = error {
-                print("Error signing in: \(error)")
-                completion(false)
+                print("Error signing in: \(error)") //---------------------------------------------------------------------------------------------------------
+                completion(false, error)
             } else {
                 guard let userID = result?.user.uid else {
-                    completion(false)
+                    completion(false, nil) //---------------------------------------------------------------------------------------------------------
                     return
                 }
                 self.loadUserInfo(userID: userID) { user in
-                    completion(true)
-                    print("\(user)")
+                    completion(true, nil)
                     self.authManager.set(loggedIn: true)
                 }
             }
@@ -64,7 +63,7 @@ class FirebaseHelper: ObservableObject {
             try auth.signOut()
             authManager.set(loggedIn: false)
         } catch {
-            print("error signing out")
+            print("error signing out")//---------------------------------------------------------------------------------------------------------
         }
     }
     
