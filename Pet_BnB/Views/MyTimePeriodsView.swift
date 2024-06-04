@@ -97,45 +97,47 @@ struct MyTimePeriodCardView : View {
                             if let user = renter {
                                 NavigationLink(destination: HouseOwnerProfileView(user: user)) {
                                     VStack {
-                                        if let userImageURL = user.imageURL, let imageURL = URL(string: userImageURL) {
-                                            AsyncImage(url: imageURL) { phase in
-                                                switch phase {
-                                                case .empty:
-                                                    ProgressView()
-                                                        .frame(width: 80 ,height: 80)
-                                                    //                                            .frame(maxWidth: .infinity)
-                                                case .success(let image):
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        .frame(width: 80 ,height: 80)
-                                                    //                                            .frame(maxWidth: .infinity)
-                                                        .clipShape(Circle())
-                                                        .clipped()
-                                                        .padding(.horizontal)
-                                                    
-                                                case .failure:
-                                                    Image(systemName: "photo")
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        .frame(width: 80 ,height: 80)
-                                                    //                                            .frame(maxWidth: .infinity)
-                                                        .background(Color.gray)
-                                                @unknown default:
-                                                    Image(systemName: "photo")
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        .frame(width: 80 ,height: 80)
-                                                    //                                            .frame(maxWidth: .infinity)
-                                                        .background(Color.gray)
-                                                }
-                                            }
+                                        AsyncImageView(imageUrl: user.imageURL, maxWidth: 80, height: 80, isCircle: true)
+//                                        if let userImageURL = user.imageURL, let imageURL = URL(string: userImageURL) {
+//                                            AsyncImage(url: imageURL) { phase in
+//                                                switch phase {
+//                                                case .empty:
+//                                                    ProgressView()
+//                                                        .frame(width: 80 ,height: 80)
+//                                                    //                                            .frame(maxWidth: .infinity)
+//                                                case .success(let image):
+//                                                    image
+//                                                        .resizable()
+//                                                        .aspectRatio(contentMode: .fill)
+//                                                        .frame(width: 80 ,height: 80)
+//                                                    //                                            .frame(maxWidth: .infinity)
+//                                                        .clipShape(Circle())
+//                                                        .clipped()
+//                                                        .padding(.horizontal)
+//                                                    
+//                                                case .failure:
+//                                                    Image(systemName: "photo")
+//                                                        .resizable()
+//                                                        .aspectRatio(contentMode: .fill)
+//                                                        .frame(width: 80 ,height: 80)
+//                                                    //                                            .frame(maxWidth: .infinity)
+//                                                        .background(Color.gray)
+//                                                @unknown default:
+//                                                    Image(systemName: "photo")
+//                                                        .resizable()
+//                                                        .aspectRatio(contentMode: .fill)
+//                                                        .frame(width: 80 ,height: 80)
+//                                                    //                                            .frame(maxWidth: .infinity)
+//                                                        .background(Color.gray)
+//                                                }
+//                                            }
                                             
                                             Text(renterFirstName)
                                                 .font(.system(size: 12))
                                                 
-                                        }
+                                       // }
                                     }
+                                    .padding(.leading, 5)
                             }
                         } else {
                             Rectangle()
