@@ -16,6 +16,7 @@ struct ExploreView: View {
     @State private var minSize: Int = 10
     @State private var maxSize: Int = 1000
     @State private var selectedAnimalType: String = "All"
+    @State var path = NavigationPath()
     
     let animalTypes = ["All", "Bird", "Cat", "Dog", "Fish", "Rabbit", "Reptile", "Other"]
     
@@ -38,7 +39,7 @@ struct ExploreView: View {
     }
         
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $path) {
         VStack(spacing: 14) {
             HStack {
                     Image(systemName: "magnifyingglass")
@@ -73,12 +74,19 @@ struct ExploreView: View {
                         }
                         .padding(.horizontal)
             }
+            .navigationDestination(for: User.self ){ user in
+                HouseOwnerProfileView(user: user)
+            }
+            .navigationDestination(for: String.self){ houseID in
+                HouseDetailView(houseId: houseID, firebaseHelper: firebaseHelper, booked: false, showMyOwnHouse: false)
+            }
         }
             .onAppear {
                     firebaseHelper.fetchHouses()
             }
             .navigationBarHidden(true)
         }
+
     }
 }
 
