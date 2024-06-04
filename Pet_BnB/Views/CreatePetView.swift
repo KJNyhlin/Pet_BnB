@@ -23,6 +23,7 @@ struct CreatePetView: View {
     @State private var lastImageScale: CGFloat = 1.0
     @State private var isImageLoading = true
     @State private var newRule: String = ""
+    @State private var editingRuleIndex: Int?
 
     @FocusState private var isNameFocused: Bool
     @FocusState private var isDescriptionFocused: Bool
@@ -59,7 +60,6 @@ struct CreatePetView: View {
                                         }
                                 )
                                 .clipped()
-                                .padding(.leading, 20)
                         }
                         .frame(width: 150, height: 150)
                     } else if isImageLoading {
@@ -72,6 +72,9 @@ struct CreatePetView: View {
                             .frame(width: 100, height: 100)
                             .padding()
                     }
+                    Circle()
+                        .stroke(AppColors.mainAccent, lineWidth: 3)
+                        .frame(width: 150, height: 150)
                 }
                 .onTapGesture {
                     isImagePickerPresented = true
@@ -79,7 +82,6 @@ struct CreatePetView: View {
                 .padding(.top, 20)
                 ScrollView {
                     VStack {
-                        
                         EntryFields(placeHolder: "Name", promt: "", field: $vm.name)
                             .focused($isNameFocused) // Sätt fokus på namnfältet
 
@@ -106,18 +108,40 @@ struct CreatePetView: View {
                             )
                             .padding(.vertical)
 
-                        
                         Section(header: Text("Pet Rules:")) {
-                            ForEach(vm.informationArray, id: \.self) { rule in
+                            ForEach(Array(vm.informationArray.enumerated()), id: \.element) { index, rule in
                                 HStack {
                                     Image(systemName: "pawprint.fill")
                                         .foregroundColor(.yellow)
-                                    Text(rule)
+                                    if editingRuleIndex == index {
+                                        TextField("Edit Rule", text: $newRule, onCommit: {
+                                            vm.informationArray[index] = newRule
+                                            newRule = ""
+                                            editingRuleIndex = nil
+                                        })
+                                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    } else {
+                                        Text(rule)
+                                        Spacer()
+                                        Button(action: {
+                                            newRule = rule
+                                            editingRuleIndex = index
+                                        }) {
+                                        Image(systemName: "pencil")
+                                            .foregroundColor(.blue)
+                                        }
+                                    }
+                                    Button(action: {
+                                        deleteRule(at: IndexSet(integer: index))
+                                    }) {
+                                    Image(systemName: "trash")
+                                        .foregroundColor(.red)
+                                    }
                                 }
                             }
-                            .onDelete(perform: deleteRule)
-                                            
                             HStack {
+                                Image(systemName: "pawprint.fill")
+                                    .foregroundColor(.yellow)
                                 TextField("New Rule", text: $newRule)
                                 Button(action: addRule) {
                                     Image(systemName: "plus.circle.fill")
@@ -278,14 +302,20 @@ struct CreatePetView: View {
     }
     
     private func addRule() {
-            guard !newRule.isEmpty else { return }
+        guard !newRule.isEmpty else { return }
+        if let editingIndex = editingRuleIndex {
+            vm.informationArray[editingIndex] = newRule
+            editingRuleIndex = nil
+        } else {
             vm.informationArray.append(newRule)
-            newRule = ""
         }
+        newRule = ""
+    }
 
-        private func deleteRule(at offsets: IndexSet) {
-            vm.informationArray.remove(atOffsets: offsets)
-        }
+    private func deleteRule(at offsets: IndexSet) {
+        vm.informationArray.remove(atOffsets: offsets)
+    }
+    
 }
 
 extension PetsViewModel {

@@ -201,7 +201,7 @@ struct personalInfoView: View {
                                 .clipped()
                         }
                         Circle()
-                            .stroke(AppColors.mainAccent, lineWidth: 2)
+                            .stroke(AppColors.mainAccent, lineWidth: 3)
                             .frame(width: 150, height: 150)
                     }
                     .padding(.leading)
@@ -216,7 +216,7 @@ struct personalInfoView: View {
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
-                                .stroke(AppColors.mainAccent, lineWidth: 2)
+                                .stroke(AppColors.mainAccent, lineWidth: 3)
                         )
                     
                     Text("Surname")
@@ -230,7 +230,7 @@ struct personalInfoView: View {
                         .frame(width: 200, height: 40, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
-                                .stroke(AppColors.mainAccent, lineWidth: 2)
+                                .stroke(AppColors.mainAccent, lineWidth: 3)
                         )
                     Text("About Me")
                         .font(.caption)
@@ -243,7 +243,7 @@ struct personalInfoView: View {
                         .frame(width: 300, height: 160, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
-                                .stroke(AppColors.mainAccent, lineWidth: 2)
+                                .stroke(AppColors.mainAccent, lineWidth: 3)
                         )
                 }
                 .frame(maxWidth: .infinity)
