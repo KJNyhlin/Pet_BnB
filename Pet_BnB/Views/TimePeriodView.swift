@@ -293,11 +293,7 @@ struct AddTimePeriodCard : View {
         .shadow(radius: 5)
         
         .padding(.vertical, 8)
-        
 
-        
-        //        .frame(height: 150)
-        //        }
         .buttonStyle(PlainButtonStyle())
     }
 }

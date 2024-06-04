@@ -66,39 +66,6 @@ struct ChatHeader: View {
         NavigationLink(destination: HouseOwnerProfileView(user: toUser)) {
             HStack{
                 AsyncImageView(imageUrl: toUser.imageURL, maxWidth: 30, height: 30, isCircle: true)
-//                if let url = toUser.imageURL{
-//                    AsyncImage(url: URL(string: url)) { phase in
-//                        let size:CGFloat = 30
-//                        switch phase {
-//                        case .empty:
-//                            ProgressView()
-//                                .frame(height: size)
-//                                .frame(maxWidth: size)
-//                        case .success(let image):
-//                            image
-//                                .resizable()
-//                                .aspectRatio(contentMode: .fill)
-//                                .frame(height: size)
-//                                .frame(maxWidth: size)
-//                                .clipShape(Circle())
-//                        case .failure:
-//                            Image(systemName: "person.circle")
-//                                .resizable()
-//                                .aspectRatio(contentMode: .fill)
-//                                .frame(height: size)
-//                                .frame(maxWidth: size)
-//                                .background(Color.gray)
-//                        @unknown default:
-//                            Image(systemName: "person.circle")
-//                                .resizable()
-//                                .aspectRatio(contentMode: .fill)
-//                                .frame(height: size)
-//                                .frame(maxWidth: size)
-//                                .background(Color.gray)
-//                        }
-//                    }
-                    
-//                }
                 Text(toUser.firstName ?? "No name")
                     .font(.footnote)
                     .bold()

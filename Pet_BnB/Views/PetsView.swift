@@ -52,40 +52,6 @@ struct PetRowView: View {
     var body: some View {
         HStack {
             AsyncImageView(imageUrl: pet.imageURL, maxWidth: 50, height: 50, isCircle: true)
-//            if let imageURL = pet.imageURL, let url = URL(string: imageURL) {
-//                AsyncImage(url: url) { phase in
-//                    switch phase {
-//                    case .empty:
-//                        ProgressView()
-//                            .frame(width: 50, height: 50)
-//                    case .success(let image):
-//                        image
-//                            .resizable()
-//                            .scaledToFill()
-//                            .frame(width: 50, height: 50)
-//                            .clipShape(Circle())
-//                            .clipped()
-//                    case .failure:
-//                        Image(systemName: "photo")
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(width: 50, height: 50)
-//                            .padding(.horizontal)
-//                    @unknown default:
-//                        Image(systemName: "photo")
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(width: 50, height: 50)
-//                            .padding(.horizontal)
-//                    }
-//                }
-//            } else {
-//                Image(systemName: "photo")
-//                    .resizable()
-//                    .scaledToFit()
-//                    .frame(width: 50, height: 50)
-//                    .padding(.horizontal)
-//            }
             VStack(alignment: .leading) {
                 Text(pet.name)
                     .font(.title3)

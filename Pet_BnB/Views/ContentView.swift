@@ -132,13 +132,6 @@ struct ChatListTabView: View {
 }
 
 
-
-
-
-
-
-
-
 #Preview {
     ContentView()
         .environmentObject(FirebaseHelper()

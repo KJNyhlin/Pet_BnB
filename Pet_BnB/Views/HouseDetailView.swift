@@ -34,37 +34,7 @@ struct HouseDetailView: View {
                     if let house = viewModel.house {
                         VStack () {
                             AsyncImageView(imageUrl: house.imageURL, maxWidth: 400, height: 300)
-//                            if let imageUrl = house.imageURL, let url = URL(string: imageUrl) {
-//                                AsyncImage(url: url) { phase in
-//                                    switch phase {
-//                                    case .empty:
-//                                        ProgressView()
-//                                            .frame(height: 300)
-//                                            .frame(maxWidth: 400)
-//                                    case .success(let image):
-//                                        image
-//                                            .resizable()
-//                                            .aspectRatio(contentMode: .fill)
-//                                            .frame(height: 300)
-//                                            .frame(maxWidth: 400)
-//                                            .clipped()
-//                                    case .failure:
-//                                        Image(systemName: "photo")
-//                                            .resizable()
-//                                            .aspectRatio(contentMode: .fill)
-//                                            .frame(height: 300)
-//                                            .frame(maxWidth: 400)
-//                                            .background(Color.gray)
-//                                    @unknown default:
-//                                        Image(systemName: "photo")
-//                                            .resizable()
-//                                            .aspectRatio(contentMode: .fill)
-//                                            .frame(height: 300)
-//                                            .frame(maxWidth: 400)
-//                                            .background(Color.gray)
-//                                    }
-//                                }
-//                            }
+
                             VStack(alignment: .leading, spacing: 10) {
                                 Text(house.title)
                                     .font(.title)
