@@ -51,7 +51,7 @@ struct PetRowView: View {
 
     var body: some View {
         HStack {
-            AsyncImageView(imageUrl: pet.imageURL, maxWidth: 50, height: 50, isCircle: true)
+            AsyncImageView(imageUrl: pet.imageURL, maxWidth: 50, height: 50, isCircle: true, isAnimal: true)
             VStack(alignment: .leading) {
                 Text(pet.name)
                     .font(.title3)

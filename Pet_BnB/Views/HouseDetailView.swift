@@ -147,51 +147,13 @@ struct HouseDetailView: View {
                                         .padding(.bottom, 8)
                                         .padding(.top, -4)
                                     
-                                  //  NavigationLink(destination: HouseOwnerProfileView(user: owner)) {
+
                                     NavigationLink(value: owner) {
-                                        if let url = owner.imageURL {
-                                            AsyncImage(url: URL(string: url)) { phase in
-                                                let size: CGFloat = 100
-                                                switch phase {
-                                                case .empty:
-                                                    ProgressView()
-                                                        .frame(width: size, height: size)
-                                                case .success(let image):
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        .frame(width: size, height: size)
-                                                        .clipShape(Circle())
-                                                        .overlay(
-                                                            Circle()
-                                                                .stroke(AppColors.mainAccent, lineWidth: 2)
-                                                        )
-                                                case .failure:
-                                                    Image(systemName: "person.circle")
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        .frame(width: size, height: size)
-                                                        .background(Color.gray)
-                                                        .clipShape(Circle())
-                                                        .overlay(
-                                                            Circle()
-                                                                .stroke(AppColors.mainAccent, lineWidth: 2)
-                                                        )
-                                                @unknown default:
-                                                    Image(systemName: "person.circle")
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        .frame(width: size, height: size)
-                                                        .background(Color.gray)
-                                                        .clipShape(Circle())
-                                                        .overlay(
-                                                            Circle()
-                                                                .stroke(AppColors.mainAccent, lineWidth: 2)
-                                                        )
-                                                }
-                                            }
+      
+                                            AsyncImageView(imageUrl: owner.imageURL, maxWidth: 100, height: 100, isCircle: true)
+
                                             .padding(.bottom, 10)
-                                        }
+
                                     }
                                     
                                     Text("\(owner.firstName ?? "First Name") \(owner.surName ?? "Last Name")")
@@ -219,50 +181,10 @@ struct HouseDetailView: View {
                                     
                                     ForEach(pets) { pet in
                                         VStack {
-                                            if let petImageURL = pet.imageURL, let petURL = URL(string: petImageURL) {
-                                                AsyncImage(url: petURL) { phase in
-                                                    let size: CGFloat = 100
-                                                    switch phase {
-                                                    case .empty:
-                                                        ProgressView()
-                                                            .frame(width: size, height: size)
-                                                    case .success(let image):
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            .frame(width: size, height: size)
-                                                            .clipShape(Circle())
-                                                            .overlay(
-                                                                Circle()
-                                                                    .stroke(AppColors.mainAccent, lineWidth: 2)
-                                                            )
-                                                    case .failure:
-                                                        Image(systemName: "pawprint.circle")
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            .frame(width: size, height: size)
-                                                            .background(Color.gray)
-                                                            .clipShape(Circle())
-                                                            .overlay(
-                                                                Circle()
-                                                                    .stroke(AppColors.mainAccent, lineWidth: 2)
-                                                            )
-                                                    @unknown default:
-                                                        Image(systemName: "pawprint.circle")
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            .frame(width: size, height: size)
-                                                            .background(Color.gray)
-                                                            .clipShape(Circle())
-                                                            .overlay(
-                                                                Circle()
-                                                                    .stroke(AppColors.mainAccent, lineWidth: 2)
-                                                            )
-                                                    }
-                                                }
+                                            AsyncImageView(imageUrl: pet.imageURL, maxWidth: 100, height: 100, isCircle: true, isAnimal: true)
                                                 .padding(.bottom, 10)
                                                 .padding(.top, -10)
-                                            }
+
                                             
                                             Text(pet.name)
                                                 .font(.title3)

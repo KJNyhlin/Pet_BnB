@@ -55,12 +55,14 @@ struct AsyncImageView: View {
     let maxWidth: CGFloat
     let height: CGFloat
     let isCircle: Bool
+    let isAnimal: Bool
     
-    init(imageUrl: String?, maxWidth: CGFloat = .infinity, height: CGFloat = .infinity, isCircle: Bool = false) {
+    init(imageUrl: String?, maxWidth: CGFloat = .infinity, height: CGFloat = .infinity, isCircle: Bool = false, isAnimal: Bool = false) {
         self.imageUrl = imageUrl
         self.maxWidth = maxWidth
         self.height = height
         self.isCircle = isCircle
+        self.isAnimal = isAnimal
     }
     
     var body: some View {
@@ -112,7 +114,7 @@ struct AsyncImageView: View {
             }
         } else {
             if isCircle{
-                Image(systemName: "person.circle")
+                Image(systemName: isAnimal ? "pawprint.circle" : "person.circle")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .clipShape(Circle())
