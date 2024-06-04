@@ -37,6 +37,9 @@ struct PetsView: View {
                 }
             }
         }
+        .onAppear{
+            vm.clearFields()
+        }
         .navigationDestination(for: Pet.self ){ pet in
             CreatePetView(vm: vm, pet: pet)
         }

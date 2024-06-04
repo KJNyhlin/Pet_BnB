@@ -248,6 +248,7 @@ struct CreatePetView: View {
                                     if success {
                                         isSaving = false
                                         DispatchQueue.main.async {
+
                                             self.presentationMode.wrappedValue.dismiss()
                                         }
                                     }
