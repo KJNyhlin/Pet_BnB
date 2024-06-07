@@ -68,46 +68,14 @@ struct HouseDetailView: View {
                     .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
                     .padding(.vertical, 10)
                     .padding(.horizontal)
+                
                 CancelationPolicyView()
                 
             }
             VStack {
                 Spacer()
-                HStack {
-                    
-                    Spacer()
-                    if !booked {
-                        if !showMyOwnHouse {
-                            Button(action: {
-                                // Lägg till funktion för bokning
-                                if authManager.loggedIn{
-                                    showBookings.toggle()
-                                } else{
-                                    showLoginSheet = true
-                                }
-                                
-                            })
-                            {
-                                FilledButtonLabel(text: "Reserv")
-                                    .frame(maxWidth: 80)
-                                //.fontWeight(.bold)
-                            }
-                            .padding([.bottom, .trailing], 30)
-                            
-                            .sheet(isPresented: $showBookings, onDismiss: {
-                                viewModel.selectedBooking = nil
-                                viewModel.selectedBookingID = ""
-                            } ,content: {
-                                if let house = viewModel.house {
-                                    BookingsList(viewModel: viewModel, house: house)
-                                        .presentationDetents([.medium])
-                                }
-                            })
-                        } else {
-                            Text("")
-                        }
-                    }
-                }
+                BookingButtonView(viewModel: viewModel, booked: booked, showMyOwnHouse: showMyOwnHouse, showBookings: $showBookings, showLoginSheet: $showLoginSheet)
+
                 .sheet(isPresented: $showLoginSheet){
                     SignUpView()
                 }
@@ -115,25 +83,10 @@ struct HouseDetailView: View {
                     ReadReviewSheet(viewModel: viewModel, houseId: houseId)
                 })
                 .toolbar{
-                    let envelope = Image(systemName: "envelope.fill")
-                        .padding()
-                        .foregroundColor(AppColors.mainAccent)
                     
                     if let house = viewModel.house,
                        let houseId = house.id, !showMyOwnHouse{
-                        if authManager.loggedIn {
-                            
-                            NavigationLink(destination: ChatView(vm:ChatViewModel(toUserID: house.ownerID))){
-                                envelope
-                            }
-                        } else {
-                            Button(action: {
-                                showLoginSheet = true
-                            }, label: {
-                                
-                                envelope
-                            })
-                        }
+                        MessageToolBarView(ownerID: house.ownerID, showLoginSheet: $showLoginSheet)
                     }
                     
                 }
@@ -141,14 +94,6 @@ struct HouseDetailView: View {
             }
         }
     }
-    
-    //    func openMapsForDirections(latitude: Double, longitude: Double) {
-    //        let destinationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-    //        let placemark = MKPlacemark(coordinate: destinationCoordinate)
-    //        let mapItem = MKMapItem(placemark: placemark)
-    //        mapItem.name = "Destination"
-    //        mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
-    //    }
 }
 
 struct ReadReviewSheet: View {
@@ -772,5 +717,77 @@ struct CancelationPolicyView: View {
         .padding()
         .padding(.horizontal, 5)
         .padding(.top, -10)
+    }
+}
+
+struct BookingButtonView: View {
+    var viewModel: HouseDetailViewModel
+    @EnvironmentObject var authManager: AuthManager
+    var booked: Bool
+    var showMyOwnHouse: Bool
+    @Binding var showBookings: Bool
+    @Binding var showLoginSheet: Bool
+    
+    
+    var body: some View {
+        HStack {
+            
+            Spacer()
+            if !booked {
+                if !showMyOwnHouse {
+                    Button(action: {
+                        // Lägg till funktion för bokning
+                        if authManager.loggedIn{
+                            showBookings.toggle()
+                        } else{
+                            showLoginSheet = true
+                        }
+                        
+                    })
+                    {
+                        FilledButtonLabel(text: "Reserv")
+                            .frame(maxWidth: 80)
+                        //.fontWeight(.bold)
+                    }
+                    .padding([.bottom, .trailing], 30)
+                    
+                    .sheet(isPresented: $showBookings, onDismiss: {
+                        viewModel.selectedBooking = nil
+                        viewModel.selectedBookingID = ""
+                    } ,content: {
+                        if let house = viewModel.house {
+                            BookingsList(viewModel: viewModel, house: house)
+                                .presentationDetents([.medium])
+                        }
+                    })
+                } else {
+                    Text("")
+                }
+            }
+        }
+    }
+}
+
+struct MessageToolBarView:View {
+    @EnvironmentObject var authManager: AuthManager
+    var ownerID: String
+    @Binding var showLoginSheet: Bool
+    
+    var body: some View {
+        let envelope = Image(systemName: "envelope.fill")
+            .padding()
+            .foregroundColor(AppColors.mainAccent)
+        if authManager.loggedIn {
+            NavigationLink(destination: ChatView(vm:ChatViewModel(toUserID: ownerID))){
+                envelope
+            }
+        } else {
+            Button(action: {
+                showLoginSheet = true
+            }, label: {
+                
+                envelope
+            })
+        }
     }
 }
