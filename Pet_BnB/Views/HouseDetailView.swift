@@ -31,264 +31,269 @@ struct HouseDetailView: View {
     var body: some View {
         ZStack {
             ScrollView {
-                    if let house = viewModel.house {
-                        VStack () {
-                            AsyncImageView(imageUrl: house.imageURL, maxWidth: 400, height: 300)
-
-                            VStack(alignment: .leading, spacing: 10) {
-                                Text(house.title)
-                                    .font(.title)
-                                HStack {
-                                    Image(systemName: "star.fill")
-                                        .foregroundColor(AppColors.mainAccent)
-                                    if let rating = house.getAverageRating() {
-                                        Text("\(rating, specifier: "%.1f")")
-                                            .foregroundColor(AppColors.mainAccent)
-                                        Button(action: {
-                                            showReviewSheet.toggle()
-                                        }, label: {
-                                            Text("Read reviews")
-                                        })
-                                    } else {
-                                        Text("No ratings yet")
-                                            .foregroundColor(AppColors.mainAccent)
-                                    }
-                                }
-                                    .font(.caption)
-                                HStack {
-                                    Label(
-                                        title: { Text("\(house.beds) st") },
-                                        icon: { Image(systemName: "bed.double") }
-                                    )
-                                    .padding(.trailing, 10)
-                                    
-                                    Label(
-                                        title: { Text("\(house.size) m²") },
-                                        icon: { Image(systemName: "house.fill") }
-                                    )
-                                    .padding(.trailing, 10)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.vertical, 5)
-                                
-                                Button(action: {
-                                    if let latitude = house.latitude, let longitude = house.longitude {
-                                        openMapsForDirections(latitude: latitude, longitude: longitude)
-                                    }
-                                }) {
-                                    Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
-                                        .font(.caption)
-                                        .bold()
-                                }
-                                
-                                Text(house.description)
-                                    .fixedSize(horizontal: false, vertical: true)
-                                
-                            }
-                            .padding()
-                            .padding(.horizontal, 5)
-                            .padding(.top, -10)
-                            
-                            Rectangle()
-                                .fill(AppColors.mainAccent)
-                                .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-                                .padding(.vertical, 5)
-                                .padding(.horizontal)
-                            
-                            if let latitude = house.latitude, let longitude = house.longitude {
-                                if latitude != 0.0 && longitude != 0.0 {
-                                    Text("Location")
-                                        .font(.headline)
-                                        .padding(.leading, -173)
-                                        .padding(.top, 7)
-                                        .padding(.bottom, 1)
-                                    
-                                    Text("Where you’ll be")
-                                        .font(.footnote)
-                                        .padding(.leading, -172)
-                                        .foregroundColor(.gray)
-                                        .padding(.bottom, -12)
-                            
-                                    if let latitude = house.latitude, let longitude = house.longitude {
-                                        MapView(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
-                                            .frame(height: 280)
-                                            .frame(width: 355)
-                                            .cornerRadius(10)
-                                            .padding()
-                                    }
-                                    
-                                    if let latitude = viewModel.house?.latitude, let longitude = viewModel.house?.longitude {
-                                        Button("Get directions") {
-                                            openMapsForDirections(latitude: latitude, longitude: longitude)
-                                        }
-                                            .font(.footnote)
-                                            .frame(maxWidth: 110)
-                                            .foregroundColor(.white)
-                                            .padding(.vertical, 7)
-                                            .background(AppColors.mainAccent)
-                                            .cornerRadius(20)
-                                            .fontWeight(.bold)
-                                            .padding(.leading, -179)
-                                            .padding(.top, -10)
-                                    }
-                            
-                                    Rectangle()
-                                        .fill(AppColors.mainAccent)
-                                        .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-                                        .padding(.vertical, 5)
-                                        .padding(.horizontal)
-                                }
-                            }
-                            
-                            if let owner = viewModel.houseOwner {
-                                VStack {
-                                    Text("Meet your Host")
-                                        .font(.title2)
-                                        .padding(.bottom, 8)
-                                        .padding(.top, -4)
-                                    
-
-                                    NavigationLink(value: owner) {
-      
-                                            AsyncImageView(imageUrl: owner.imageURL, maxWidth: 100, height: 100, isCircle: true)
-
-                                            .padding(.bottom, 10)
-
-                                    }
-                                    
-                                    Text("\(owner.firstName ?? "First Name") \(owner.surName ?? "Last Name")")
-                                        .font(.title3)
-                                        .bold()
-                                        .padding(.bottom, 5)
-                                    
-                                    Text(owner.aboutMe ?? "No description available")
-                                        .font(.body)
-                                        .multilineTextAlignment(.center)
-                                        .padding(.horizontal)
-                                }
-                                .padding()
-                                
-                                Rectangle()
-                                    .fill(AppColors.mainAccent)
-                                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-                                    .padding(.vertical)
-                                    .padding(.horizontal)
-                            }
-                            if let pets = house.pets {
-                                VStack {
-                                    Text("Meet the Pet")
-                                        .font(.title2)
-                                    
-                                    ForEach(pets) { pet in
-                                        VStack {
-                                            AsyncImageView(imageUrl: pet.imageURL, maxWidth: 100, height: 100, isCircle: true, isAnimal: true)
-                                                .padding(.bottom, 10)
-                                                .padding(.top, -10)
-
-                                            
-                                            Text(pet.name)
-                                                .font(.title3)
-                                                .bold()
-                                                .padding(.bottom, 5)
-                                            
-                                            Text(pet.species)
-                                                .font(.subheadline)
-                                                .padding(.bottom, 5)
-                                            
-                                            Text(pet.description ?? "No description available")
-                                                .font(.body)
-                                                .multilineTextAlignment(.center)
-                                                .padding(.horizontal)
-                                                .padding(.bottom, 5)
-                                            
-                                            Section(header: Text("Pet Rules:")) {
-                                                ForEach(pet.information, id: \.self) { rule in
-                                                    HStack {
-                                                        Image(systemName: "pawprint.fill")
-                                                            .foregroundColor(.yellow)
-                                                        Text(rule)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        .padding()
-                                        .padding(.top,-5)
-                                        
-                                        Rectangle()
-                                            .fill(AppColors.mainAccent)
-                                            .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-                                            .padding(.vertical, 10)
-                                            .padding(.horizontal)
-                                    }
-                                }
+                if let house = viewModel.house {
+                    VStack () {
+                        HouseInformationView(house: house, viewModel: viewModel, showReviewSheet: $showReviewSheet)
+                        //                            AsyncImageView(imageUrl: house.imageURL, maxWidth: 400, height: 300)
+                        //
+                        //                            VStack(alignment: .leading, spacing: 10) {
+                        //                                Text(house.title)
+                        //                                    .font(.title)
+                        //                                HStack {
+                        //                                    Image(systemName: "star.fill")
+                        //                                        .foregroundColor(AppColors.mainAccent)
+                        //                                    if let rating = house.getAverageRating() {
+                        //                                        Text("\(rating, specifier: "%.1f")")
+                        //                                            .foregroundColor(AppColors.mainAccent)
+                        //                                        Button(action: {
+                        //                                            showReviewSheet.toggle()
+                        //                                        }, label: {
+                        //                                            Text("Read reviews")
+                        //                                        })
+                        //                                    } else {
+                        //                                        Text("No ratings yet")
+                        //                                            .foregroundColor(AppColors.mainAccent)
+                        //                                    }
+                        //                                }
+                        //                                    .font(.caption)
+                        //                                HStack {
+                        //                                    Label(
+                        //                                        title: { Text("\(house.beds) st") },
+                        //                                        icon: { Image(systemName: "bed.double") }
+                        //                                    )
+                        //                                    .padding(.trailing, 10)
+                        //
+                        //                                    Label(
+                        //                                        title: { Text("\(house.size) m²") },
+                        //                                        icon: { Image(systemName: "house.fill") }
+                        //                                    )
+                        //                                    .padding(.trailing, 10)
+                        //                                }
+                        //                                .frame(maxWidth: .infinity, alignment: .leading)
+                        //                                .padding(.vertical, 5)
+                        
+                        //                                Button(action: {
+                        //                                    if let latitude = house.latitude, let longitude = house.longitude {
+                        //                                        openMapsForDirections(latitude: latitude, longitude: longitude)
+                        //                                    }
+                        //                                }) {
+                        //                                    Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
+                        //                                        .font(.caption)
+                        //                                        .bold()
+                        //                                }
+                        //
+                        //                                Text(house.description)
+                        //                                    .fixedSize(horizontal: false, vertical: true)
+                        //
+                        //                            }
+                        //                            .padding()
+                        //                            .padding(.horizontal, 5)
+                        //                            .padding(.top, -10)
+                        
+                        Rectangle()
+                            .fill(AppColors.mainAccent)
+                            .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+                            .padding(.vertical, 5)
+                            .padding(.horizontal)
+                        
+                        if let latitude = house.latitude, let longitude = house.longitude {
+                            if latitude != 0.0 && longitude != 0.0 {
+                                HouseLocationView(viewModel: viewModel, latitude: latitude, longitude: longitude)
+//                                Text("Location")
+//                                    .font(.headline)
+//                                    .padding(.leading, -173)
+//                                    .padding(.top, 7)
+//                                    .padding(.bottom, 1)
+//                                
+//                                Text("Where you’ll be")
+//                                    .font(.footnote)
+//                                    .padding(.leading, -172)
+//                                    .foregroundColor(.gray)
+//                                    .padding(.bottom, -12)
+//                                
+//                                if let latitude = house.latitude, let longitude = house.longitude {
+//                                    MapView(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+//                                        .frame(height: 280)
+//                                        .frame(width: 355)
+//                                        .cornerRadius(10)
+//                                        .padding()
+//                                }
+//                                
+//                                if let latitude = viewModel.house?.latitude, let longitude = viewModel.house?.longitude {
+//                                    Button("Get directions") {
+//                                        openMapsForDirections(latitude: latitude, longitude: longitude)
+//                                    }
+//                                    .font(.footnote)
+//                                    .frame(maxWidth: 110)
+//                                    .foregroundColor(.white)
+//                                    .padding(.vertical, 7)
+//                                    .background(AppColors.mainAccent)
+//                                    .cornerRadius(20)
+//                                    .fontWeight(.bold)
+//                                    .padding(.leading, -179)
+//                                    .padding(.top, -10)
+//                                }
+//                                
+//                                Rectangle()
+//                                    .fill(AppColors.mainAccent)
+//                                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+//                                    .padding(.vertical, 5)
+//                                    .padding(.horizontal)
                             }
                         }
                         
-                    } else {
-                        ProgressView()
-                            .onAppear {
-                                viewModel.fetchHouse(byId: houseId)
-                                
-                            }
+                        if let owner = viewModel.houseOwner {
+                            OwnerView(owner:owner)
+//                            VStack {
+//                                Text("Meet your Host")
+//                                    .font(.title2)
+//                                    .padding(.bottom, 8)
+//                                    .padding(.top, -4)
+//                                
+//                                
+//                                NavigationLink(value: owner) {
+//                                    
+//                                    AsyncImageView(imageUrl: owner.imageURL, maxWidth: 100, height: 100, isCircle: true)
+//                                    
+//                                        .padding(.bottom, 10)
+//                                    
+//                                }
+//                                
+//                                Text("\(owner.firstName ?? "First Name") \(owner.surName ?? "Last Name")")
+//                                    .font(.title3)
+//                                    .bold()
+//                                    .padding(.bottom, 5)
+//                                
+//                                Text(owner.aboutMe ?? "No description available")
+//                                    .font(.body)
+//                                    .multilineTextAlignment(.center)
+//                                    .padding(.horizontal)
+//                            }
+//                            .padding()
+//                            
+//                            Rectangle()
+//                                .fill(AppColors.mainAccent)
+//                                .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+//                                .padding(.vertical)
+//                                .padding(.horizontal)
+                        }
+                        if let pets = house.pets {
+                            PetsSectionView(pets: pets)
+//                            VStack {
+//                                Text("Meet the Pet")
+//                                    .font(.title2)
+//                                
+//                                ForEach(pets) { pet in
+//                                    VStack {
+//                                        AsyncImageView(imageUrl: pet.imageURL, maxWidth: 100, height: 100, isCircle: true, isAnimal: true)
+//                                            .padding(.bottom, 10)
+//                                            .padding(.top, -10)
+//                                        
+//                                        
+//                                        Text(pet.name)
+//                                            .font(.title3)
+//                                            .bold()
+//                                            .padding(.bottom, 5)
+//                                        
+//                                        Text(pet.species)
+//                                            .font(.subheadline)
+//                                            .padding(.bottom, 5)
+//                                        
+//                                        Text(pet.description ?? "No description available")
+//                                            .font(.body)
+//                                            .multilineTextAlignment(.center)
+//                                            .padding(.horizontal)
+//                                            .padding(.bottom, 5)
+//                                        
+//                                        Section(header: Text("Pet Rules:")) {
+//                                            ForEach(pet.information, id: \.self) { rule in
+//                                                HStack {
+//                                                    Image(systemName: "pawprint.fill")
+//                                                        .foregroundColor(.yellow)
+//                                                    Text(rule)
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//                                    .padding()
+//                                    .padding(.top,-5)
+//                                    
+//                                    Rectangle()
+//                                        .fill(AppColors.mainAccent)
+//                                        .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+//                                        .padding(.vertical, 10)
+//                                        .padding(.horizontal)
+//                                }
+//                            }
+                        }
                     }
-                VStack(alignment: .center){
-                    Text("Booking instructions")
-                        .font(.headline)
-                        .padding(.bottom, 5)
-                        .padding(.leading, -173)
-
-                    Text("To book a stay at this house, follow these steps:")
-                        .font(.footnote)
-                        .padding(.bottom, 5)
-                        .padding(.leading, -50)
-                        .foregroundColor(.gray)
-
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("1. Browse through the house details and pictures to make sure it meets your requirements.")
-                        Text("2. Click on the 'Book' button at the bottom of the screen to book.")
-                        Text("3. Check the availability calendar to find suitable dates for your stay.")
-                        Text("4. Choose a period.")
-                        Text("5. Click on the 'Book' button to confirm.")
-                        Text("If you have any questions or need further assistance, feel free to contact the host.")
-                    }
-                    .font(.body)
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(8)
+                    
+                } else {
+                    ProgressView()
+                        .onAppear {
+                            viewModel.fetchHouse(byId: houseId)
+                            
+                        }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
-                .padding(.horizontal, 5)
-                .padding(.top, -10)
+                BookingInstuctionView()
+//                VStack(alignment: .center){
+//                    Text("Booking instructions")
+//                        .font(.headline)
+//                        .padding(.bottom, 5)
+//                        .padding(.leading, -173)
+//                    
+//                    Text("To book a stay at this house, follow these steps:")
+//                        .font(.footnote)
+//                        .padding(.bottom, 5)
+//                        .padding(.leading, -50)
+//                        .foregroundColor(.gray)
+//                    
+//                    VStack(alignment: .leading, spacing: 10) {
+//                        Text("1. Browse through the house details and pictures to make sure it meets your requirements.")
+//                        Text("2. Click on the 'Book' button at the bottom of the screen to book.")
+//                        Text("3. Check the availability calendar to find suitable dates for your stay.")
+//                        Text("4. Choose a period.")
+//                        Text("5. Click on the 'Book' button to confirm.")
+//                        Text("If you have any questions or need further assistance, feel free to contact the host.")
+//                    }
+//                    .font(.body)
+//                    .padding()
+//                    .background(Color.gray.opacity(0.1))
+//                    .cornerRadius(8)
+//                }
+//                .frame(maxWidth: .infinity, alignment: .leading)
+//                .padding()
+//                .padding(.horizontal, 5)
+//                .padding(.top, -10)
                 
                 Rectangle()
                     .fill(AppColors.mainAccent)
                     .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
                     .padding(.vertical, 10)
                     .padding(.horizontal)
-                
-                VStack(alignment: .center){
-                    Text("Cancellation policy")
-                    .font(.headline)
-                    .padding(.bottom, 7)
-                    .padding(.leading, -173)
-
-                Text("This reservation is non-refundable. Once a booking has been confirmed, it is binding and no refunds or changes will be made. We thank you for your understanding and look forward to welcoming you.")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
-                    .multilineTextAlignment(.leading)
-                    .padding(.bottom, 60)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
-                .padding(.horizontal, 5)
-                .padding(.top, -10)
+                CancelationPolicyView()
+//                VStack(alignment: .center){
+//                    Text("Cancellation policy")
+//                        .font(.headline)
+//                        .padding(.bottom, 7)
+//                        .padding(.leading, -173)
+//                    
+//                    Text("This reservation is non-refundable. Once a booking has been confirmed, it is binding and no refunds or changes will be made. We thank you for your understanding and look forward to welcoming you.")
+//                        .font(.footnote)
+//                        .foregroundColor(.gray)
+//                        .multilineTextAlignment(.leading)
+//                        .padding(.bottom, 60)
+//                }
+//                .frame(maxWidth: .infinity, alignment: .leading)
+//                .padding()
+//                .padding(.horizontal, 5)
+//                .padding(.top, -10)
             }
-
+            
             VStack {
                 Spacer()
                 HStack {
-
+                    
                     Spacer()
                     if !booked {
                         if !showMyOwnHouse {
@@ -330,8 +335,8 @@ struct HouseDetailView: View {
                 })
                 .toolbar{
                     let envelope = Image(systemName: "envelope.fill")
-                    .padding()
-                    .foregroundColor(AppColors.mainAccent)
+                        .padding()
+                        .foregroundColor(AppColors.mainAccent)
                     
                     if let house = viewModel.house,
                        let houseId = house.id, !showMyOwnHouse{
@@ -344,25 +349,25 @@ struct HouseDetailView: View {
                             Button(action: {
                                 showLoginSheet = true
                             }, label: {
-
+                                
                                 envelope
                             })
                         }
                     }
-
+                    
                 }
-
+                
             }
         }
     }
     
-    func openMapsForDirections(latitude: Double, longitude: Double) {
-            let destinationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            let placemark = MKPlacemark(coordinate: destinationCoordinate)
-            let mapItem = MKMapItem(placemark: placemark)
-            mapItem.name = "Destination"
-            mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
-        }
+//    func openMapsForDirections(latitude: Double, longitude: Double) {
+//        let destinationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+//        let placemark = MKPlacemark(coordinate: destinationCoordinate)
+//        let mapItem = MKMapItem(placemark: placemark)
+//        mapItem.name = "Destination"
+//        mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
+//    }
 }
 
 struct ReadReviewSheet: View {
@@ -383,9 +388,9 @@ struct ReadReviewSheet: View {
                     .transition(.scale)
                 } else if let user = selectedUser {
                     ReviewProfileView(user: user, selectedUser: $selectedUser)
-                        
+                    
                         .transition(.move(edge: .trailing))
-                    }
+                }
                 
             }
             
@@ -415,7 +420,7 @@ struct ReviewProfileView: View {
             
             HouseOwnerProfileView(user: user)
                 .padding(.top, 60)
-                
+            
         }
         
     }
@@ -427,60 +432,60 @@ struct reviewCardView : View {
     @Binding var selectedUser: User?
     var body: some View {
         
-            if let user = user {
-                VStack {
-                    HStack {
-                        
-//                        NavigationLink(destination: HouseOwnerProfileView(user: user)) { //Funkar inte än, väntar på kristians lösning
-                            Text("\(user.firstName ?? "Unknown user")")
-                                .font(.caption)
-                                .padding(.leading, 20)
-                                .onTapGesture {
-                                    withAnimation() {
-                                        selectedUser = user
-                                    }
-                                    //------------------------------------------------------------------------
-                                }
-//                        }
-                        Text("\(review.date.formatted(date: .numeric, time: .omitted))")
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding([.leading, .top], 10)
-                    RatingStars(totalStars: 5, rating: review.rating)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+        if let user = user {
+            VStack {
+                HStack {
+                    
+                    //                        NavigationLink(destination: HouseOwnerProfileView(user: user)) { //Funkar inte än, väntar på kristians lösning
+                    Text("\(user.firstName ?? "Unknown user")")
+                        .font(.caption)
                         .padding(.leading, 20)
-                        .padding(.top, 5)
-                    if let title = review.title, let text = review.text {
-                        if text != "" && title != "" {
-                            Text(title)
-                                .font(.system(size: 16))
-                                .fontWeight(.bold)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding([.horizontal, .top], 20)
-                            
-                            Text(text)
-                                .font(.system(size: 14))
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding([.horizontal, .bottom], 20)
-                        } else {
-                            Text("No written review.")
-                                .font(.system(size: 16))
-                                .fontWeight(.bold)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.horizontal, 20)
-                                .padding(.top, 5)
+                        .onTapGesture {
+                            withAnimation() {
+                                selectedUser = user
+                            }
+                            //------------------------------------------------------------------------
                         }
+                    //                        }
+                    Text("\(review.date.formatted(date: .numeric, time: .omitted))")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding([.leading, .top], 10)
+                RatingStars(totalStars: 5, rating: review.rating)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 20)
+                    .padding(.top, 5)
+                if let title = review.title, let text = review.text {
+                    if text != "" && title != "" {
+                        Text(title)
+                            .font(.system(size: 16))
+                            .fontWeight(.bold)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding([.horizontal, .top], 20)
+                        
+                        Text(text)
+                            .font(.system(size: 14))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding([.horizontal, .bottom], 20)
+                    } else {
+                        Text("No written review.")
+                            .font(.system(size: 16))
+                            .fontWeight(.bold)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 20)
+                            .padding(.top, 5)
                     }
                 }
-                .frame(maxWidth: .infinity ,minHeight: 80)
-                .background(Color.white)
-                .cornerRadius(20)
-                .shadow(radius: 5)
-                .padding(.vertical, 8)
             }
+            .frame(maxWidth: .infinity ,minHeight: 80)
+            .background(Color.white)
+            .cornerRadius(20)
+            .shadow(radius: 5)
+            .padding(.vertical, 8)
         }
+    }
     
 }
 
@@ -514,20 +519,20 @@ struct BookingsList: View {
     @State var showAlert : Bool = false
     @State var startDate = Date.now
     var body: some View {
-
+        
         VStack {
             BookingCalendarView(viewModel: viewModel)
             
             Text("Selcted period: \(viewModel.selectedBooking?.fromDate.formatted(date: .numeric, time: .omitted) ?? "") - \(viewModel.selectedBooking?.toDate.formatted(date: .numeric, time: .omitted) ?? "")")
                 .opacity(viewModel.selectedBooking == nil ? 0.0 : 1.0)
-                
+            
             
             Button(action: {
                 showAlert.toggle()
             }, label: {
                 FilledButtonLabel(text: "Reserv")
                     .frame(width: 100)
-                    
+                
             })
             .disabled(viewModel.selectedBookingID == "")
         }
@@ -539,7 +544,7 @@ struct BookingsList: View {
                 if let houseID = house.id
                 {
                     if viewModel.selectedBookingID != "" {
-//                        viewModel.bookHouse(houseID: houseID)
+                        //                        viewModel.bookHouse(houseID: houseID)
                         viewModel.firebaseHelper.bookPeriod(houseID: houseID, docID: viewModel.selectedBookingID) {success in
                             if success {
                                 dismiss()
@@ -565,7 +570,7 @@ struct BookingCalendarView: View{
             CalendarHeader(date: $viewModel.date, viewModel: viewModel)
                 .frame(maxWidth: .infinity)
                 .foregroundColor(.black)
-                
+            
             CalendarBodyView(days: $viewModel.daysInMonth, viewModel: viewModel)
                 .padding(10)
             
@@ -598,7 +603,7 @@ struct CalendarBodyView: View{
             ForEach(days, id: \.self) { day in
                 let dayNumber = Calendar.current.component(.day, from: day)
                 CalendarDayView(dayNumber: dayNumber, bookings: viewModel.bookings, date: day, viewModel: viewModel)
-                    
+                
             }
         }
     }
@@ -615,22 +620,22 @@ struct CalendarDayView: View {
             ZStack{
                 ForEach(bookings) {booking in
                     
-//                    if Calendar.current.isDate(date, inSameDayAs: booking.fromDate) {
+                    //                    if Calendar.current.isDate(date, inSameDayAs: booking.fromDate) {
                     if date.startOfDay == booking.fromDate.startOfDay {
                         viewModel.getColor(from: booking)
-                                .clipShape(
-                                    .rect(
-                                        topLeadingRadius: 25.0,
-                                        bottomLeadingRadius: 25.0
-                                    ))
-                                .onTapGesture {
-                                    print("fromDate: \(booking.fromDate)")
+                            .clipShape(
+                                .rect(
+                                    topLeadingRadius: 25.0,
+                                    bottomLeadingRadius: 25.0
+                                ))
+                            .onTapGesture {
+                                print("fromDate: \(booking.fromDate)")
                                 print("SelectedDate: \(date)")
-                                    viewModel.setBookingID(booking: booking)
-                                }
+                                viewModel.setBookingID(booking: booking)
+                            }
                         
-                            
-//                    } else if Calendar.current.isDate(date, inSameDayAs: booking.toDate) {
+                        
+                        //                    } else if Calendar.current.isDate(date, inSameDayAs: booking.toDate) {
                     } else if date.startOfDay == booking.toDate.startOfDay {
                         viewModel.getColor(from: booking)
                             .clipShape(
@@ -639,24 +644,24 @@ struct CalendarDayView: View {
                                     topTrailingRadius: 25.0
                                 ))
                             .onTapGesture {
-                            print("!!!")
+                                print("!!!")
                                 viewModel.setBookingID(booking: booking)
                             }
-                            
+                        
                     }
                     
                     else if (booking.fromDate.startOfDay ... booking.toDate).contains(date.startOfDay) {
                         viewModel.getColor(from: booking)
                             .onTapGesture {
-                            print("!!!")
+                                print("!!!")
                                 viewModel.setBookingID(booking: booking)
                             }
-                            
+                        
                     }
                     Text("")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        
-                        
+                    
+                    
                     
                 }
                 
@@ -668,9 +673,9 @@ struct CalendarDayView: View {
         .frame( height: 30)
         .foregroundColor(date.startOfDay == Date.now.startOfDay ? .blue : .black)
         .background(date.startOfDay <= Date.now.startOfDay ? AppColors.pastDays : Color.clear)
-//        .padding(8)
-//        .border(Color.black)
-//        .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
+        //        .padding(8)
+        //        .border(Color.black)
+        //        .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
         
         
     }
@@ -706,20 +711,285 @@ struct CalendarHeader: View {
 
 struct MapView: UIViewRepresentable {
     var coordinate: CLLocationCoordinate2D
-
+    
     func makeUIView(context: Context) -> MKMapView {
         MKMapView(frame: .zero)
     }
-
+    
     func updateUIView(_ uiView: MKMapView, context: Context) {
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
         uiView.addAnnotation(annotation)
-
+        
         let region = MKCoordinateRegion(
             center: coordinate,
             span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
         )
         uiView.setRegion(region, animated: true)
+    }
+}
+
+struct HouseInformationView: View {
+    var house: House
+    var viewModel: HouseDetailViewModel
+    
+    @Binding var showReviewSheet: Bool
+    
+    var body: some View {
+        VStack {
+            AsyncImageView(imageUrl: house.imageURL, maxWidth: 400, height: 300)
+            
+            VStack(alignment: .leading, spacing: 10) {
+                Text(house.title)
+                    .font(.title)
+                HStack {
+                    Image(systemName: "star.fill")
+                        .foregroundColor(AppColors.mainAccent)
+                    if let rating = house.getAverageRating() {
+                        Text("\(rating, specifier: "%.1f")")
+                            .foregroundColor(AppColors.mainAccent)
+                        Button(action: {
+                            showReviewSheet.toggle()
+                        }, label: {
+                            Text("Read reviews")
+                        })
+                    } else {
+                        Text("No ratings yet")
+                            .foregroundColor(AppColors.mainAccent)
+                    }
+                }
+                .font(.caption)
+                HStack {
+                    Label(
+                        title: { Text("\(house.beds) st") },
+                        icon: { Image(systemName: "bed.double") }
+                    )
+                    .padding(.trailing, 10)
+                    
+                    Label(
+                        title: { Text("\(house.size) m²") },
+                        icon: { Image(systemName: "house.fill") }
+                    )
+                    .padding(.trailing, 10)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 5)
+                Button(action: {
+                    if let latitude = house.latitude, let longitude = house.longitude {
+                        viewModel.openMapsForDirections(latitude: latitude, longitude: longitude)
+                    }
+                }) {
+                    Text("\(house.streetName) \(house.streetNR) , \(house.zipCode) \(house.city)")
+                        .font(.caption)
+                        .bold()
+                }
+                
+                Text(house.description)
+                    .fixedSize(horizontal: false, vertical: true)
+                
+            }
+            .padding()
+            .padding(.horizontal, 5)
+            .padding(.top, -10)
+        }
+    }
+}
+
+struct HouseLocationView: View {
+    var viewModel: HouseDetailViewModel
+    let latitude: Double
+    let longitude: Double
+    
+    var body: some View {
+        VStack{
+            Text("Location")
+                .font(.headline)
+                .padding(.leading, -173)
+                .padding(.top, 7)
+                .padding(.bottom, 1)
+            
+            Text("Where you’ll be")
+                .font(.footnote)
+                .padding(.leading, -172)
+                .foregroundColor(.gray)
+                .padding(.bottom, -12)
+            
+       //     if let latitude = latitude, let longitude = longitude {
+                MapView(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+                    .frame(height: 280)
+                    .frame(width: 355)
+                    .cornerRadius(10)
+                    .padding()
+       //     }
+            
+     //       if let latitude = viewModel.house?.latitude, let longitude = viewModel.house?.longitude {
+                Button("Get directions") {
+                    viewModel.openMapsForDirections(latitude: latitude, longitude: longitude)
+                }
+                .font(.footnote)
+                .frame(maxWidth: 110)
+                .foregroundColor(.white)
+                .padding(.vertical, 7)
+                .background(AppColors.mainAccent)
+                .cornerRadius(20)
+                .fontWeight(.bold)
+                .padding(.leading, -179)
+                .padding(.top, -10)
+   //         }
+            
+            Rectangle()
+                .fill(AppColors.mainAccent)
+                .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+                .padding(.vertical, 5)
+                .padding(.horizontal)
+        }
+    }
+}
+
+struct OwnerView: View {
+    var owner: User
+    
+    var body: some View {
+        VStack {
+            Text("Meet your Host")
+                .font(.title2)
+                .padding(.bottom, 8)
+                .padding(.top, -4)
+            
+            
+            NavigationLink(value: owner) {
+                
+                AsyncImageView(imageUrl: owner.imageURL, maxWidth: 100, height: 100, isCircle: true)
+                
+                    .padding(.bottom, 10)
+
+            }
+            
+            Text("\(owner.firstName ?? "First Name") \(owner.surName ?? "Last Name")")
+                .font(.title3)
+                .bold()
+                .padding(.bottom, 5)
+            
+            Text(owner.aboutMe ?? "No description available")
+                .font(.body)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
+        }
+        .padding()
+        
+        Rectangle()
+            .fill(AppColors.mainAccent)
+            .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+            .padding(.vertical)
+            .padding(.horizontal)
+    }
+}
+
+struct PetsSectionView: View {
+    
+    var pets: [Pet]
+    
+    var body: some View {
+        VStack {
+            Text("Meet the Pet\(pets.count > 1 ? "s" : "")")
+                .font(.title2)
+            
+            ForEach(pets) { pet in
+                VStack {
+                    AsyncImageView(imageUrl: pet.imageURL, maxWidth: 100, height: 100, isCircle: true, isAnimal: true)
+                        .padding(.bottom, 10)
+                        .padding(.top, -10)
+                    
+                    
+                    Text(pet.name)
+                        .font(.title3)
+                        .bold()
+                        .padding(.bottom, 5)
+                    
+                    Text(pet.species)
+                        .font(.subheadline)
+                        .padding(.bottom, 5)
+                    
+                    Text(pet.description ?? "No description available")
+                        .font(.body)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                        .padding(.bottom, 5)
+                    
+                    Section(header: Text("Pet Rules:")) {
+                        ForEach(pet.information, id: \.self) { rule in
+                            HStack {
+                                Image(systemName: "pawprint.fill")
+                                    .foregroundColor(.yellow)
+                                Text(rule)
+                            }
+                        }
+                    }
+                }
+                .padding()
+                .padding(.top,-5)
+                
+                Rectangle()
+                    .fill(AppColors.mainAccent)
+                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+                    .padding(.vertical, 10)
+                    .padding(.horizontal)
+            }
+        }
+    }
+}
+
+struct BookingInstuctionView: View {
+    var body: some View {
+        VStack(alignment: .center){
+            Text("Booking instructions")
+                .font(.headline)
+                .padding(.bottom, 5)
+                .padding(.leading, -173)
+            
+            Text("To book a stay at this house, follow these steps:")
+                .font(.footnote)
+                .padding(.bottom, 5)
+                .padding(.leading, -50)
+                .foregroundColor(.gray)
+            
+            VStack(alignment: .leading, spacing: 10) {
+                Text("1. Browse through the house details and pictures to make sure it meets your requirements.")
+                Text("2. Click on the 'Book' button at the bottom of the screen to book.")
+                Text("3. Check the availability calendar to find suitable dates for your stay.")
+                Text("4. Choose a period.")
+                Text("5. Click on the 'Book' button to confirm.")
+                Text("If you have any questions or need further assistance, feel free to contact the host.")
+            }
+            .font(.body)
+            .padding()
+            .background(Color.gray.opacity(0.1))
+            .cornerRadius(8)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .padding(.horizontal, 5)
+        .padding(.top, -10)
+    }
+}
+
+struct CancelationPolicyView: View {
+    var body: some View {
+        VStack(alignment: .center){
+            Text("Cancellation policy")
+                .font(.headline)
+                .padding(.bottom, 7)
+                .padding(.leading, -173)
+            
+            Text("This reservation is non-refundable. Once a booking has been confirmed, it is binding and no refunds or changes will be made. We thank you for your understanding and look forward to welcoming you.")
+                .font(.footnote)
+                .foregroundColor(.gray)
+                .multilineTextAlignment(.leading)
+                .padding(.bottom, 60)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .padding(.horizontal, 5)
+        .padding(.top, -10)
     }
 }
