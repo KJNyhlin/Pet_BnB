@@ -12,38 +12,50 @@ struct MyHouseView: View {
     @StateObject var vm = MyHouseViewModel()
     @Binding var path: NavigationPath
     @EnvironmentObject var authManager: AuthManager
+
     
     
     var body: some View {
         VStack(){
         //    NavigationStack{
+            if let house = vm.house{
                 TabBarView(selectedTab: $vm.selectedTab)
                 //                .border(Color.black)
-                
-                TabView(selection: $vm.selectedTab) {
 
-
-                    
-                    if let house = vm.house {
-                        HouseView(vm: vm, house: house).tag(0)
-//                        HouseDetailView(houseId: vm.house?.id ?? "", firebaseHelper: FirebaseHelper(), booked: false, showMyOwnHouse: true).tag(0)
-
-                        //                    TimePeriodView(vm: TimePeriodViewModel(house: house)).tag(1)
-                        MyTimePeriodsView(viewModel: TimePeriodViewModel(house: house)).tag(1)
-                        //                    PetsView(vm:PetsViewModel(pet: nil, house: house)).tag(2)
-                        PetsView(vm: PetsViewModel(pet: nil, house: house)).tag(2)
-                        //                    SignUpView().tag(2)
-                    } else {
-                        NavigationLink(value: ""){
-                            FilledButtonLabel(text:"Create House")
-                                .frame(maxWidth: 200)
-                        }
-                    }
-                    
-                }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                
+                TabViewBody(vm: vm, house: house)
+            } else {
                 Spacer()
+                NavigationLink(value: ""){
+                    FilledButtonLabel(text:"Create House")
+                        .frame(maxWidth: 200)
+                }
+                Spacer()
+            }
+
+//                TabView(selection: $vm.selectedTab) {
+//
+//
+//                    
+//                    if let house = vm.house {
+//                        HouseView(vm: vm, house: house).tag(0)
+////                        HouseDetailView(houseId: vm.house?.id ?? "", firebaseHelper: FirebaseHelper(), booked: false, showMyOwnHouse: true).tag(0)
+//
+//                        //                    TimePeriodView(vm: TimePeriodViewModel(house: house)).tag(1)
+//                        MyTimePeriodsView(viewModel: TimePeriodViewModel(house: house)).tag(1)
+//                        //                    PetsView(vm:PetsViewModel(pet: nil, house: house)).tag(2)
+//                        PetsView(vm: PetsViewModel(pet: nil, house: house)).tag(2)
+//                        //                    SignUpView().tag(2)
+//                    } else {
+//                        NavigationLink(value: ""){
+//                            FilledButtonLabel(text:"Create House")
+//                                .frame(maxWidth: 200)
+//                        }
+//                    }
+//                    
+//                }
+     //           .tabViewStyle(.page(indexDisplayMode: .never))
+
+//                Spacer()
                 
             //}
         }.onChange(of: authManager.loggedIn){ oldValue, newValue in
@@ -57,7 +69,9 @@ struct MyHouseView: View {
         
         .protected()
         .onAppear{
+            print("Triggers on appear in MYHouse")
             vm.downloadHouse()
+
             
         }
         .onChange(of: authManager.loggedIn){ oldValue, newValue in
@@ -69,6 +83,41 @@ struct MyHouseView: View {
             
         }
 //        .border(Color.black)
+    }
+}
+
+struct TabViewBody: View {
+    @ObservedObject var vm: MyHouseViewModel
+    var house: House
+    @State var tabID = UUID()
+    
+    var body: some View {
+        TabView(selection: $vm.selectedTab) {
+
+
+            
+        //    if let house = vm.house {
+                HouseView(vm: vm, house: house).tag(0)
+                    .id(tabID)
+//                        HouseDetailView(houseId: vm.house?.id ?? "", firebaseHelper: FirebaseHelper(), booked: false, showMyOwnHouse: true).tag(0)
+
+                //                    TimePeriodView(vm: TimePeriodViewModel(house: house)).tag(1)
+                MyTimePeriodsView(viewModel: TimePeriodViewModel(house: house)).tag(1)
+                //                    PetsView(vm:PetsViewModel(pet: nil, house: house)).tag(2)
+                PetsView(vm: PetsViewModel(pet: nil, house: house)).tag(2)
+                //                    SignUpView().tag(2)
+//            } else {
+//                NavigationLink(value: ""){
+//                    FilledButtonLabel(text:"Create House")
+//                        .frame(maxWidth: 200)
+//                }
+//            }
+            
+        }
+        .onAppear{
+            tabID = UUID()
+        }
+        .tabViewStyle(.page(indexDisplayMode: .never))
     }
 }
 

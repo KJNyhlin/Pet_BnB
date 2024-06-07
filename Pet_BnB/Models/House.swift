@@ -10,7 +10,7 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 
-struct House: Identifiable, Codable, Hashable, Equatable{
+struct House: Identifiable, Codable, Hashable{
 //    static func == (lhs: House, rhs: House) -> Bool {
 //        lhs.id == rhs.id
 //    }
