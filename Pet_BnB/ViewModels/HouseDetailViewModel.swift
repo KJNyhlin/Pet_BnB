@@ -8,6 +8,8 @@
 import Foundation
 import Combine
 import SwiftUI
+//import CoreLocation
+import MapKit
 
 class HouseDetailViewModel: ObservableObject {
     @Published var house: House?
@@ -163,6 +165,14 @@ class HouseDetailViewModel: ObservableObject {
         
         
     }
+    
+    func openMapsForDirections(latitude: Double, longitude: Double) {
+            let destinationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            let placemark = MKPlacemark(coordinate: destinationCoordinate)
+            let mapItem = MKMapItem(placemark: placemark)
+            mapItem.name = "Destination"
+            mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
+        }
     
     
     
