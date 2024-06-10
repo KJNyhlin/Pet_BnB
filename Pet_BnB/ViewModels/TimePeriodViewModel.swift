@@ -86,7 +86,8 @@ class TimePeriodViewModel: ObservableObject {
         renterInfo.removeAll()
         for myTimePeriod in myTimePeriods {
             if let renterID = myTimePeriod.renterID {
-                firebaseHelper.getRenterInfo(renterID: renterID) {renter in
+             //   firebaseHelper.getRenterInfo(renterID: renterID) {renter in
+                firebaseHelper.loadUserInfo(userID: renterID) {renter in
                     if let renter = renter {
                         self.renterInfo[renterID] = renter
                     }

@@ -173,7 +173,7 @@ class FirebaseHelper: ObservableObject {
                 return
             }
             
-            // If we get here we found houses we for now return only the first one
+            // If we get here we found houses, we for now return only the first one
             do {
                 let document = documents[0]
                 let house = try document.data(as: House.self)
@@ -185,9 +185,6 @@ class FirebaseHelper: ObservableObject {
         }
     }
     
-//    func getLoggedInUserID() -> String?{
-//        return auth.currentUser?.uid
-//    }
     
     func downloadImage(from url: String, completion: @escaping (UIImage?) -> Void) {
         guard let storageUrl = URL(string: url) else {
@@ -444,22 +441,22 @@ class FirebaseHelper: ObservableObject {
         completion(false)
     }
     
-    func getRenterInfo(renterID: String, completion : @escaping (User?) -> Void) {
-        db.collection("users").document(renterID).getDocument() { document, error in
-            if let error = error {
-                print("Error getting renterInfo: \(error)")
-                completion(nil)
-            } else {
-                do {
-                    let renter = try document?.data(as: User.self)
-                    completion(renter)
-                } catch {
-                    print("Error setting document")
-                    completion(nil)
-                }
-            }
-        }
-    }
+//    func getRenterInfo(renterID: String, completion : @escaping (User?) -> Void) {
+//        db.collection("users").document(renterID).getDocument() { document, error in
+//            if let error = error {
+//                print("Error getting renterInfo: \(error)")
+//                completion(nil)
+//            } else {
+//                do {
+//                    let renter = try document?.data(as: User.self)
+//                    completion(renter)
+//                } catch {
+//                    print("Error setting document")
+//                    completion(nil)
+//                }
+//            }
+//        }
+//    }
               
 
     func fetchUser(byId userId: String, completion: @escaping (User?) -> Void) {
