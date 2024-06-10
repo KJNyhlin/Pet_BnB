@@ -55,6 +55,7 @@ struct MyTimePeriodsView: View {
                 
                     Spacer()
                 }
+
                 .navigationBarHidden(true)
                 .onAppear {
                     viewModel.getTimePeriods()
@@ -127,9 +128,9 @@ struct MyTimePeriodCardView : View {
                                         .padding(.vertical)
                                         .foregroundColor(AppColors.mainAccent)
                                 }
-                                .navigationDestination(for: String.self) { toUserID in
-                                    ChatView(vm: ChatViewModel(toUserID: toUserID))
-                                }
+//                                .navigationDestination(for: String.self) { toUserID in
+//                                    ChatView(vm: ChatViewModel(toUserID: toUserID))
+//                                }
 
                             }
         
