@@ -95,8 +95,14 @@ struct MyHouseTabView: View {
                 .navigationDestination(for: House.self ){ house in
                     CreateHouseView(vm: CreateHouseViewModel(house: house))
                 }
-                .navigationDestination(for: String.self ){ _ in
-                    CreateHouseView(vm: CreateHouseViewModel(house: nil))
+                .navigationDestination(for: String.self ){ text in
+                    if text == "" {
+                        CreateHouseView(vm: CreateHouseViewModel(house: nil))
+                    } else {
+                        ChatView(vm: ChatViewModel(toUserID: text))
+                        
+                    }
+                    
                 }
                 .navigationDestination(for: User.self){ user in
                     HouseOwnerProfileView(user: user)
