@@ -29,6 +29,7 @@
 		0C38DDAA2BF4BD0D00B92497 /* MyHouseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DDA92BF4BD0D00B92497 /* MyHouseView.swift */; };
 		0C38DDAC2BF4BE6B00B92497 /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DDAB2BF4BE6B00B92497 /* AppColors.swift */; };
 		0C38DDAE2BF4D3CB00B92497 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C38DDAD2BF4D3CB00B92497 /* SignUpView.swift */; };
+		0C5F27C42C0F1E0900D8E08F /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5F27C32C0F1E0900D8E08F /* LocationManager.swift */; };
 		0C7878B72C088FAE00B866DC /* Review.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C7878B62C088FAE00B866DC /* Review.swift */; };
 		0CC9B8D92BFDF2BA00F0D7C8 /* DateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC9B8D82BFDF2BA00F0D7C8 /* DateManager.swift */; };
 		0CC9B8DB2BFF27FC00F0D7C8 /* TimePeriodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC9B8DA2BFF27FC00F0D7C8 /* TimePeriodView.swift */; };
@@ -80,6 +81,7 @@
 		0C38DDA92BF4BD0D00B92497 /* MyHouseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyHouseView.swift; sourceTree = "<group>"; };
 		0C38DDAB2BF4BE6B00B92497 /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
 		0C38DDAD2BF4D3CB00B92497 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		0C5F27C32C0F1E0900D8E08F /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		0C7878B62C088FAE00B866DC /* Review.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Review.swift; sourceTree = "<group>"; };
 		0CC9B8D82BFDF2BA00F0D7C8 /* DateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateManager.swift; sourceTree = "<group>"; };
 		0CC9B8DA2BFF27FC00F0D7C8 /* TimePeriodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePeriodView.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				0CC9B8D82BFDF2BA00F0D7C8 /* DateManager.swift */,
 				0C38DDAB2BF4BE6B00B92497 /* AppColors.swift */,
 				6D1DA1302C076048008315CF /* AuthManager.swift */,
+				0C5F27C32C0F1E0900D8E08F /* LocationManager.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -357,6 +360,7 @@
 				6D32E97C2BFDFF2700205385 /* Message.swift in Sources */,
 				0C38DD912BF4B5BF00B92497 /* House.swift in Sources */,
 				0C38DDAC2BF4BE6B00B92497 /* AppColors.swift in Sources */,
+				0C5F27C42C0F1E0900D8E08F /* LocationManager.swift in Sources */,
 				0CC9B8D92BFDF2BA00F0D7C8 /* DateManager.swift in Sources */,
 				0C38DD8F2BF4B4CA00B92497 /* User.swift in Sources */,
 				6D12FC9A2BFB6560005D765C /* PetsView.swift in Sources */,
@@ -508,6 +512,7 @@
 				DEVELOPMENT_TEAM = 83U7D225Z5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Location is needed to place your house";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -538,6 +543,7 @@
 				DEVELOPMENT_TEAM = 83U7D225Z5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Location is needed to place your house";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

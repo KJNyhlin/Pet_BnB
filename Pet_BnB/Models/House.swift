@@ -34,6 +34,7 @@ struct House: Identifiable, Codable, Hashable{
     var numberOfReviews: Int = 0
     
     func getAverageRating() -> Double? {
+        print(self.numberOfReviews)
         if self.numberOfReviews != 0 {
            
             return Double(self.totalRatingPoints) / Double(self.numberOfReviews)
