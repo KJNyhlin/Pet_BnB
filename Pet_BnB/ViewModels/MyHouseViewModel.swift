@@ -21,7 +21,7 @@ class MyHouseViewModel: ObservableObject{
     }
     
     func downloadHouse(){
-        let loggedInUserID = firebaseHelper.getLoggedInUserID()
+        let loggedInUserID = firebaseHelper.getUserID()
         if let loggedInUserID = loggedInUserID {
             firebaseHelper.fetchHouse(withOwner: loggedInUserID){ myHouse in
                 self.house = myHouse

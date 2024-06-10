@@ -113,7 +113,8 @@ class HouseDetailViewModel: ObservableObject {
     }
     
     func fetchHouseOwner(byId ownerId: String) {
-            firebaseHelper.fetchUser(byId: ownerId) { [weak self] user in
+          //  firebaseHelper.fetchUser(byId: ownerId) { [weak self] user in
+        firebaseHelper.loadUserInfo(userID: ownerId) { [weak self] user in
                 DispatchQueue.main.async {
                     self?.houseOwner = user
                 }
@@ -151,7 +152,8 @@ class HouseDetailViewModel: ObservableObject {
     func fetchReviewerInfo() {
         self.reviewerInfo.removeAll()
         for review in self.reviews {
-            firebaseHelper.getRenterInfo(renterID: review.userID) {reviewer in
+          //  firebaseHelper.getRenterInfo(renterID: review.userID) {reviewer in
+            firebaseHelper.loadUserInfo(userID: review.userID) {reviewer in
                 if let reviewer = reviewer {
                     self.reviewerInfo[review.userID] = reviewer
                 }
