@@ -35,6 +35,7 @@ class FirebaseHelper: ObservableObject {
                     completion(nil, nil)//---------------------------------------------------------------------------------------------------------
                     return
                 }
+                
                 completion(userID, nil)
             }
         }
@@ -89,7 +90,10 @@ class FirebaseHelper: ObservableObject {
         let userInfo = User(firstName: firstName, surName: surName, aboutMe: aboutMe)
         
         do {
-            try db.collection("users").document(userID).setData(from: userInfo) { error in }
+            try db.collection("users").document(userID).setData(from: userInfo) { error in
+                self.authManager.set(loggedIn: true)
+            }
+            
         } catch {
             print("Error")
         }
