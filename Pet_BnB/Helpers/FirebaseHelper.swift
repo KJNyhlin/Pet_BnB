@@ -441,44 +441,6 @@ class FirebaseHelper: ObservableObject {
         completion(false)
     }
     
-//    func getRenterInfo(renterID: String, completion : @escaping (User?) -> Void) {
-//        db.collection("users").document(renterID).getDocument() { document, error in
-//            if let error = error {
-//                print("Error getting renterInfo: \(error)")
-//                completion(nil)
-//            } else {
-//                do {
-//                    let renter = try document?.data(as: User.self)
-//                    completion(renter)
-//                } catch {
-//                    print("Error setting document")
-//                    completion(nil)
-//                }
-//            }
-//        }
-//    }
-              
-
-//    func fetchUser(byId userId: String, completion: @escaping (User?) -> Void) {
-//            db.collection("users").document(userId).getDocument { snapshot, error in
-//                guard let snapshot = snapshot, snapshot.exists else {
-//                    print("Error fetching user: \(error?.localizedDescription ?? "Unknown error")")
-//                    completion(nil)
-//                    return
-//                }
-//                
-//                do {
-//                    let user = try snapshot.data(as: User.self)
-//                    completion(user)
-//                } catch {
-//                    print("Error decoding user: \(error.localizedDescription)")
-//                    completion(nil)
-//                }
-//            }
-//        }
-    
-
-    
     func fetchPet(byId id: String, completion: @escaping (Result<Pet, Error>) -> Void) {
           let db = Firestore.firestore()
           db.collection("pets").document(id).getDocument { (document, error) in
