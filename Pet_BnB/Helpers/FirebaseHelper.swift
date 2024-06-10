@@ -185,9 +185,9 @@ class FirebaseHelper: ObservableObject {
         }
     }
     
-    func getLoggedInUserID() -> String?{
-        return auth.currentUser?.uid
-    }
+//    func getLoggedInUserID() -> String?{
+//        return auth.currentUser?.uid
+//    }
     
     func downloadImage(from url: String, completion: @escaping (UIImage?) -> Void) {
         guard let storageUrl = URL(string: url) else {
