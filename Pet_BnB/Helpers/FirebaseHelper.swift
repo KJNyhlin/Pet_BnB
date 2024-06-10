@@ -459,23 +459,23 @@ class FirebaseHelper: ObservableObject {
 //    }
               
 
-    func fetchUser(byId userId: String, completion: @escaping (User?) -> Void) {
-            db.collection("users").document(userId).getDocument { snapshot, error in
-                guard let snapshot = snapshot, snapshot.exists else {
-                    print("Error fetching user: \(error?.localizedDescription ?? "Unknown error")")
-                    completion(nil)
-                    return
-                }
-                
-                do {
-                    let user = try snapshot.data(as: User.self)
-                    completion(user)
-                } catch {
-                    print("Error decoding user: \(error.localizedDescription)")
-                    completion(nil)
-                }
-            }
-        }
+//    func fetchUser(byId userId: String, completion: @escaping (User?) -> Void) {
+//            db.collection("users").document(userId).getDocument { snapshot, error in
+//                guard let snapshot = snapshot, snapshot.exists else {
+//                    print("Error fetching user: \(error?.localizedDescription ?? "Unknown error")")
+//                    completion(nil)
+//                    return
+//                }
+//                
+//                do {
+//                    let user = try snapshot.data(as: User.self)
+//                    completion(user)
+//                } catch {
+//                    print("Error decoding user: \(error.localizedDescription)")
+//                    completion(nil)
+//                }
+//            }
+//        }
     
 
     

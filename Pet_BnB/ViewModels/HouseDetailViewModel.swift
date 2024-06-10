@@ -113,7 +113,8 @@ class HouseDetailViewModel: ObservableObject {
     }
     
     func fetchHouseOwner(byId ownerId: String) {
-            firebaseHelper.fetchUser(byId: ownerId) { [weak self] user in
+          //  firebaseHelper.fetchUser(byId: ownerId) { [weak self] user in
+        firebaseHelper.loadUserInfo(userID: ownerId) { [weak self] user in
                 DispatchQueue.main.async {
                     self?.houseOwner = user
                 }
