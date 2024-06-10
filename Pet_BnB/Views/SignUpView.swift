@@ -10,7 +10,7 @@ import SwiftUI
 struct SignUpView: View {
     @EnvironmentObject var signUpViewModel :SignUpViewModel
     @EnvironmentObject var chaListViewModel: ChatsListViewModel
-   
+//    @EnvironmentObject var authManager : AuthManager
     
     var body: some View {
         ZStack {
@@ -116,6 +116,7 @@ struct SignUp: View {
 struct SignUpButtons: View {
     @EnvironmentObject var signUpViewModel : SignUpViewModel
     @EnvironmentObject var chatListViewModel: ChatsListViewModel
+    @Environment(\.dismiss) var dismiss
     @State var showError: Bool = false
     var body: some View {
         VStack {
@@ -123,6 +124,7 @@ struct SignUpButtons: View {
                 signUpViewModel.signUp(name: signUpViewModel.email, password: signUpViewModel.password){ success in
                     if success{
                         chatListViewModel.setupChatsListener()
+//                        dismiss()
                     } else {
                         // Not signed up tell user!
                         print("heheh")
@@ -191,6 +193,7 @@ struct EntryFields : View {
 struct EnterPersonalInfo : View {
     @EnvironmentObject var signUpViewModel : SignUpViewModel
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var authManager : AuthManager
     
     var body: some View {
         VStack {
@@ -200,6 +203,7 @@ struct EnterPersonalInfo : View {
             EntryFields(placeHolder: "Surname", promt: "", field: $signUpViewModel.surName)
             Button(action: {
                 signUpViewModel.savePersonalInfoToDB()
+//                authManager.set(loggedIn: true)
                 dismiss()
             }, label: {
                 FilledButtonLabel(text: "Save")
@@ -209,6 +213,7 @@ struct EnterPersonalInfo : View {
                 signUpViewModel.firstName = ""
                 signUpViewModel.surName = ""
                 signUpViewModel.savePersonalInfoToDB()
+//                authManager.set(loggedIn: true)
                 dismiss()
                     
             }, label: {

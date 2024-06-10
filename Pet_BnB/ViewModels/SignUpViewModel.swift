@@ -62,6 +62,7 @@ class SignUpViewModel: ObservableObject {
     func savePersonalInfoToDB() {
         if accountCreated {
             firebaseHelper.savePersonalInfoToDB(firstName: firstName, surName: surName, aboutMe: aboutMe)
+            
         } else {
             print("Dismiss without saving personalData")
         }
