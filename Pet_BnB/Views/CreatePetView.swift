@@ -214,12 +214,20 @@ struct CreatePetView: View {
                         self.isImageLoading = false
                     }
                     vm.pet = pet
+                } else {
+                    self.isImageLoading = false // Ställ in till false om ingen bild ska laddas
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     self.isNameFocused = true
                 }
             }
             .photosPicker(isPresented: $isImagePickerPresented, selection: $vm.imageSelection, matching: .images, photoLibrary: .shared())
+            .onChange(of: vm.imageSelection) { newValue in
+                if newValue != nil {
+                    self.isImageLoading = true // Starta laddning när en ny bild väljs
+                    loadImageData()
+                }
+            }
             .alert(isPresented: $showAlert) {
                 Alert(
                     title: Text("Don't you want to save your changes?"),
@@ -248,7 +256,6 @@ struct CreatePetView: View {
                                     if success {
                                         isSaving = false
                                         DispatchQueue.main.async {
-
                                             self.presentationMode.wrappedValue.dismiss()
                                         }
                                     }
@@ -317,6 +324,25 @@ struct CreatePetView: View {
         vm.informationArray.remove(atOffsets: offsets)
     }
     
+    private func loadImageData() {
+        Task {
+            do {
+                guard let selectedPhoto = vm.imageSelection else {
+                    print("No photo selected")
+                    return
+                }
+                let imageData = try await selectedPhoto.loadTransferable(type: Data.self)
+                DispatchQueue.main.async {
+                    if let imageData = imageData {
+                        self.vm.image = UIImage(data: imageData)
+                        self.isImageLoading = false
+                    }
+                }
+            } catch {
+                print("Error loading image data: \(error)")
+            }
+        }
+    }
 }
 
 extension PetsViewModel {
@@ -353,6 +379,7 @@ extension PetsViewModel {
         task.resume()
     }
 }
+
 
 //#Preview {
 //    CreatePetView(vm: CreatePetViewModel(pet: Pet(name: "Rufus", species: "Dog"), house: House(title: "", description: "", beds: 1, size: 1, streetName: "", streetNR: 1, city: "", zipCode: 1, ownerID: "")))
