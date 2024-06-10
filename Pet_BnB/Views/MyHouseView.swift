@@ -67,7 +67,6 @@ struct MyHouseView: View {
 
         
         
-        .protected()
         .onAppear{
             print("Triggers on appear in MYHouse")
             vm.downloadHouse()
