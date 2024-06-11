@@ -8,20 +8,14 @@
 import SwiftUI
 
 struct MyHouseView: View {
-    //var myHouse: House?
     @StateObject var vm = MyHouseViewModel()
     @Binding var path: NavigationPath
     @EnvironmentObject var authManager: AuthManager
-
-    
     
     var body: some View {
         VStack(){
-        
             if let house = vm.house{
                 TabBarView(selectedTab: $vm.selectedTab)
-                
-
                 TabViewBody(vm: vm, house: house)
             } else {
                 Spacer()
@@ -31,7 +25,7 @@ struct MyHouseView: View {
                 }
                 Spacer()
             }
-
+            
         }.onChange(of: authManager.loggedIn){ oldValue, newValue in
             if !newValue {
                 vm.selectedTab = 0
@@ -40,7 +34,7 @@ struct MyHouseView: View {
         .onAppear{
             print("Triggers on appear in MYHouse")
             vm.downloadHouse()
-
+            
         }
         .onChange(of: authManager.loggedIn){ oldValue, newValue in
             if newValue{
@@ -48,9 +42,7 @@ struct MyHouseView: View {
             } else {
                 vm.house = nil
             }
-            
         }
-
     }
 }
 
@@ -61,13 +53,13 @@ struct TabViewBody: View {
     
     var body: some View {
         TabView(selection: $vm.selectedTab) {
-                HouseView(vm: vm, house: house)
-                    .tag(0)
-                    .id(tabID)
-                MyTimePeriodsView(viewModel: TimePeriodViewModel(house: house))
-                    .tag(1)
-                PetsView(vm: PetsViewModel(pet: nil, house: house))
-                    .tag(2)
+            HouseView(vm: vm, house: house)
+                .tag(0)
+                .id(tabID)
+            MyTimePeriodsView(viewModel: TimePeriodViewModel(house: house))
+                .tag(1)
+            PetsView(vm: PetsViewModel(pet: nil, house: house))
+                .tag(2)
         }
         .onAppear{
             tabID = UUID()
@@ -82,11 +74,11 @@ struct TabBarView: View {
     var tabBarNames = ["House", "Time periods", "Pets"]
     var body: some View {
         GeometryReader { geometry in
-                HStack(alignment: .center) {
-                    ForEach(Array(zip(self.tabBarNames.indices, self.tabBarNames)), id: \.0) { index, name in
-                        TabBarItem(selectedTab: self.$selectedTab, namespace: namespace.self, tabBarItemName: name, tab: index)
-                            .frame(width: geometry.size.width / CGFloat(self.tabBarNames.count))
-                    }
+            HStack(alignment: .center) {
+                ForEach(Array(zip(self.tabBarNames.indices, self.tabBarNames)), id: \.0) { index, name in
+                    TabBarItem(selectedTab: self.$selectedTab, namespace: namespace.self, tabBarItemName: name, tab: index)
+                        .frame(width: geometry.size.width / CGFloat(self.tabBarNames.count))
+                }
             }
             .frame(maxWidth: .infinity)
         }
@@ -115,16 +107,11 @@ struct TabBarItem : View {
                     Color.clear
                         .frame(height: 2)
                 }
-                
             }
             .frame(maxWidth: .infinity)
             .animation(.spring(), value: self.selectedTab)
-            
         })
-
         .buttonStyle(PlainButtonStyle())
-        
-        
     }
 }
 
@@ -140,36 +127,25 @@ struct HouseView : View {
                 }
                 Menu {
                     Button(role: .destructive, action: {
-
                         showingDeleteAlert = true
                     }
                     ) {
                         Label("Delete", systemImage: "trash")
-                        
                     }
-
                     NavigationLink(value: house){
                         Label("Edit", systemImage: "pencil")
                     }
-
-                    
+                } label: {
+                    FilledButtonLabel(text: "Manage")
                 }
-
-                
-                
-            label: {
-                FilledButtonLabel(text: "Manage")
             }
-                
             .alert(isPresented: $showingDeleteAlert) {
                 Alert(title: Text("Delete House"), message: Text("Are you sure you want to delete this house?"), primaryButton: .destructive(Text("Delete")) {
                     vm.deleteHouse()
                 }, secondaryButton: .cancel())
             }
-            }
         }
     }
-    
 }
 
 struct AdressView:View {
