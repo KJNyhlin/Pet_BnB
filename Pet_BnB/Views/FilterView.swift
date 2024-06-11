@@ -20,11 +20,6 @@ struct FilterView: View {
     
     var body: some View {
         ZStack {
-            /*
-             Color(red: 248/256, green: 187/256, blue: 1/256)
-             .opacity(0.4)
-             .edgesIgnoringSafeArea(.all)
-             */
             VStack {
                 HStack {
                     Text("Add Search Criteria")
