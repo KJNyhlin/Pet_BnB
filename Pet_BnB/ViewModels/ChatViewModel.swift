@@ -204,13 +204,20 @@ class ChatViewModel: ObservableObject{
         
         let chatRef = db.collection("chats").document(chatID)
         // Add the message to the subcollection
-        try? chatRef.collection("messages").addDocument(from: newMessage)
+        let result = try? chatRef.collection("messages").addDocument(from: newMessage)
         // Update the last message and timestamp, Update unread message count for other participants
-        chatRef.updateData([
-            "lastMessage": text,
-            "lastMessageTimeStamp": Timestamp(),
-            "unreadMessagesCount.\(reciverID)": FieldValue.increment(Int64(1))
-        ])
+        if result != nil {
+            chatRef.updateData([
+                "lastMessage": text,
+                "lastMessageTimeStamp": Timestamp(),
+                "unreadMessagesCount.\(reciverID)": FieldValue.increment(Int64(1))
+            ])
+        }
+//        chatRef.updateData([
+//            "lastMessage": text,
+//            "lastMessageTimeStamp": Timestamp(),
+//            "unreadMessagesCount.\(reciverID)": FieldValue.increment(Int64(1))
+//        ])
         
     }
     

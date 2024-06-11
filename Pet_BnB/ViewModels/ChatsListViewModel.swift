@@ -24,7 +24,6 @@ class ChatsListViewModel: ObservableObject{
     init(chats: [Chat] = [], firebaseHelper: FirebaseHelper = FirebaseHelper(), listenerRegistration: ListenerRegistration? = nil) {
         self.chats = chats
         self.firebaseHelper = firebaseHelper
-        
         setupChatsListener()
     }
     
@@ -44,7 +43,6 @@ class ChatsListViewModel: ObservableObject{
                 }
             print("listener setup")
         }
-        
     }
     
     func removeListener() {
@@ -118,7 +116,6 @@ class ChatsListViewModel: ObservableObject{
         } else{
             dateFormatter.dateFormat = "yyyy-MM-dd"
         }
-        
         return dateFormatter.string(from: date)
     }
 }
