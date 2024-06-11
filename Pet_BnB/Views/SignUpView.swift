@@ -10,12 +10,12 @@ import SwiftUI
 struct SignUpView: View {
     @EnvironmentObject var signUpViewModel :SignUpViewModel
     @EnvironmentObject var chaListViewModel: ChatsListViewModel
-//    @EnvironmentObject var authManager : AuthManager
+    
     
     var body: some View {
         ZStack {
             AppColors.mainAccent.edgesIgnoringSafeArea(.top)
-//                .ignoresSafeArea()
+            
             VStack(spacing: 0) {
                 VStack() {
                     Image("Logo")
@@ -24,7 +24,7 @@ struct SignUpView: View {
                         .frame(width: 100)
                         .clipShape(Circle())
                         .padding(.top, 50)
-                        
+                    
                     VStack(spacing: 0) {
                         Text("Welcome!")
                             .foregroundColor(.white)
@@ -40,12 +40,12 @@ struct SignUpView: View {
                             .fontWeight(.bold)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal, 40)
-                            
+                        
                     }
                     .padding(.bottom, 20)
-//                    .border(Color.black)
+                    
                 }
-//                .border(Color.black)
+                
                 VStack() {
                     ZStack {
                         Rectangle()
@@ -69,7 +69,6 @@ struct SignUpView: View {
                             } else {
                                 SignUp()
                                     .transition(.scale)
-//                                EnterPersonalInfo()
                             }
                             
                         }
@@ -92,15 +91,15 @@ struct ShowSpinner: View {
             .scaleEffect(2.0, anchor: .center)
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                          
-                        }
+                    
+                }
             }
     }
 }
 
 struct SignUp: View {
     @EnvironmentObject var signUpViewModel : SignUpViewModel
-
+    
     
     var body: some View {
         EntryFields(placeHolder: "Enter email", promt: "", field: $signUpViewModel.email)
@@ -124,7 +123,7 @@ struct SignUpButtons: View {
                 signUpViewModel.signUp(name: signUpViewModel.email, password: signUpViewModel.password){ success in
                     if success{
                         chatListViewModel.setupChatsListener()
-//                        dismiss()
+                        
                     } else {
                         // Not signed up tell user!
                         print("heheh")
@@ -203,7 +202,7 @@ struct EnterPersonalInfo : View {
             EntryFields(placeHolder: "Surname", promt: "", field: $signUpViewModel.surName)
             Button(action: {
                 signUpViewModel.savePersonalInfoToDB()
-//                authManager.set(loggedIn: true)
+                
                 dismiss()
             }, label: {
                 FilledButtonLabel(text: "Save")
@@ -213,11 +212,11 @@ struct EnterPersonalInfo : View {
                 signUpViewModel.firstName = ""
                 signUpViewModel.surName = ""
                 signUpViewModel.savePersonalInfoToDB()
-//                authManager.set(loggedIn: true)
+                
                 dismiss()
-                    
+                
             }, label: {
-              FilledButtonLabel(text: "Skip")
+                FilledButtonLabel(text: "Skip")
                     .frame(width: 100)
             })
         }
@@ -231,51 +230,50 @@ struct SignIn : View {
     @State var showError: Bool = false
     var body: some View {
         
-            VStack {
-                Button(action: { withAnimation() {
-                    signInViewModel.email = ""
-                    signInViewModel.password = ""
-                    signInViewModel.signIn = false
-                }}, label: {
-                    Image(systemName: "chevron.backward")
-                })
-                .fontWeight(.bold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, 40)
-                .padding(.top, 10)
-                Text("Sign In")
-                    .font(.title)
-                
-                EntryFields(placeHolder: "Email", promt: "", field: $signInViewModel.email)
-                EntryFields(placeHolder: "Password", promt: "", field: $signInViewModel.password, isSecure: true)
-                Button(action: {
-                    signInViewModel.signIn(email: signInViewModel.email, password: signInViewModel.password){ success in
-                        if success {
-                          //  @EnvironmentObject var chatListViewModel: ChatsListViewModel
-                            chatListViewModel.setupChatsListener()
-                            dismiss()
-                        }else{
-                            // Something is wrong tell the user
-                            showError = true
-                        }
-                        
-                    }
-                   
-                }, label: {
-                    FilledButtonLabel(text: "Sign In")
-                        .frame(width: 100)
-                })
-                Spacer()
-            }
-            .onAppear {
+        VStack {
+            Button(action: { withAnimation() {
                 signInViewModel.email = ""
                 signInViewModel.password = ""
-            }
-            .alert("\(signInViewModel.errorMessage)", isPresented: $showError) {
-                Button("Ok", role: .cancel) {}
-            }
+                signInViewModel.signIn = false
+            }}, label: {
+                Image(systemName: "chevron.backward")
+            })
+            .fontWeight(.bold)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.leading, 40)
+            .padding(.top, 10)
+            Text("Sign In")
+                .font(.title)
+            
+            EntryFields(placeHolder: "Email", promt: "", field: $signInViewModel.email)
+            EntryFields(placeHolder: "Password", promt: "", field: $signInViewModel.password, isSecure: true)
+            Button(action: {
+                signInViewModel.signIn(email: signInViewModel.email, password: signInViewModel.password){ success in
+                    if success {
+                        chatListViewModel.setupChatsListener()
+                        dismiss()
+                    }else{
+                        // Something is wrong tell the user
+                        showError = true
+                    }
+                    
+                }
+                
+            }, label: {
+                FilledButtonLabel(text: "Sign In")
+                    .frame(width: 100)
+            })
+            Spacer()
         }
-        
+        .onAppear {
+            signInViewModel.email = ""
+            signInViewModel.password = ""
+        }
+        .alert("\(signInViewModel.errorMessage)", isPresented: $showError) {
+            Button("Ok", role: .cancel) {}
+        }
+    }
+    
     
 }
 

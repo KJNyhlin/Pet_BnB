@@ -34,12 +34,6 @@ struct HouseDetailView: View {
                 if let house = viewModel.house {
                     VStack () {
                         HouseInformationView(house: house, viewModel: viewModel, showReviewSheet: $showReviewSheet)
-                        
-//                        Rectangle()
-//                            .fill(AppColors.mainAccent)
-//                            .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-//                            .padding(.vertical, 5)
-//                            .padding(.horizontal)
                         DividerView(verticalPadding: 5)
                         
                         if let latitude = house.latitude, let longitude = house.longitude {
@@ -63,12 +57,7 @@ struct HouseDetailView: View {
                         }
                 }
                 BookingInstuctionView()
-                
-//                Rectangle()
-//                    .fill(AppColors.mainAccent)
-//                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-//                    .padding(.vertical, 10)
-//                    .padding(.horizontal)
+
                 DividerView(verticalPadding: 10)
                 
                 CancelationPolicyView()
@@ -119,9 +108,7 @@ struct ReadReviewSheet: View {
                     
                         .transition(.move(edge: .trailing))
                 }
-                
             }
-            
             .onAppear() {
                 viewModel.getReviews(houseID: houseId)
                 
@@ -234,12 +221,6 @@ struct RatingStars : View {
     }
 }
 
-//
-//
-//#Preview {
-//    HouseDetailView(houseId: "1", firebaseHelper: FirebaseHelper(),booked: false)
-//}
-
 struct BookingsList: View {
     @StateObject var viewModel : HouseDetailViewModel
     @Environment(\.dismiss) var dismiss
@@ -301,15 +282,12 @@ struct BookingCalendarView: View{
             
             CalendarBodyView(days: $viewModel.daysInMonth, viewModel: viewModel)
                 .padding(10)
-            
         }
     }
 }
 
 
 struct CalendarBodyView: View{
-    
-    
     
     @Binding var days: [Date]
     var dateManager = DateManager()
@@ -347,8 +325,7 @@ struct CalendarDayView: View {
         VStack{
             ZStack{
                 ForEach(bookings) {booking in
-                    
-                    //                    if Calendar.current.isDate(date, inSameDayAs: booking.fromDate) {
+            
                     if date.startOfDay == booking.fromDate.startOfDay {
                         viewModel.getColor(from: booking)
                             .clipShape(
@@ -361,9 +338,7 @@ struct CalendarDayView: View {
                                 print("SelectedDate: \(date)")
                                 viewModel.setBookingID(booking: booking)
                             }
-                        
-                        
-                        //                    } else if Calendar.current.isDate(date, inSameDayAs: booking.toDate) {
+
                     } else if date.startOfDay == booking.toDate.startOfDay {
                         viewModel.getColor(from: booking)
                             .clipShape(
@@ -388,9 +363,6 @@ struct CalendarDayView: View {
                     }
                     Text("")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    
-                    
-                    
                 }
                 
                 Text("\(dayNumber)")
@@ -401,11 +373,7 @@ struct CalendarDayView: View {
         .frame( height: 30)
         .foregroundColor(date.startOfDay == Date.now.startOfDay ? .blue : .black)
         .background(date.startOfDay <= Date.now.startOfDay ? AppColors.pastDays : Color.clear)
-        //        .padding(8)
-        //        .border(Color.black)
-        //        .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
-        
-        
+
     }
 }
 
@@ -541,16 +509,12 @@ struct HouseLocationView: View {
                 .padding(.leading, -172)
                 .foregroundColor(.gray)
                 .padding(.bottom, -12)
-            
-            //     if let latitude = latitude, let longitude = longitude {
+
             MapView(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
                 .frame(height: 280)
                 .frame(width: 355)
                 .cornerRadius(10)
                 .padding()
-            //     }
-            
-            //       if let latitude = viewModel.house?.latitude, let longitude = viewModel.house?.longitude {
             Button("Get directions") {
                 viewModel.openMapsForDirections(latitude: latitude, longitude: longitude)
             }
@@ -563,13 +527,9 @@ struct HouseLocationView: View {
             .fontWeight(.bold)
             .padding(.leading, -179)
             .padding(.top, -10)
-            //         }
+
             DividerView(verticalPadding: 5)
-//            Rectangle()
-//                .fill(AppColors.mainAccent)
-//                .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-//                .padding(.vertical, 5)
-//                .padding(.horizontal)
+
         }
     }
 }
@@ -605,11 +565,7 @@ struct OwnerView: View {
         }
         .padding()
         DividerView(verticalPadding: 10)
-//        Rectangle()
-//            .fill(AppColors.mainAccent)
-//            .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-//            .padding(.vertical)
-//            .padding(.horizontal)
+
     }
 }
 
@@ -656,12 +612,7 @@ struct PetsSectionView: View {
                 }
                 .padding()
                 .padding(.top,-5)
-                
-//                Rectangle()
-//                    .fill(AppColors.mainAccent)
-//                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-//                    .padding(.vertical, 10)
-//                    .padding(.horizontal)
+
                 DividerView(verticalPadding: 10)
             }
         }
@@ -739,7 +690,7 @@ struct BookingButtonView: View {
             if !booked {
                 if !showMyOwnHouse {
                     Button(action: {
-                        // Lägg till funktion för bokning
+
                         if authManager.loggedIn{
                             showBookings.toggle()
                         } else{
@@ -750,7 +701,6 @@ struct BookingButtonView: View {
                     {
                         FilledButtonLabel(text: "Reserv")
                             .frame(maxWidth: 80)
-                        //.fontWeight(.bold)
                     }
                     .padding([.bottom, .trailing], 30)
                     
@@ -797,8 +747,7 @@ struct MessageToolBarView:View {
 
 struct DividerView:View {
     var verticalPadding: CGFloat
-    
-    
+
     var body: some View {
         Rectangle()
             .fill(AppColors.mainAccent)
