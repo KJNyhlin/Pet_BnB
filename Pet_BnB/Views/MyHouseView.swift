@@ -17,10 +17,10 @@ struct MyHouseView: View {
     
     var body: some View {
         VStack(){
-        //    NavigationStack{
+        
             if let house = vm.house{
                 TabBarView(selectedTab: $vm.selectedTab)
-                //                .border(Color.black)
+                
 
                 TabViewBody(vm: vm, house: house)
             } else {
@@ -32,46 +32,15 @@ struct MyHouseView: View {
                 Spacer()
             }
 
-//                TabView(selection: $vm.selectedTab) {
-//
-//
-//                    
-//                    if let house = vm.house {
-//                        HouseView(vm: vm, house: house).tag(0)
-////                        HouseDetailView(houseId: vm.house?.id ?? "", firebaseHelper: FirebaseHelper(), booked: false, showMyOwnHouse: true).tag(0)
-//
-//                        //                    TimePeriodView(vm: TimePeriodViewModel(house: house)).tag(1)
-//                        MyTimePeriodsView(viewModel: TimePeriodViewModel(house: house)).tag(1)
-//                        //                    PetsView(vm:PetsViewModel(pet: nil, house: house)).tag(2)
-//                        PetsView(vm: PetsViewModel(pet: nil, house: house)).tag(2)
-//                        //                    SignUpView().tag(2)
-//                    } else {
-//                        NavigationLink(value: ""){
-//                            FilledButtonLabel(text:"Create House")
-//                                .frame(maxWidth: 200)
-//                        }
-//                    }
-//                    
-//                }
-     //           .tabViewStyle(.page(indexDisplayMode: .never))
-
-//                Spacer()
-                
-            //}
         }.onChange(of: authManager.loggedIn){ oldValue, newValue in
             if !newValue {
                 vm.selectedTab = 0
             }
         }
-
-
-        
-        
         .onAppear{
             print("Triggers on appear in MYHouse")
             vm.downloadHouse()
 
-            
         }
         .onChange(of: authManager.loggedIn){ oldValue, newValue in
             if newValue{
@@ -81,7 +50,7 @@ struct MyHouseView: View {
             }
             
         }
-//        .border(Color.black)
+
     }
 }
 
@@ -92,26 +61,13 @@ struct TabViewBody: View {
     
     var body: some View {
         TabView(selection: $vm.selectedTab) {
-
-
-            
-        //    if let house = vm.house {
-                HouseView(vm: vm, house: house).tag(0)
+                HouseView(vm: vm, house: house)
+                    .tag(0)
                     .id(tabID)
-//                        HouseDetailView(houseId: vm.house?.id ?? "", firebaseHelper: FirebaseHelper(), booked: false, showMyOwnHouse: true).tag(0)
-
-                //                    TimePeriodView(vm: TimePeriodViewModel(house: house)).tag(1)
-                MyTimePeriodsView(viewModel: TimePeriodViewModel(house: house)).tag(1)
-                //                    PetsView(vm:PetsViewModel(pet: nil, house: house)).tag(2)
-                PetsView(vm: PetsViewModel(pet: nil, house: house)).tag(2)
-                //                    SignUpView().tag(2)
-//            } else {
-//                NavigationLink(value: ""){
-//                    FilledButtonLabel(text:"Create House")
-//                        .frame(maxWidth: 200)
-//                }
-//            }
-            
+                MyTimePeriodsView(viewModel: TimePeriodViewModel(house: house))
+                    .tag(1)
+                PetsView(vm: PetsViewModel(pet: nil, house: house))
+                    .tag(2)
         }
         .onAppear{
             tabID = UUID()
@@ -122,22 +78,16 @@ struct TabViewBody: View {
 
 struct TabBarView: View {
     @Binding var selectedTab: Int
+    @Namespace var namespace
     var tabBarNames = ["House", "Time periods", "Pets"]
     var body: some View {
         GeometryReader { geometry in
-//            ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .center) {
                     ForEach(Array(zip(self.tabBarNames.indices, self.tabBarNames)), id: \.0) { index, name in
-                        TabBarItem(selectedTab: self.$selectedTab, tabBarItemName: name, tab: index)
+                        TabBarItem(selectedTab: self.$selectedTab, namespace: namespace.self, tabBarItemName: name, tab: index)
                             .frame(width: geometry.size.width / CGFloat(self.tabBarNames.count))
-//                            .border(Color.blue)
                     }
-                    
-                    
-
-
             }
-            
             .frame(maxWidth: .infinity)
         }
         .frame(height: 40)
@@ -146,6 +96,7 @@ struct TabBarView: View {
 
 struct TabBarItem : View {
     @Binding var selectedTab: Int
+    let namespace: Namespace.ID
     var tabBarItemName: String
     var tab: Int
     var body: some View {
@@ -159,6 +110,7 @@ struct TabBarItem : View {
                 if selectedTab == tab {
                     AppColors.mainAccent
                         .frame(height: 2)
+                        .matchedGeometryEffect(id: "underline", in: namespace, properties: .frame)
                 } else {
                     Color.clear
                         .frame(height: 2)
@@ -166,6 +118,7 @@ struct TabBarItem : View {
                 
             }
             .frame(maxWidth: .infinity)
+            .animation(.spring(), value: self.selectedTab)
             
         })
 
