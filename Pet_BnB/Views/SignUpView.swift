@@ -10,7 +10,7 @@ import SwiftUI
 struct SignUpView: View {
     @EnvironmentObject var signUpViewModel :SignUpViewModel
     @EnvironmentObject var chaListViewModel: ChatsListViewModel
-   
+//    @EnvironmentObject var authManager : AuthManager
     
     var body: some View {
         ZStack {
@@ -116,31 +116,42 @@ struct SignUp: View {
 struct SignUpButtons: View {
     @EnvironmentObject var signUpViewModel : SignUpViewModel
     @EnvironmentObject var chatListViewModel: ChatsListViewModel
+    @Environment(\.dismiss) var dismiss
+    @State var showError: Bool = false
     var body: some View {
-        Button(action: { withAnimation() {
-            signUpViewModel.signUp(name: signUpViewModel.email, password: signUpViewModel.password){ success in
-                if success{
-                    chatListViewModel.setupChatsListener()
-                } else{
-                    // Not signed up tell user!
+        VStack {
+            Button(action: { withAnimation() {
+                signUpViewModel.signUp(name: signUpViewModel.email, password: signUpViewModel.password){ success in
+                    if success{
+                        chatListViewModel.setupChatsListener()
+//                        dismiss()
+                    } else {
+                        // Not signed up tell user!
+                        print("heheh")
+                        showError = true
+                    }
                 }
             }
-        }
-        }, label: {
-          FilledButtonLabel(text: "Sign up")
-                .frame(width: 100)
-        })
-        .padding(.top, 30)
-        .disabled(!signUpViewModel.signUpAllFieldsComplete())
-        Button(action: { withAnimation() {
-            signUpViewModel.signIn = true
-        }
-        }) {
-            Text("or sign in here")
-                .foregroundColor(.black)
+            }, label: {
+                FilledButtonLabel(text: "Sign up")
+                    .frame(width: 100)
+            })
+            .padding(.top, 30)
+            .disabled(!signUpViewModel.signUpAllFieldsComplete())
+            
+            Button(action: { withAnimation() {
+                signUpViewModel.signIn = true
+            }
+            }) {
+                Text("or sign in here")
+                    .foregroundColor(.black)
                 
+            }
+            .padding(.top, 20)
         }
-        .padding(.top, 20)
+        .alert("\(signUpViewModel.errorMessage)", isPresented: $showError) {
+            Button("Ok", role: .cancel) {}
+        }
     }
 }
 
@@ -182,6 +193,7 @@ struct EntryFields : View {
 struct EnterPersonalInfo : View {
     @EnvironmentObject var signUpViewModel : SignUpViewModel
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var authManager : AuthManager
     
     var body: some View {
         VStack {
@@ -191,6 +203,7 @@ struct EnterPersonalInfo : View {
             EntryFields(placeHolder: "Surname", promt: "", field: $signUpViewModel.surName)
             Button(action: {
                 signUpViewModel.savePersonalInfoToDB()
+//                authManager.set(loggedIn: true)
                 dismiss()
             }, label: {
                 FilledButtonLabel(text: "Save")
@@ -200,6 +213,7 @@ struct EnterPersonalInfo : View {
                 signUpViewModel.firstName = ""
                 signUpViewModel.surName = ""
                 signUpViewModel.savePersonalInfoToDB()
+//                authManager.set(loggedIn: true)
                 dismiss()
                     
             }, label: {
@@ -214,11 +228,13 @@ struct SignIn : View {
     @EnvironmentObject var signInViewModel : SignUpViewModel
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var chatListViewModel: ChatsListViewModel
-    
+    @State var showError: Bool = false
     var body: some View {
         
             VStack {
                 Button(action: { withAnimation() {
+                    signInViewModel.email = ""
+                    signInViewModel.password = ""
                     signInViewModel.signIn = false
                 }}, label: {
                     Image(systemName: "chevron.backward")
@@ -240,6 +256,7 @@ struct SignIn : View {
                             dismiss()
                         }else{
                             // Something is wrong tell the user
+                            showError = true
                         }
                         
                     }
@@ -253,6 +270,9 @@ struct SignIn : View {
             .onAppear {
                 signInViewModel.email = ""
                 signInViewModel.password = ""
+            }
+            .alert("\(signInViewModel.errorMessage)", isPresented: $showError) {
+                Button("Ok", role: .cancel) {}
             }
         }
         

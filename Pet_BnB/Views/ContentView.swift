@@ -74,6 +74,9 @@ struct MyBookingsTabView: View {
                 .navigationDestination(for: BookingNavigation.self) { bookingNav in
                     BookingView(house: bookingNav.house, booking: bookingNav.booking)
                 }
+                .navigationDestination(for: User.self){ user in
+                    HouseOwnerProfileView(user: user)
+                }
         }
             .tabItem { Label(
             title: { Text("My Bookings") },
@@ -92,8 +95,14 @@ struct MyHouseTabView: View {
                 .navigationDestination(for: House.self ){ house in
                     CreateHouseView(vm: CreateHouseViewModel(house: house))
                 }
-                .navigationDestination(for: String.self ){ _ in
-                    CreateHouseView(vm: CreateHouseViewModel(house: nil))
+                .navigationDestination(for: String.self ){ text in
+                    if text == "" {
+                        CreateHouseView(vm: CreateHouseViewModel(house: nil))
+                    } else {
+                        ChatView(vm: ChatViewModel(toUserID: text))
+                        
+                    }
+                    
                 }
                 .navigationDestination(for: User.self){ user in
                     HouseOwnerProfileView(user: user)
@@ -103,7 +112,8 @@ struct MyHouseTabView: View {
             title: { Text("My house") },
             icon: { Image(systemName: "house") }
         ) }
-        
+        .protected()
+
     }
 }
 
@@ -127,13 +137,6 @@ struct ChatListTabView: View {
         .environmentObject(chatVM)
     }
 }
-
-
-
-
-
-
-
 
 
 #Preview {

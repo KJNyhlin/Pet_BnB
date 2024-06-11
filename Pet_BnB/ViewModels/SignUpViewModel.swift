@@ -21,22 +21,23 @@ class SignUpViewModel: ObservableObject {
     @Published var showSpinner: Bool = false
     @Published var signIn: Bool = false
     @Published var aboutMe: String = ""
+    @Published var errorMessage = ""
     
     
     func signUp(name: String, password: String, completion: @escaping(Bool) -> Void)  {
         if signUpAllFieldsComplete(){
             self.showSpinner = true
-            firebaseHelper.createAccount(name: name, password: password) {userID in
-                if let userID = userID {
-                    print("User created")
-                    self.accountCreated = true
-                    self.showSpinner = false
-                    completion(true)
-                } else {
+            firebaseHelper.createAccount(name: name, password: password) {userID, error in
+                if let error = error {
+                    self.errorMessage = error.localizedDescription
                     print("error creating user")
                     self.accountCreated = false
                     self.showSpinner = false
                     completion(false)
+                } else if let userID = userID {
+                    self.accountCreated = true
+                    self.showSpinner = false
+                    completion(true)
                 }
                 
             }
@@ -44,8 +45,13 @@ class SignUpViewModel: ObservableObject {
     }
     
     func signIn(email: String, password: String , completion: @escaping (Bool) -> Void) {
-        firebaseHelper.signIn(email: email, password: password){ success in
-            completion(success)
+        firebaseHelper.signIn(email: email, password: password){ success, error in
+            if let error = error {
+                self.errorMessage = error.localizedDescription
+                completion(false)
+            } else {
+                completion(success)
+            }
         }
     }
     
@@ -56,6 +62,7 @@ class SignUpViewModel: ObservableObject {
     func savePersonalInfoToDB() {
         if accountCreated {
             firebaseHelper.savePersonalInfoToDB(firstName: firstName, surName: surName, aboutMe: aboutMe)
+            
         } else {
             print("Dismiss without saving personalData")
         }

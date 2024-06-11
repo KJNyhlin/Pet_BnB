@@ -7,11 +7,15 @@
 
 import SwiftUI
 import PhotosUI
+import MapKit
+import CoreLocation
+import CoreLocationUI
 
 struct CreateHouseView: View {
     @StateObject var vm: CreateHouseViewModel
     @EnvironmentObject var firebaseHelper: FirebaseHelper
     @Environment(\.presentationMode) var presentationMode
+    let locationManager = LocationManager()
 
     @FocusState private var focusedField: Field?
     @State private var showAlert = false
@@ -59,10 +63,22 @@ struct CreateHouseView: View {
                     }
                     
                     Section(header: Text("Location")) {
-                        NewHouseFormRowView(rowTitle: "Latitude", rowValue: $vm.latitude, keyboardType: .decimalPad)
-                            .focused($focusedField, equals: .latitude)
-                        NewHouseFormRowView(rowTitle: "Longitude", rowValue: $vm.longitude, keyboardType: .decimalPad)
-                            .focused($focusedField, equals: .longitude)
+                        
+                        if let lat = vm.latitude, let lng = vm.longitude {
+                            let startPosition = MapCameraPosition.region(
+                                MKCoordinateRegion(
+                                    center: CLLocationCoordinate2D(latitude: lat, longitude: lng),
+                                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                                )
+                            )
+                            houseMap(vm: vm, position: startPosition, locations: [Location(id: UUID(), latitude: lat, longitude: lng)], noLocation: false)
+                                .frame(height: 150)
+                        } else {
+                            let startPosition = MapCameraPosition.userLocation(fallback: .automatic)
+                            houseMap( vm: vm, position: startPosition, locations: [], noLocation: true)
+                                .frame(height: 150)
+                        }
+
                     }
 
                     Section(header: Text("Description")) {
@@ -113,6 +129,10 @@ struct CreateHouseView: View {
                 )
  
         }
+            .onAppear() {
+                    locationManager.startLocationUpdates()
+            }
+
     }
 
     private func saveHouse() {
@@ -159,6 +179,47 @@ extension CreateHouseViewModel {
     }
 }
 
+
+
 //#Preview {
 //    CreateHouseView()
 //}
+
+
+struct houseMap: View {
+
+    @ObservedObject var vm: CreateHouseViewModel
+    @State var position: MapCameraPosition
+    @State var locations : [Location]
+    var noLocation: Bool
+    
+    var body: some View {
+        MapReader { proxy in
+            Map(initialPosition: position) {
+                ForEach(locations) { location in
+                        Marker("", coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude))
+                    }
+                
+            }
+            .onTapGesture {position in
+                if let coordinate = proxy.convert(position, from: .local) {
+                    let newLocation = Location(id: UUID(), latitude: coordinate.latitude, longitude: coordinate.longitude)
+                    locations.removeAll()
+                        locations.append(newLocation)
+                    vm.latitude = coordinate.latitude
+                    vm.longitude = coordinate.longitude
+                            }
+                
+            }
+            
+        }
+        
+    }
+}
+
+struct Location: Codable, Equatable, Identifiable {
+    let id: UUID
+    var latitude: Double
+    var longitude: Double
+}
+

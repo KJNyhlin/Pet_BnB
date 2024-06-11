@@ -25,34 +25,34 @@ class FirebaseHelper: ObservableObject {
         return auth.currentUser?.uid
     }
 
-    func createAccount(name: String, password: String, completion: @escaping (String?) -> Void) {
+    func createAccount(name: String, password: String, completion: @escaping (_ result: String?,_ error: Error?) -> Void) {
         auth.createUser(withEmail: name, password: password) { result, error in
             if let error = error {
-                print("Error sign up: \(error)")
-                completion(nil)
+                print("Error sign up: \(error)")//---------------------------------------------------------------------------------------------------------
+                completion(nil, error)
             } else {
                 guard let userID = result?.user.uid else {
-                    completion(nil)
+                    completion(nil, nil)//---------------------------------------------------------------------------------------------------------
                     return
                 }
-                completion(userID)
+                
+                completion(userID, nil)
             }
         }
     }
     
-    func signIn(email: String, password: String, completion: @escaping (Bool) -> Void)  {
+    func signIn(email: String, password: String, completion: @escaping (_ success: Bool, _ error: Error?) -> Void)  {
         auth.signIn(withEmail: email, password: password) { result, error in
             if let error = error {
-                print("Error signing in: \(error)")
-                completion(false)
+                print("Error signing in: \(error)") //---------------------------------------------------------------------------------------------------------
+                completion(false, error)
             } else {
                 guard let userID = result?.user.uid else {
-                    completion(false)
+                    completion(false, nil) //---------------------------------------------------------------------------------------------------------
                     return
                 }
                 self.loadUserInfo(userID: userID) { user in
-                    completion(true)
-                    print("\(user)")
+                    completion(true, nil)
                     self.authManager.set(loggedIn: true)
                 }
             }
@@ -64,7 +64,7 @@ class FirebaseHelper: ObservableObject {
             try auth.signOut()
             authManager.set(loggedIn: false)
         } catch {
-            print("error signing out")
+            print("error signing out")//---------------------------------------------------------------------------------------------------------
         }
     }
     
@@ -90,7 +90,10 @@ class FirebaseHelper: ObservableObject {
         let userInfo = User(firstName: firstName, surName: surName, aboutMe: aboutMe)
         
         do {
-            try db.collection("users").document(userID).setData(from: userInfo) { error in }
+            try db.collection("users").document(userID).setData(from: userInfo) { error in
+                self.authManager.set(loggedIn: true)
+            }
+            
         } catch {
             print("Error")
         }
@@ -106,7 +109,7 @@ class FirebaseHelper: ObservableObject {
 
     
     
-    func saveHouse(uiImage: UIImage, title: String, description: String, beds: Int, size: Int, StreetName: String, streetNr: Int, city: String, zipCode: Int, latitude: Double, longitude: Double,  completion: @escaping (Bool) -> Void){
+    func saveHouse(uiImage: UIImage, title: String, description: String, beds: Int, size: Int, StreetName: String, streetNr: Int, city: String, zipCode: Int, latitude: Double?, longitude: Double?,  completion: @escaping (Bool) -> Void){
         
         guard let imageData = uiImage.jpegData(compressionQuality: 0.5) else {
             print("Failed convert image")
@@ -174,7 +177,7 @@ class FirebaseHelper: ObservableObject {
                 return
             }
             
-            // If we get here we found houses we for now return only the first one
+            // If we get here we found houses, we for now return only the first one
             do {
                 let document = documents[0]
                 let house = try document.data(as: House.self)
@@ -186,9 +189,6 @@ class FirebaseHelper: ObservableObject {
         }
     }
     
-    func getLoggedInUserID() -> String?{
-        return auth.currentUser?.uid
-    }
     
     func downloadImage(from url: String, completion: @escaping (UIImage?) -> Void) {
         guard let storageUrl = URL(string: url) else {
@@ -445,44 +445,6 @@ class FirebaseHelper: ObservableObject {
         completion(false)
     }
     
-    func getRenterInfo(renterID: String, completion : @escaping (User?) -> Void) {
-        db.collection("users").document(renterID).getDocument() { document, error in
-            if let error = error {
-                print("Error getting renterInfo: \(error)")
-                completion(nil)
-            } else {
-                do {
-                    let renter = try document?.data(as: User.self)
-                    completion(renter)
-                } catch {
-                    print("Error setting document")
-                    completion(nil)
-                }
-            }
-        }
-    }
-              
-
-    func fetchUser(byId userId: String, completion: @escaping (User?) -> Void) {
-            db.collection("users").document(userId).getDocument { snapshot, error in
-                guard let snapshot = snapshot, snapshot.exists else {
-                    print("Error fetching user: \(error?.localizedDescription ?? "Unknown error")")
-                    completion(nil)
-                    return
-                }
-                
-                do {
-                    let user = try snapshot.data(as: User.self)
-                    completion(user)
-                } catch {
-                    print("Error decoding user: \(error.localizedDescription)")
-                    completion(nil)
-                }
-            }
-        }
-    
-
-    
     func fetchPet(byId id: String, completion: @escaping (Result<Pet, Error>) -> Void) {
           let db = Firestore.firestore()
           db.collection("pets").document(id).getDocument { (document, error) in
@@ -502,7 +464,7 @@ class FirebaseHelper: ObservableObject {
       }
     
     
-    func save(rating: Review, for house: House) {
+    func save(rating: Review, for house: House, completion: @escaping (Bool) -> Void) {
         if let houseID = house.id {
             do {
                 try db.collection("houses").document(houseID).collection("ratings").addDocument(from: rating)
@@ -512,10 +474,13 @@ class FirebaseHelper: ObservableObject {
                      "numberOfReviews": FieldValue.increment(Int64(1))]
                 )
                 self.setBookingToRated(bookingID: rating.bookingID)
+                completion(true)
             } catch {
                 print("Error saving rating")
+                completion(false)
             }
         }
+        completion(false)
         
     }
     

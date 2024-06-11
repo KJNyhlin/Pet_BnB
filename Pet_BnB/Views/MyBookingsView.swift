@@ -171,6 +171,7 @@ struct BookingCardView : View {
 
 struct AddReviewSheet : View {
     @ObservedObject var viewModel: MyBookingViewModel
+    @Environment(\.dismiss) var dismiss
     var house: House
     var bookingID: String
     @State var rating = 0
@@ -204,13 +205,19 @@ struct AddReviewSheet : View {
                 Button(action: {
                     if let userID = viewModel.firebaseHelper.getUserID() {
                         let review = Review(bookingID: bookingID, userID: userID, rating: rating, title: title, text: text)
-                        viewModel.firebaseHelper.save(rating: review, for: house)
+                        viewModel.firebaseHelper.save(rating: review, for: house) {success in
+                            if success {
+                                dismiss()
+                            }
+                        }
                     }
                 }, label: {
                     FilledButtonLabel(text: "Save")
                         .frame(width: 150)
                 })
-                Button(action: {}, label: {
+                Button(action: {
+                    dismiss()
+                }, label: {
                     FilledButtonLabel(text: "Cancel")
                         .frame(width: 150)
                 })

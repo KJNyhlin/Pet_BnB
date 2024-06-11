@@ -10,7 +10,7 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 
 
-struct House: Identifiable, Codable, Hashable, Equatable{
+struct House: Identifiable, Codable, Hashable{
 //    static func == (lhs: House, rhs: House) -> Bool {
 //        lhs.id == rhs.id
 //    }
@@ -34,6 +34,7 @@ struct House: Identifiable, Codable, Hashable, Equatable{
     var numberOfReviews: Int = 0
     
     func getAverageRating() -> Double? {
+        print(self.numberOfReviews)
         if self.numberOfReviews != 0 {
            
             return Double(self.totalRatingPoints) / Double(self.numberOfReviews)

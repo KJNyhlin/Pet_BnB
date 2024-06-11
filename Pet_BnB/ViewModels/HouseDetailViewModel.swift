@@ -8,6 +8,8 @@
 import Foundation
 import Combine
 import SwiftUI
+//import CoreLocation
+import MapKit
 
 class HouseDetailViewModel: ObservableObject {
     @Published var house: House?
@@ -70,15 +72,6 @@ class HouseDetailViewModel: ObservableObject {
         }
     }
     
-//    func bookHouse(houseID: String) {
-//        
-//        if selectedBookingID != "" {
-//                self.firebaseHelper.bookPeriod(houseID: houseID, docID: selectedBookingID)
-//            }
-//        selectedBookingID = ""
-//        
-//    }
-    
     func getColor(from booking: Booking) -> Color {
         if let bookingID = booking.docID {
             if bookingID == selectedBookingID {
@@ -120,7 +113,8 @@ class HouseDetailViewModel: ObservableObject {
     }
     
     func fetchHouseOwner(byId ownerId: String) {
-            firebaseHelper.fetchUser(byId: ownerId) { [weak self] user in
+          //  firebaseHelper.fetchUser(byId: ownerId) { [weak self] user in
+        firebaseHelper.loadUserInfo(userID: ownerId) { [weak self] user in
                 DispatchQueue.main.async {
                     self?.houseOwner = user
                 }
@@ -146,9 +140,11 @@ class HouseDetailViewModel: ObservableObject {
         self.reviews.removeAll()
         firebaseHelper.fetchReviews(houseID: houseID) {reviews in
             self.reviews.removeAll()
-            print(reviews.count)
+            
             self.reviews.append(contentsOf: reviews)
-            print(reviews.count)
+            self.reviews.sort{review1, review2 in
+                review1.date > review2.date
+            }
             self.fetchReviewerInfo()
         }
     }
@@ -156,7 +152,8 @@ class HouseDetailViewModel: ObservableObject {
     func fetchReviewerInfo() {
         self.reviewerInfo.removeAll()
         for review in self.reviews {
-            firebaseHelper.getRenterInfo(renterID: review.userID) {reviewer in
+          //  firebaseHelper.getRenterInfo(renterID: review.userID) {reviewer in
+            firebaseHelper.loadUserInfo(userID: review.userID) {reviewer in
                 if let reviewer = reviewer {
                     self.reviewerInfo[review.userID] = reviewer
                 }
@@ -170,6 +167,14 @@ class HouseDetailViewModel: ObservableObject {
         
         
     }
+    
+    func openMapsForDirections(latitude: Double, longitude: Double) {
+            let destinationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            let placemark = MKPlacemark(coordinate: destinationCoordinate)
+            let mapItem = MKMapItem(placemark: placemark)
+            mapItem.name = "Destination"
+            mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
+        }
     
     
     

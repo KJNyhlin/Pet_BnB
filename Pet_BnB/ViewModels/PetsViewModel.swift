@@ -82,6 +82,7 @@ class PetsViewModel: ObservableObject {
             house.pets?.append(newPet)
             self.pet = newPet // Uppdatera pet till den nyss skapade
         }
+        
         if let houseID = house.id, let pets = house.pets {
             firebaseHelper.save(pets: pets, toHouseId: houseID) { success in
                 completion(success)
@@ -153,6 +154,21 @@ class PetsViewModel: ObservableObject {
                 }
             }
         }
+    }
+    func clearFields(){
+        selectedSpices = "Dog"
+        informationArray = []
+        pet = nil
+
+        image = nil
+        showImagePicker = false
+        imageSelection = nil
+
+
+        name = ""
+        species = ""
+        description = ""
+        imageURL =  nil
     }
 }
 

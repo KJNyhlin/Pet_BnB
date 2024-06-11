@@ -53,7 +53,7 @@ class ChatViewModel: ObservableObject{
     
     func loadToUser(){
         Task {
-            await firebaseHelper.loadUserInfo(userID:toUserID){ user in
+            firebaseHelper.loadUserInfo(userID:toUserID){ user in
                 if let user = user{
                     self.toUser = user
                     
@@ -73,11 +73,9 @@ class ChatViewModel: ObservableObject{
             if let fetchedChat = await getChat(participants: participants){
                 DispatchQueue.main.async {
                     self.chat = fetchedChat
-                    //            print(self.chat)
                     if let chatID = self.chat?.id {
                         self.setupMessageListener(chatID: chatID)
                     }
-                    
                 }
             }
         }
@@ -91,12 +89,11 @@ class ChatViewModel: ObservableObject{
                 sendMessage(chatID: chatID, text: messageInput, senderID: userID, reciverID: toUserID)
             } else{
                 createChat(senderID: userID){ chatID in
-                    // print(chatID)
+                    
                     if let chatID = chatID{
                         self.setupMessageListener(chatID: chatID)
                         self.sendMessage(chatID: chatID, text: self.messageInput, senderID: userID, reciverID: self.toUserID)
                     }
-                    
                 }
             }
         }
@@ -110,7 +107,6 @@ class ChatViewModel: ObservableObject{
             DispatchQueue.main.async {
                 self.chat = newChat
             }
-            
             compleation(ref.documentID)
         } catch {
             print("error creating chat!")
@@ -145,9 +141,6 @@ class ChatViewModel: ObservableObject{
                 } else {
                     self.messages = newMessages
                 }
-                
-                //self.messages = messages.reversed()
-
                 print("First messages setup!")
             }
     }
@@ -172,19 +165,14 @@ class ChatViewModel: ObservableObject{
                 }
                 let fetchedMessages = documents.compactMap{ documentSnapshot -> Message? in
                     return try? documentSnapshot.data(as: Message.self)
-                    
                 }
-                //let reversedfetchedMessages = fetchedMessages.reversed()
+                
                 DispatchQueue.main.async{
-                    //self.messages.insert(contentsOf: reversedfetchedMessages, at: 0)
                     self.messages += fetchedMessages
                     print("More messages fetched!")
                 }
-                
             }
         }
-        
-        
     }
     
     func removeListener() {
@@ -227,14 +215,14 @@ class ChatViewModel: ObservableObject{
     }
     
     func getChat(participants: [String]) async -> Chat?{
-        let sortedParticipants = sort(array: participants)
+        // let sortedParticipants = sort(array: participants)
+        let sortedParticipants = participants.sorted()
         
         do {
             let querySnapshot = try await db.collection("chats").whereField("participants", isEqualTo: sortedParticipants)
                 .getDocuments()
             for document in querySnapshot.documents {
                 let chat = try document.data(as: Chat.self)
-                // print(chat)
                 return chat
             }
         } catch {
@@ -243,9 +231,9 @@ class ChatViewModel: ObservableObject{
         return nil
     }
     
-    func sort(array: [String]) -> [String]{
-        return array.sorted()
-    }
+    //    func sort(array: [String]) -> [String]{
+    //        return array.sorted()
+    //    }
     
     func fromLoggedInUser(id: String)-> Bool{
         let userID = firebaseHelper.getUserID()
@@ -264,26 +252,9 @@ class ChatViewModel: ObservableObject{
                     print("Error marking read! \(error)")
                 }
             }
-            //            let messagesRef = chatRef.collection("messages")
-            //            messagesRef.whereField("isRead.\(userID)", isEqualTo: false).getDocuments { snapshot, error in
-            //                if let snapshot = snapshot {
-            //                    for document in snapshot.documents {
-            //                        let messageRef = messagesRef.document(document.documentID)
-            //                        messageRef.updateData([
-            //                            "isRead.\(userID)": true
-            //                        ])
-            //                    }
-            //                }
-            //            }
         }
-        
     }
-    func sameAsLastString(string: String) -> Bool {
-        let same = string == lastMessageDateString
-        lastMessageDateString = string
-        
-        return same
-    }
+    
     
     func dateStringChanged(string: String) -> Bool {
         let changed = string != lastMessageDateString
@@ -299,7 +270,7 @@ class ChatViewModel: ObservableObject{
         dateFormatter.locale = Locale.current
         
         if calendar.isDateInToday(date){
-            //dateFormatter.dateFormat = "today"
+            
             return "today"
             
         } else if calendar.isDateInYesterday(date)  {

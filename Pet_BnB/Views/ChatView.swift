@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ChatView: View {
     @StateObject var vm: ChatViewModel
-    // @EnvironmentObject var chatListVM: ChatsListViewModel
     @State private var scrollTarget: String?
     @Environment(\.dismiss) var dismiss
     
@@ -17,19 +16,11 @@ struct ChatView: View {
     var body: some View {
         
         VStack{
-            //            if let toUser = vm.toUser{
-            //                ChatHeader(toUser: toUser)
-            //            }
-            
             ScrollViewReader { proxy in
                 List{
-                    
                     ForEach(vm.messages){ message in
-                        
-                        
                         MessageView(message: message, fromLoggedIn: vm.fromLoggedInUser(id: message.senderID), dateString: vm.getDateString(timeStamp: message.timestamp),timeString:vm.getTime(from: message.timestamp), vm:vm)
                             .listRowSeparator(.hidden)
-                            .id(message.id)
                             .onAppear{
                                 if message == vm.messages.last{
                                     vm.loadMoreMessages()
@@ -40,16 +31,6 @@ struct ChatView: View {
                 }
                 .listStyle(.plain)
                 .flippedUpsideDown()
-//                .onChange(of: vm.messages){
-//                    if vm.isFirstLoad{
-//                        proxy.scrollTo(vm.messages.last?.id)
-//                        scrollTarget = vm.messages.first?.id
-//                    } else {
-//                        proxy.scrollTo(scrollTarget, anchor: .top)
-//                        scrollTarget = vm.messages.first?.id
-//                    }
-//                }
-//                
             }
             VStack{
                 MessageInputView(messageInput: $vm.messageInput, sendAction: vm.sendMessage)
@@ -67,7 +48,7 @@ struct ChatView: View {
         .onDisappear {
             vm.removeListener()
         }
-
+        
         
         .toolbar{
             ToolbarItem(placement: .principal){
@@ -84,39 +65,7 @@ struct ChatHeader: View {
     var body: some View {
         NavigationLink(destination: HouseOwnerProfileView(user: toUser)) {
             HStack{
-                if let url = toUser.imageURL{
-                    AsyncImage(url: URL(string: url)) { phase in
-                        let size:CGFloat = 30
-                        switch phase {
-                        case .empty:
-                            ProgressView()
-                                .frame(height: size)
-                                .frame(maxWidth: size)
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: size)
-                                .frame(maxWidth: size)
-                                .clipShape(Circle())
-                        case .failure:
-                            Image(systemName: "person.circle")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: size)
-                                .frame(maxWidth: size)
-                                .background(Color.gray)
-                        @unknown default:
-                            Image(systemName: "person.circle")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: size)
-                                .frame(maxWidth: size)
-                                .background(Color.gray)
-                        }
-                    }
-                    
-                }
+                AsyncImageView(imageUrl: toUser.imageURL, maxWidth: 30, height: 30, isCircle: true)
                 Text(toUser.firstName ?? "No name")
                     .font(.footnote)
                     .bold()
@@ -135,7 +84,6 @@ struct MessageView: View{
     
     var body: some View{
         VStack{
-            //if !vm.sameAsLastString(string: dateString){
             if vm.dateStringChanged(string: dateString){
                 Text(dateString)
                     .font(.caption2)
@@ -171,10 +119,8 @@ struct MessageInputView: View {
                 .lineLimit(5)
                 .frame(maxWidth: .infinity)
             
-            
             Button(action: {
                 sendAction()
-                
             }, label: {
                 Image(systemName: messageInput.isEmpty ? "stop.circle.fill" : "arrow.up.circle.fill")
                     .font(.title)
@@ -190,16 +136,16 @@ struct MessageInputView: View {
 }
 
 struct FlippedUpsideDown: ViewModifier {
-   func body(content: Content) -> some View {
-    content
-      .rotationEffect(.degrees(180))
-      .scaleEffect(x: -1, y: 1, anchor: .center)
-   }
+    func body(content: Content) -> some View {
+        content
+            .rotationEffect(.degrees(180))
+            .scaleEffect(x: -1, y: 1, anchor: .center)
+    }
 }
 extension View{
-   func flippedUpsideDown() -> some View{
-     self.modifier(FlippedUpsideDown())
-   }
+    func flippedUpsideDown() -> some View{
+        self.modifier(FlippedUpsideDown())
+    }
 }
 
 //#Preview {
