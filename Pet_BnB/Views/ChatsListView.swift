@@ -19,21 +19,17 @@ struct ChatsListView: View {
             List{
                 if !vm.chats.isEmpty{
                     ForEach(vm.chats){ chat in
-                        if let toUser = vm.getUserFrom(chat: chat),
-                           let toUserID = toUser.docID{
+                        if let toUser = vm.getUserFrom(chat: chat){
                             NavigationLink(value: chat){
                                 ChatListRow(chat: chat, user: toUser, hasUnreadMessages: vm.hasUnReadMessages(chat: chat), timeString: vm.getDateString(timeStamp: chat.lastMessageTimeStamp), path: $path)
-                                
                             }
                             .listRowInsets(EdgeInsets(top: 10, leading: 5, bottom: 10, trailing: 10))
                         }
                     }
                 }
-                
                 else{
                     Text("No messages found!")
                 }
-                
             }
             .navigationDestination(for: Chat.self){ chat in
                 if let toUser = vm.getUserFrom(chat: chat),
@@ -45,7 +41,6 @@ struct ChatsListView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
     }
-    
 }
 
 struct ChatListRow: View{
@@ -88,14 +83,7 @@ struct ChatListRow: View{
                     .font(.subheadline)
                     .lineLimit(2)
                     .foregroundColor(.secondary)
-                
-                
             }
         }
-        
     }
 }
-
-//#Preview {
-//    ChatsListView()
-//}
