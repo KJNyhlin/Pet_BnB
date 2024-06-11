@@ -22,14 +22,12 @@ class TimePeriodViewModel: ObservableObject {
     var dateManager = DateManager()
     @Published var bookingColor : Color = Color.blue
     @Published var selectedBookingID: String = ""
-//    @Published var renter: User?
     @Published var renterInfo: [String: User] = [:]
     
     init(house: House, date: Date = Date()) {
         self.house = house
         self.date = date.startDateOfMonth
         self.daysInMonth = dateManager.getDaysOfMonth(from: date)
-        
     }
     
     func saveTimePeriod() {
@@ -43,16 +41,12 @@ class TimePeriodViewModel: ObservableObject {
             self.startDate = nil
             self.endDate = nil
         }
-        
     }
     
     func getTimePeriods() {
         if let houseID = house.id {
             self.firebaseHelper.getTimePeriodsFor(houseID: houseID) {bookings in
-                
                 if let bookings = bookings {
-//                    self.myTimePeriods.removeAll()
-//                    self.myTimePeriods.append(contentsOf: bookings)
                     self.myTimePeriods.removeAll()
                     self.myPastTimePeriods.removeAll()
                     self.allMyTimePeriods.removeAll()
@@ -66,7 +60,6 @@ class TimePeriodViewModel: ObservableObject {
                     }
                     self.myTimePeriods.sort() {booking1, booking2 in
                         booking1.fromDate < booking2.fromDate
-                        
                     }
                     self.myPastTimePeriods.sort() {booking1, booking2 in
                         booking1.fromDate < booking2.fromDate
@@ -75,8 +68,6 @@ class TimePeriodViewModel: ObservableObject {
                         booking1.fromDate < booking2.fromDate
                     }
                     self.fetchRenterInfo()
-                    
-                    
                 }
             }
         }
@@ -86,12 +77,10 @@ class TimePeriodViewModel: ObservableObject {
         renterInfo.removeAll()
         for myTimePeriod in myTimePeriods {
             if let renterID = myTimePeriod.renterID {
-             //   firebaseHelper.getRenterInfo(renterID: renterID) {renter in
                 firebaseHelper.loadUserInfo(userID: renterID) {renter in
                     if let renter = renter {
                         self.renterInfo[renterID] = renter
                     }
-                    
                 }
             }
         }
@@ -105,7 +94,7 @@ class TimePeriodViewModel: ObservableObject {
     }
     
     func setDates(date: Date) {
-        if startDate == nil && checkPressed(date: date){
+        if startDate == nil && checkIfDateContainsBooking(date: date){
             startDate = date
             endDate = date
         } else if startDate == date {
@@ -114,7 +103,7 @@ class TimePeriodViewModel: ObservableObject {
         } else if endDate == date {
             endDate = nil
         } else if let startDate = self.startDate {
-            if compareDates(date1: startDate, date2: date) && checkPressed(date: date) && checkIfBookingIsInRange(date: date) {
+            if compareDates(date1: startDate, date2: date) && checkIfDateContainsBooking(date: date) && checkIfBookingIsInRange(date: date) {
                 self.endDate = date
             }
         }
@@ -125,7 +114,6 @@ class TimePeriodViewModel: ObservableObject {
     }
     
     func previousMonth(){
-        
         if let newDate = date.previousMonth(){
             date = newDate
             daysInMonth = dateManager.getDaysOfMonth(from: date)
@@ -191,17 +179,16 @@ class TimePeriodViewModel: ObservableObject {
         return date.isDateInMonth(date: booking.fromDate, selectedMonth: date) || date.isDateInMonth(date: booking.toDate, selectedMonth: date)
     }
     
-    func checkPressed(date: Date) -> Bool {
+    func checkIfDateContainsBooking(date: Date) -> Bool {
         for myTimePeriod in myTimePeriods {
             let fromDate = myTimePeriod.fromDate.formattedForStartDate
-           
             let toDate = myTimePeriod.toDate.formattedForEndDate
             if (fromDate ... toDate).contains(date) {
                 return false
             }
         }
-            return true
-        }
+        return true
+    }
     
     func checkIfBookingIsInRange(date: Date) -> Bool {
         if let startDate = self.startDate {
