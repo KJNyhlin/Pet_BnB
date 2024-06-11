@@ -15,13 +15,11 @@ struct BookingView: View {
     @State var showAlert = false
     var body: some View {
         VStack {
-            
             HouseDetailView( houseId: booking.houseID, firebaseHelper: viewModel.firebaseHelper, booked: true, showMyOwnHouse: false)
             Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
             if let confirmed = booking.confirmed {
                 if booking.toDate > Date.now  && !confirmed{
                     Button(action: {
-                        //                        viewModel.firebaseHelper.unbook(booking: booking)
                         showAlert.toggle()
                     }, label: {
                         FilledButtonLabel(text: "Cancel Reservation")
@@ -38,16 +36,8 @@ struct BookingView: View {
                     if success {
                         dismiss()
                     }
-                    
                 }
-                
-                
             }
         }
     }
-    
 }
-//
-//#Preview {
-//    BookingView()
-//}
