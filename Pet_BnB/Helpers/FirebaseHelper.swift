@@ -14,17 +14,17 @@ import FirebaseFirestoreSwift
 import SwiftUI
 
 class FirebaseHelper: ObservableObject {
-
+    
     let db = Firestore.firestore()
     let storage = Storage.storage()
     let auth = Auth.auth()
     @Published var houses = [House]()
     private var authManager = AuthManager.sharedAuth
-
+    
     func getUserID() -> String? {
         return auth.currentUser?.uid
     }
-
+    
     func createAccount(name: String, password: String, completion: @escaping (_ result: String?,_ error: Error?) -> Void) {
         auth.createUser(withEmail: name, password: password) { result, error in
             if let error = error {
@@ -98,7 +98,7 @@ class FirebaseHelper: ObservableObject {
             print("Error")
         }
     }
-
+    
     func saveImageURLToDB(userID: String, imageURL: String) {
         db.collection("users").document(userID).updateData(["imageURL": imageURL]) { error in
             if let error = error {
@@ -106,7 +106,7 @@ class FirebaseHelper: ObservableObject {
             }
         }
     }
-
+    
     
     
     func saveHouse(uiImage: UIImage, title: String, description: String, beds: Int, size: Int, StreetName: String, streetNr: Int, city: String, zipCode: Int, latitude: Double?, longitude: Double?,  completion: @escaping (Bool) -> Void){
@@ -149,7 +149,7 @@ class FirebaseHelper: ObservableObject {
             }
         }
     }
-
+    
     func fetchHouses() {
         db.collection("houses").addSnapshotListener { (querySnapshot, error) in
             guard let documents = querySnapshot?.documents else {
@@ -214,8 +214,8 @@ class FirebaseHelper: ObservableObject {
             completion(image)
         }
     }
-
-        
+    
+    
     func fetchHouse(byId id: String, completion: @escaping (House?) -> Void) {
         db.collection("houses").document(id).getDocument { document, error in
             if let document = document, document.exists {
@@ -332,20 +332,20 @@ class FirebaseHelper: ObservableObject {
     
     
     func save(TimePeriod: Booking, for house: House) {
-            if let houseID = house.id {
-                do {
-//                    try db.collection("houses").document(houseID).collection("bookings").addDocument(from: booking)
-                    try db.collection("bookings").addDocument(from: TimePeriod)
-                } catch {
-                    print("Error writing to bookings for house")
-                }
+        if let houseID = house.id {
+            do {
+                //                    try db.collection("houses").document(houseID).collection("bookings").addDocument(from: booking)
+                try db.collection("bookings").addDocument(from: TimePeriod)
+            } catch {
+                print("Error writing to bookings for house")
             }
         }
+    }
     
     func getTimePeriodsFor(houseID: String, completion: @escaping ([Booking]?) -> Void) {
         var bookings = [Booking]()
-//        db.collection("houses").document(houseID).collection("bookings").addSnapshotListener {snapshot, error in
-            db.collection("bookings").whereField("houseID", isEqualTo: houseID).addSnapshotListener {snapshot, error in
+        //        db.collection("houses").document(houseID).collection("bookings").addSnapshotListener {snapshot, error in
+        db.collection("bookings").whereField("houseID", isEqualTo: houseID).addSnapshotListener {snapshot, error in
             if let error = error {
                 print("Error loading bookings: \(error)")
                 completion(nil)
@@ -368,9 +368,9 @@ class FirebaseHelper: ObservableObject {
                 
             }
         }
-
+        
     }
-
+    
     
     func bookPeriod(houseID: String, docID: String?, completion: @escaping (Bool) -> Void) {
         
@@ -397,7 +397,7 @@ class FirebaseHelper: ObservableObject {
     func remove(timePeriod: Booking) {
         if timePeriod.renterID == nil {
             if let docID = timePeriod.docID{
-//                db.collection("houses").document(houseID).collection("bookings").document(docID).delete()
+                //                db.collection("houses").document(houseID).collection("bookings").document(docID).delete()
                 db.collection("bookings").document(docID).delete()
             }
         }
@@ -408,35 +408,35 @@ class FirebaseHelper: ObservableObject {
         var myBookings = [Booking]()
         
         db.collection("bookings").whereField("renterID", isEqualTo: userID).addSnapshotListener {snapshot, error in
-
-        if let error = error {
-            print("Error loading bookings: \(error)")
-            completion(nil)
-        } else {
-            guard let documents = snapshot?.documents else {
-                completion(nil)
-                return
-            }
-            myBookings.removeAll()
-            for document in documents {
-                
-                do {
-                    let booking = try document.data(as: Booking.self)
-                    myBookings.append(booking)
-                } catch {
-                    print("Error decode booking")
-                    completion(nil)
-                }
-            }
-            completion(myBookings)
             
+            if let error = error {
+                print("Error loading bookings: \(error)")
+                completion(nil)
+            } else {
+                guard let documents = snapshot?.documents else {
+                    completion(nil)
+                    return
+                }
+                myBookings.removeAll()
+                for document in documents {
+                    
+                    do {
+                        let booking = try document.data(as: Booking.self)
+                        myBookings.append(booking)
+                    } catch {
+                        print("Error decode booking")
+                        completion(nil)
+                    }
+                }
+                completion(myBookings)
+                
+            }
         }
-    }
         
     }
     
     
-
+    
     func unbook(booking: Booking, completion: @escaping (Bool) -> Void) {
         if let docID = booking.docID {
             db.collection("bookings").document(docID).updateData(["renterID" : nil, "reservedID": nil, "confirmed": nil])
@@ -446,22 +446,22 @@ class FirebaseHelper: ObservableObject {
     }
     
     func fetchPet(byId id: String, completion: @escaping (Result<Pet, Error>) -> Void) {
-          let db = Firestore.firestore()
-          db.collection("pets").document(id).getDocument { (document, error) in
-              if let document = document, document.exists {
-                  do {
-                      let pet = try document.data(as: Pet.self)
-                      completion(.success(pet))
-                  } catch {
-                      completion(.failure(error))
-                  }
-              } else if let error = error {
-                  completion(.failure(error))
-              } else {
-                  completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Pet not found"])))
-              }
-          }
-      }
+        let db = Firestore.firestore()
+        db.collection("pets").document(id).getDocument { (document, error) in
+            if let document = document, document.exists {
+                do {
+                    let pet = try document.data(as: Pet.self)
+                    completion(.success(pet))
+                } catch {
+                    completion(.failure(error))
+                }
+            } else if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Pet not found"])))
+            }
+        }
+    }
     
     
     func save(rating: Review, for house: House, completion: @escaping (Bool) -> Void) {
@@ -490,37 +490,37 @@ class FirebaseHelper: ObservableObject {
     }
     
     
-//    func calculateRating(houseID: String, completion: @escaping (Double?) -> Void){
-//        var totalRating = 0
-//        print(totalRating)
-//        
-//            db.collection("houses").document(houseID).collection("ratings").getDocuments() { snapshot, error in
-//                if let error = error {
-//                    print("Error getting ratings: \(error)")
-//                } else {
-//                    if let documents = snapshot?.documents {
-//                        
-//                        for document in documents {
-//                            do {
-//                                
-//                                let review = try document.data(as: Review.self)
-//                                totalRating += review.rating
-//                                
-//                            } catch {
-//                                print("Error converting rating")
-//                                completion(nil)
-//                            }
-//                        }
-//                        if totalRating != 0 {
-//                            let houseRating : Double = Double(totalRating) / Double(documents.count)
-//                            completion(houseRating)
-//                        }
-//                    }
-//                }
-//            }
-//        
-//        completion(nil)
-//    }
+    //    func calculateRating(houseID: String, completion: @escaping (Double?) -> Void){
+    //        var totalRating = 0
+    //        print(totalRating)
+    //
+    //            db.collection("houses").document(houseID).collection("ratings").getDocuments() { snapshot, error in
+    //                if let error = error {
+    //                    print("Error getting ratings: \(error)")
+    //                } else {
+    //                    if let documents = snapshot?.documents {
+    //
+    //                        for document in documents {
+    //                            do {
+    //
+    //                                let review = try document.data(as: Review.self)
+    //                                totalRating += review.rating
+    //
+    //                            } catch {
+    //                                print("Error converting rating")
+    //                                completion(nil)
+    //                            }
+    //                        }
+    //                        if totalRating != 0 {
+    //                            let houseRating : Double = Double(totalRating) / Double(documents.count)
+    //                            completion(houseRating)
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //
+    //        completion(nil)
+    //    }
     
     func fetchReviews(houseID: String, completion: @escaping ([Review]) -> Void) {
         var reviews : [Review] = []
