@@ -112,7 +112,8 @@ struct MyHouseTabView: View {
             title: { Text("My house") },
             icon: { Image(systemName: "house") }
         ) }
-        
+        .protected()
+
     }
 }
 

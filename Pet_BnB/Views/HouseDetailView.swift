@@ -35,11 +35,12 @@ struct HouseDetailView: View {
                     VStack () {
                         HouseInformationView(house: house, viewModel: viewModel, showReviewSheet: $showReviewSheet)
                         
-                        Rectangle()
-                            .fill(AppColors.mainAccent)
-                            .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-                            .padding(.vertical, 5)
-                            .padding(.horizontal)
+//                        Rectangle()
+//                            .fill(AppColors.mainAccent)
+//                            .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+//                            .padding(.vertical, 5)
+//                            .padding(.horizontal)
+                        DividerView(verticalPadding: 5)
                         
                         if let latitude = house.latitude, let longitude = house.longitude {
                             if latitude != 0.0 && longitude != 0.0 {
@@ -63,11 +64,12 @@ struct HouseDetailView: View {
                 }
                 BookingInstuctionView()
                 
-                Rectangle()
-                    .fill(AppColors.mainAccent)
-                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-                    .padding(.vertical, 10)
-                    .padding(.horizontal)
+//                Rectangle()
+//                    .fill(AppColors.mainAccent)
+//                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+//                    .padding(.vertical, 10)
+//                    .padding(.horizontal)
+                DividerView(verticalPadding: 10)
                 
                 CancelationPolicyView()
                 
@@ -562,12 +564,12 @@ struct HouseLocationView: View {
             .padding(.leading, -179)
             .padding(.top, -10)
             //         }
-            
-            Rectangle()
-                .fill(AppColors.mainAccent)
-                .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-                .padding(.vertical, 5)
-                .padding(.horizontal)
+            DividerView(verticalPadding: 5)
+//            Rectangle()
+//                .fill(AppColors.mainAccent)
+//                .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+//                .padding(.vertical, 5)
+//                .padding(.horizontal)
         }
     }
 }
@@ -602,12 +604,12 @@ struct OwnerView: View {
                 .padding(.horizontal)
         }
         .padding()
-        
-        Rectangle()
-            .fill(AppColors.mainAccent)
-            .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-            .padding(.vertical)
-            .padding(.horizontal)
+        DividerView(verticalPadding: 10)
+//        Rectangle()
+//            .fill(AppColors.mainAccent)
+//            .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+//            .padding(.vertical)
+//            .padding(.horizontal)
     }
 }
 
@@ -655,11 +657,12 @@ struct PetsSectionView: View {
                 .padding()
                 .padding(.top,-5)
                 
-                Rectangle()
-                    .fill(AppColors.mainAccent)
-                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
-                    .padding(.vertical, 10)
-                    .padding(.horizontal)
+//                Rectangle()
+//                    .fill(AppColors.mainAccent)
+//                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+//                    .padding(.vertical, 10)
+//                    .padding(.horizontal)
+                DividerView(verticalPadding: 10)
             }
         }
     }
@@ -789,5 +792,18 @@ struct MessageToolBarView:View {
                 envelope
             })
         }
+    }
+}
+
+struct DividerView:View {
+    var verticalPadding: CGFloat
+    
+    
+    var body: some View {
+        Rectangle()
+            .fill(AppColors.mainAccent)
+            .frame(width: UIScreen.main.bounds.width * 0.9, height: 0.4)
+            .padding(.vertical, verticalPadding)
+            .padding(.horizontal)
     }
 }
