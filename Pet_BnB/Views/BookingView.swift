@@ -8,20 +8,19 @@
 import SwiftUI
 
 struct BookingView: View {
-    @StateObject var viewModel = BookingsViewModel()
+
+    var firebaseHelper = FirebaseHelper()
     @Environment(\.dismiss) var dismiss
     var house: House?
     var booking: Booking
     @State var showAlert = false
     var body: some View {
         VStack {
-            
-            HouseDetailView( houseId: booking.houseID, firebaseHelper: viewModel.firebaseHelper, booked: true, showMyOwnHouse: false)
+            HouseDetailView( houseId: booking.houseID, firebaseHelper: firebaseHelper, booked: true, showMyOwnHouse: false)
             Text("\(booking.fromDate.formatted(date: .numeric, time: .omitted)) - \(booking.toDate.formatted(date: .numeric, time: .omitted))")
             if let confirmed = booking.confirmed {
                 if booking.toDate > Date.now  && !confirmed{
                     Button(action: {
-                        //                        viewModel.firebaseHelper.unbook(booking: booking)
                         showAlert.toggle()
                     }, label: {
                         FilledButtonLabel(text: "Cancel Reservation")
@@ -34,20 +33,12 @@ struct BookingView: View {
             
             Button("No", role: .cancel) {}
             Button("Yes", role: .none) {
-                viewModel.firebaseHelper.unbook(booking: booking) {success in
+                firebaseHelper.unbook(booking: booking) {success in
                     if success {
                         dismiss()
                     }
-                    
                 }
-                
-                
             }
         }
     }
-    
 }
-//
-//#Preview {
-//    BookingView()
-//}

@@ -15,7 +15,7 @@ class HouseDetailViewModel: ObservableObject {
     @Published var house: House?
     @Published var houseOwner: User?
     @Published var housePet: Pet?
-     var firebaseHelper: FirebaseHelper
+    var firebaseHelper: FirebaseHelper
     private var cancellables = Set<AnyCancellable>()
     @Published var bookings = [Booking]()
     @Published var date: Date
@@ -109,31 +109,30 @@ class HouseDetailViewModel: ObservableObject {
     }
     
     func showBookingsForMonth(booking: Booking) -> Bool {
-        return date.isDateInMonth(date: booking.fromDate, selectedMonth: date) || date.isDateInMonth(date: booking.toDate, selectedMonth: date) 
+        return date.isDateInMonth(date: booking.fromDate, selectedMonth: date) || date.isDateInMonth(date: booking.toDate, selectedMonth: date)
     }
     
     func fetchHouseOwner(byId ownerId: String) {
-          //  firebaseHelper.fetchUser(byId: ownerId) { [weak self] user in
         firebaseHelper.loadUserInfo(userID: ownerId) { [weak self] user in
-                DispatchQueue.main.async {
-                    self?.houseOwner = user
-                }
+            DispatchQueue.main.async {
+                self?.houseOwner = user
             }
         }
+    }
     
     
     private func fetchHousePet(byId id: String) {
-            firebaseHelper.fetchPet(byId: id) { [weak self] result in
-                switch result {
-                case .success(let pet):
-                    DispatchQueue.main.async {
-                        self?.housePet = pet
-                    }
-                case .failure(let error):
-                    print("Error fetching house pet: \(error.localizedDescription)")
+        firebaseHelper.fetchPet(byId: id) { [weak self] result in
+            switch result {
+            case .success(let pet):
+                DispatchQueue.main.async {
+                    self?.housePet = pet
                 }
+            case .failure(let error):
+                print("Error fetching house pet: \(error.localizedDescription)")
             }
         }
+    }
     
     
     func getReviews(houseID: String) {
@@ -152,7 +151,7 @@ class HouseDetailViewModel: ObservableObject {
     func fetchReviewerInfo() {
         self.reviewerInfo.removeAll()
         for review in self.reviews {
-          //  firebaseHelper.getRenterInfo(renterID: review.userID) {reviewer in
+            //  firebaseHelper.getRenterInfo(renterID: review.userID) {reviewer in
             firebaseHelper.loadUserInfo(userID: review.userID) {reviewer in
                 if let reviewer = reviewer {
                     self.reviewerInfo[review.userID] = reviewer
@@ -162,20 +161,15 @@ class HouseDetailViewModel: ObservableObject {
     }
     
     func loadReviewerInfo(reviewerID: String) -> User? {
-        
-            return self.reviewerInfo[reviewerID]
-        
+        return self.reviewerInfo[reviewerID]
         
     }
     
     func openMapsForDirections(latitude: Double, longitude: Double) {
-            let destinationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            let placemark = MKPlacemark(coordinate: destinationCoordinate)
-            let mapItem = MKMapItem(placemark: placemark)
-            mapItem.name = "Destination"
-            mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
-        }
-    
-    
-    
+        let destinationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let placemark = MKPlacemark(coordinate: destinationCoordinate)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = "Destination"
+        mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
+    }
 }

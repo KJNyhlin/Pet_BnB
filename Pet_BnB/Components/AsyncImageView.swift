@@ -38,7 +38,6 @@ struct AsyncImageView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .clipShape(Circle())
-                            //.frame(height: height)
                             .frame(width: maxWidth, height: height)
                             .overlay(
                                 Circle()
@@ -51,7 +50,6 @@ struct AsyncImageView: View {
                             .frame(width: maxWidth, height: height)
                     }
 
-      
                 case .failure:
                     Image(systemName: "photo")
                         .resizable()
@@ -76,7 +74,6 @@ struct AsyncImageView: View {
                     .clipShape(Circle())
                     .frame(height: height)
                     .frame(maxWidth: maxWidth)
-//                    .background(Color.gray)
                 
             } else {
                 Image(systemName: "photo")
@@ -84,7 +81,7 @@ struct AsyncImageView: View {
                     .aspectRatio(contentMode: .fill)
                     .frame(height: height)
                     .frame(maxWidth: maxWidth)
-        //            .background(Color.gray)
+
             }
 
         }
@@ -92,11 +89,3 @@ struct AsyncImageView: View {
 
     }
 }
-
-
-
-
-
-//#Preview {
-//    AsyncImageView()
-//}

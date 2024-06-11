@@ -21,7 +21,7 @@ struct ProfileView: View {
             VStack {
                 personalInfoView()
                 Spacer()
-                    
+                
                 Button("Create account") {
                     showSheet = true
                 }
@@ -67,7 +67,7 @@ struct ProfileView: View {
         .onChange(of: authManager.loggedIn){ oldVlaue, newValue in
             if newValue {
                 profileViewModel.getUserDetails()
-                  
+                
                 
             }
         }
@@ -77,7 +77,7 @@ struct ProfileView: View {
 
 struct editPersonalInfo: View {
     @EnvironmentObject var profileViewModel: ProfileViewModel
-
+    
     var body: some View {
         VStack {
             HStack(spacing: 0) {
@@ -96,10 +96,10 @@ struct editPersonalInfo: View {
                                 .scaledToFit()
                                 .frame(width: 150, height: 150)
                         }
-                            Circle()
-                                .stroke(AppColors.mainAccent, lineWidth: 2)
-                                .frame(width: 150, height: 150)
-                        }
+                        Circle()
+                            .stroke(AppColors.mainAccent, lineWidth: 2)
+                            .frame(width: 150, height: 150)
+                    }
                     .padding(.leading)
                     .onTapGesture {
                         profileViewModel.showImagePicker = true
@@ -109,7 +109,7 @@ struct editPersonalInfo: View {
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
                         .padding(.leading, 50)
-
+                    
                     TextField("First Name", text: $profileViewModel.editFirstName)
                         .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
                         .frame(width: 200, height: 40, alignment: .leading)
@@ -117,13 +117,13 @@ struct editPersonalInfo: View {
                             RoundedRectangle(cornerRadius: 25.0)
                                 .stroke(AppColors.mainAccent, lineWidth: 2)
                         )
-
+                    
                     Text("Surname")
                         .font(.caption)
                         .frame(width: 250, alignment: .leading)
                         .padding(.leading, 50)
                         .padding(.top, 2)
-
+                    
                     TextField("Surname", text: $profileViewModel.editSurName)
                         .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
                         .frame(width: 200, height: 40, alignment: .leading)
@@ -136,21 +136,21 @@ struct editPersonalInfo: View {
                         .frame(width: 250, alignment: .leading)
                         .padding(.leading, -50)
                         .padding(.top, 2)
-
+                    
                     TextEditor(text: $profileViewModel.editAboutMe)
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                         .frame(width: 300, height: 160, alignment: .leading)
                         .overlay(
                             RoundedRectangle(cornerRadius: 25.0)
                                 .stroke(AppColors.mainAccent, lineWidth: 2)
-                    )
+                        )
                 }
                 .frame(maxWidth: .infinity)
             }
         }
         .frame(maxWidth: .infinity)
         .frame(height: 600)
-
+        
         HStack {
             Button(action: {
                 profileViewModel.saveUserInfoToDB()

@@ -39,7 +39,6 @@ class SignUpViewModel: ObservableObject {
                     self.showSpinner = false
                     completion(true)
                 }
-                
             }
         }
     }
@@ -53,10 +52,6 @@ class SignUpViewModel: ObservableObject {
                 completion(success)
             }
         }
-    }
-    
-    func getUserDetails(userID: String) {
-        
     }
     
     func savePersonalInfoToDB() {
@@ -85,9 +80,5 @@ class SignUpViewModel: ObservableObject {
             return true
         }
     }
-    
-//    func enterPersonalInfoComplete() -> Bool {
-//        return firstName.isEmpty || surName.isEmpty
-//    }
-    
+
 }
