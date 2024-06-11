@@ -21,7 +21,6 @@ class ChatViewModel: ObservableObject{
     var lastMessageDateString = ""
     private var lastDocument: DocumentSnapshot?
     @Published var isFirstLoad = true
-    
     @Published var messageInput: String = ""
     
     init(toUserID: String, chat: Chat? = nil, toUser: User? = nil) {
@@ -60,9 +59,7 @@ class ChatViewModel: ObservableObject{
                 } else {
                     print("no to user found")
                 }
-                
             }
-            
         }
     }
     
@@ -213,16 +210,10 @@ class ChatViewModel: ObservableObject{
                 "unreadMessagesCount.\(reciverID)": FieldValue.increment(Int64(1))
             ])
         }
-//        chatRef.updateData([
-//            "lastMessage": text,
-//            "lastMessageTimeStamp": Timestamp(),
-//            "unreadMessagesCount.\(reciverID)": FieldValue.increment(Int64(1))
-//        ])
-        
     }
     
     func getChat(participants: [String]) async -> Chat?{
-        // let sortedParticipants = sort(array: participants)
+        
         let sortedParticipants = participants.sorted()
         
         do {
@@ -238,9 +229,6 @@ class ChatViewModel: ObservableObject{
         return nil
     }
     
-    //    func sort(array: [String]) -> [String]{
-    //        return array.sorted()
-    //    }
     
     func fromLoggedInUser(id: String)-> Bool{
         let userID = firebaseHelper.getUserID()
