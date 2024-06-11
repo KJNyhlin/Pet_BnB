@@ -190,8 +190,3 @@ struct InformationRow: View{
         .padding(.vertical, 5)
     }
 }
-////
-//
-//#Preview {
-//    AdressView(street: "Gatan", streetNR: 3, city: "Uppsala")
-//}
