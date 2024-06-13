@@ -27,17 +27,17 @@ struct ContentView: View {
                     icon: { Image(systemName: "magnifyingglass") }
                 ) }
                 MyBookingsTabView(path: $bookingStackPath)
-
+                
                 MyHouseTabView(path: $houseStackPath)
-
+                
                 ChatListTabView(path: $messageStackPath)
-
+                
                 ProfileView().tabItem { Label(
                     title: { Text("Profile") },
                     icon: { Image(systemName: "person.crop.circle") }
                 ) }
                 .protected()
-                //.environmentObject(chatVM)
+                
             }
             .tint(AppColors.mainAccent)
             
@@ -50,12 +50,12 @@ struct ContentView: View {
             if !newState{
                 print(messageStackPath)
                 resetNavigationStacks()
-               print(messageStackPath)
+                print(messageStackPath)
             }
             print(authManager.loggedIn)
             
         }
-        //.padding()
+        
     }
     func resetNavigationStacks(){
         messageStackPath = NavigationPath()
@@ -78,7 +78,7 @@ struct MyBookingsTabView: View {
                     HouseOwnerProfileView(user: user)
                 }
         }
-            .tabItem { Label(
+        .tabItem { Label(
             title: { Text("My Bookings") },
             icon: { Image(systemName: "calendar") }
         ) }
@@ -107,13 +107,13 @@ struct MyHouseTabView: View {
                 .navigationDestination(for: User.self){ user in
                     HouseOwnerProfileView(user: user)
                 }
-
+            
         }.tabItem {Label(
             title: { Text("My house") },
             icon: { Image(systemName: "house") }
         ) }
         .protected()
-
+        
     }
 }
 
@@ -142,6 +142,6 @@ struct ChatListTabView: View {
 #Preview {
     ContentView()
         .environmentObject(FirebaseHelper()
-            )
+        )
 }
 

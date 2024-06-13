@@ -19,19 +19,19 @@ class CreateHouseViewModel: ObservableObject{
     @Published var streetNR = ""
     @Published var city = ""
     @Published var zipCode = ""
-    @Published var latitude: Double? = nil // = ""
-    @Published var longitude: Double? = nil // = ""
+    @Published var latitude: Double? = nil
+    @Published var longitude: Double? = nil
     var house: House? = nil
     let firebaseHelper = FirebaseHelper()
-
+    
     @Published var image: UIImage?
     @Published var savingInProgress = false
-
+    
     @Published var imageSelection: PhotosPickerItem? = nil {
-          didSet {
-              loadImageData()
-          }
-      }
+        didSet {
+            loadImageData()
+        }
+    }
     
     init(house: House?){
         if let house = house{
@@ -40,35 +40,30 @@ class CreateHouseViewModel: ObservableObject{
             self.title = house.title
             description = house.description
             imageURL = house.imageURL
-            if let imageURL = house.imageURL
-            {
+            if let imageURL = house.imageURL {
                 self.city = house.city
                 self.beds = "\(house.beds)"
                 self.size = "\(house.size)"
                 self.streetNR = "\(house.streetNR)"
                 self.zipCode = "\(house.zipCode)"
                 self.streetName = house.streetName
-                self.latitude = house.latitude //"\(house.latitude ?? 0.0)"
-                self.longitude = house.longitude //"\(house.longitude ?? 0.0)"
+                self.latitude = house.latitude
+                self.longitude = house.longitude
                 firebaseHelper.downloadImage(from: imageURL){ image in
                     self.image = image
                 }
-                
             }
         }
-      
     }
     
     func saveHouse(completion: @escaping(Bool) -> Void) {
         saveing(inProgress: true)
         guard checkAllInfoSet(),
-            let image = image,
-            let bedsInt = Int(beds),
-            let sizeInt = Int(size),
-            let streetNRInt = Int(streetNR),
-            let zipCodeInt = Int(zipCode)//,
-//            let latitudeDouble = Double(latitude),
-//            let longitudeDouble = Double(longitude)
+              let image = image,
+              let bedsInt = Int(beds),
+              let sizeInt = Int(size),
+              let streetNRInt = Int(streetNR),
+              let zipCodeInt = Int(zipCode)//,
         else {
             completion(false)
             return
@@ -140,7 +135,7 @@ class CreateHouseViewModel: ObservableObject{
                 }
                 let imageData = try await selectedPhoto.loadTransferable(type: Data.self)
                 DispatchQueue.main.async {
-                  //  self.selectedPhotoData = imageData
+                    
                     if let imageData = imageData{
                         self.image = UIImage(data: imageData)
                     }
@@ -149,6 +144,10 @@ class CreateHouseViewModel: ObservableObject{
                 print("Error loading image data: \(error)")
             }
         }
+    }
+    
+    func hasUnsavedChanges() -> Bool {
+        return !title.isEmpty || !beds.isEmpty || !size.isEmpty || !streetName.isEmpty || !streetNR.isEmpty || !zipCode.isEmpty || !city.isEmpty || !description.isEmpty || image != nil
     }
 }
 

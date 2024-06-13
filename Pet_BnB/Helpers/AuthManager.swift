@@ -36,7 +36,7 @@ class AuthManager: ObservableObject {
 
 struct ProtectedViewModifier: ViewModifier {
     @EnvironmentObject var authManager: AuthManager
-
+    
     func body(content: Content) -> some View {
         content
             .overlay(
@@ -48,7 +48,6 @@ struct ProtectedViewModifier: ViewModifier {
                 
             )
     }
-        
 }
 
 extension View {

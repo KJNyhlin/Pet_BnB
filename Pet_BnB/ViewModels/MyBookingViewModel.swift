@@ -28,9 +28,7 @@ class MyBookingViewModel : ObservableObject {
                         self.myBookingHistory.append(booking)
                     }
                 }
-                
             }
-            
         }
     }
     
@@ -53,13 +51,4 @@ class MyBookingViewModel : ObservableObject {
             return .secondary
         }
     }
-    
-//    func save(review: Review) {
-//        if let house = self.house {
-//            firebaseHelper.save(rating: review, for: house)
-//            
-//            self.house!.totalRatingPoints += review.rating
-//            self.house!.numberOfReviews += 1
-//            }
-//    }
 }
