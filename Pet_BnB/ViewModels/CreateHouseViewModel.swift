@@ -145,5 +145,9 @@ class CreateHouseViewModel: ObservableObject{
             }
         }
     }
+    
+    func hasUnsavedChanges() -> Bool {
+        return !title.isEmpty || !beds.isEmpty || !size.isEmpty || !streetName.isEmpty || !streetNR.isEmpty || !zipCode.isEmpty || !city.isEmpty || !description.isEmpty || image != nil
+    }
 }
 

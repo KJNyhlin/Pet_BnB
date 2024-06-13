@@ -170,6 +170,39 @@ class PetsViewModel: ObservableObject {
         description = ""
         imageURL =  nil
     }
+    
+    func hasUnsavedChanges(pet: Pet?, imagePosition: CGSize, imageScale: CGFloat) -> Bool {
+        guard let pet = pet else {
+            return name.isEmpty == false || description.isEmpty == false || selectedSpices != "Dog" || image != nil
+        }
+        return name != pet.name ||
+               selectedSpices != pet.species ||
+               description != pet.description ||
+               (image != nil && imageURL != pet.imageURL) ||
+               imagePosition != .zero || imageScale != 1.0
+    }
+
+    func loadImageFromURL(_ url: String, completion: @escaping () -> Void) {
+        guard !url.isEmpty, let imageUrl = URL(string: url) else {
+            completion()
+            return
+        }
+
+        let task = URLSession.shared.dataTask(with: imageUrl) { data, response, error in
+            guard let data = data, error == nil, let uiImage = UIImage(data: data) else {
+                DispatchQueue.main.async {
+                    completion()
+                }
+                return
+            }
+
+            DispatchQueue.main.async {
+                self.image = uiImage
+                completion()
+            }
+        }
+        task.resume()
+    }
 }
 
 
