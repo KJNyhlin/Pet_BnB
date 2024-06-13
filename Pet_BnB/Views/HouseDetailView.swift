@@ -239,13 +239,13 @@ struct BookingsList: View {
             Button(action: {
                 showAlert.toggle()
             }, label: {
-                FilledButtonLabel(text: "Reserv")
+                FilledButtonLabel(text: "Reserve")
                     .frame(width: 100)
                 
             })
             .disabled(viewModel.selectedBookingID == "")
         }
-        .alert("Do you want to reserv the time period? Host will have to confirm it.", isPresented: $showAlert) {
+        .alert("Do you want to reserve the time period? Host will have to confirm it.", isPresented: $showAlert) {
             
             Button("No", role: .cancel) {}
             Button("Yes", role: .none) {
@@ -699,7 +699,7 @@ struct BookingButtonView: View {
                         
                     })
                     {
-                        FilledButtonLabel(text: "Reserv")
+                        FilledButtonLabel(text: "Reserve")
                             .frame(maxWidth: 80)
                     }
                     .padding([.bottom, .trailing], 30)
