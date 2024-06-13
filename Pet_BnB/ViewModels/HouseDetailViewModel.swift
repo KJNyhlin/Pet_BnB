@@ -138,6 +138,7 @@ class HouseDetailViewModel: ObservableObject {
     func getReviews(houseID: String) {
         self.reviews.removeAll()
         firebaseHelper.fetchReviews(houseID: houseID) {reviews in
+            
             self.reviews.removeAll()
             
             self.reviews.append(contentsOf: reviews)
@@ -151,7 +152,6 @@ class HouseDetailViewModel: ObservableObject {
     func fetchReviewerInfo() {
         self.reviewerInfo.removeAll()
         for review in self.reviews {
-            //  firebaseHelper.getRenterInfo(renterID: review.userID) {reviewer in
             firebaseHelper.loadUserInfo(userID: review.userID) {reviewer in
                 if let reviewer = reviewer {
                     self.reviewerInfo[review.userID] = reviewer
